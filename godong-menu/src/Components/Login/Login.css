@@ -1,0 +1,27 @@
+.login-container {
+    display: flex;
+    height: 100vh;
+}
+.login-form {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.login-image {
+    flex: 1;
+    background: url('../Login/bg_login.png') no-repeat center center;
+    background-size: cover;
+}
+.login-box {
+    width: 100%;
+    max-width: 400px;
+}
+.login-box h1 {
+    margin-bottom: 80px;
+}
+.form-group {
+    margin-bottom: 20px;
+}
+
