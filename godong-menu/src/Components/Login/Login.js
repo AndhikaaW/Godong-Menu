@@ -1,5 +1,6 @@
 import React from 'react'
-import "../Login/Login.css"
+import "../Login/Login.css";
+// import {Link} from 'react-router-dom';
 
 export default function Login() {
   return (
@@ -31,7 +32,7 @@ export default function Login() {
                         </div>
                         <button type="submit" class="btn btn-primary btn-block">Login</button>
                         <div class="text-center mt-3">
-                            <p>Don't have an account? <a href="#">Sign Up</a></p>
+                            <p>Don't have an account? <a href='#'>SignUp</a></p>
                         </div>
                     </form>
                 </div>
