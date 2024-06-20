@@ -1,42 +1,33 @@
 import React from 'react'
 import "../Login/Login.css"
-export default function SignUp() {
+import { useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+const SignUp = () => {
+    const navigate = useNavigate()
     return (
-        <div>
-            <head>
-                <link
-                    rel="stylesheet"
-                    href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
-                />
-            </head>
-            <body>
-                <div class="container-fluid login-container">
-                    <div class="login-form">
-                        <div class="login-box">
-                            <h1 class="text-center">Welcome to <strong>GodongMenu</strong></h1>
-                            <form>
-                                <div class="form-group">
-                                    <label for="password">Username</label>
-                                    <input type="password" class="form-control" id="password" placeholder="Password" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="email">Email address</label>
-                                    <input type="email" class="form-control" id="email" placeholder="Email address" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="password">Password</label>
-                                    <input type="password" class="form-control" id="password" placeholder="Password" />
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-block">SignUp</button>
-                            </form>
+        <div className="container-fluid login-container">
+            <div className="login-form">
+                <div className="login-box">
+                    <h1 className="text-center">Welcome to <strong>GodongMenu</strong></h1>
+                    <form>
+                        <div className="form-group">
+                            <label htmlFor="password">Username</label>
+                            <input type="password" className="form-control" id="password" placeholder="Password" />
                         </div>
-                    </div>
-                    <div class="login-image" ></div>
+                        <div className="form-group">
+                            <label htmlFor="email">Email address</label>
+                            <input type="email" className="form-control" id="email" placeholder="Email address" />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="password">Password</label>
+                            <input type="password" className="form-control" id="password" placeholder="Password" />
+                        </div>
+                        <button type="submit" className="btn btn-primary btn-block" onClick={() => navigate('/')}>SignUp</button>
+                    </form>
                 </div>
-                <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-            </body>
+            </div>
+            <div className="login-image" ></div>
         </div>
     )
 }
+export default SignUp;
