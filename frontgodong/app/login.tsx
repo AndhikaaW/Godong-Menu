@@ -1,6 +1,9 @@
 "use client";
-import React from 'react';
-import { useState } from 'react';
+import React,{
+    useState
+} from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation'
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 // import { Checkbox } from 'primereact/checkbox';
@@ -8,10 +11,14 @@ import "../styles/login.css";
 import Link from 'next/link';
 
 export default function Login() {
+    const [email,setEmail]=useState("")
+    const [password,setPassword]=useState("")
+    const [status]=useState(2)
+    const navigate = useRouter()
     const [checked, setChecked] = useState(false);
+    
     return (
         
-
         <div className="container-fluid login-container">
             <div className="login-form">
                 <div className="login-box">

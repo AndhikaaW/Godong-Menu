@@ -8,8 +8,7 @@ import 'primeicons/primeicons.css';
 export default function LoginPage() {
 
   return (
-      <Login />
-
+    <Login/>
   )
 }
 
