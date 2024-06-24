@@ -11,12 +11,32 @@ import "../styles/login.css";
 import Link from 'next/link';
 
 export default function Login() {
-    const [email,setEmail]=useState("")
-    const [password,setPassword]=useState("")
     const [status]=useState(2)
     const navigate = useRouter()
     const [checked, setChecked] = useState(false);
-    
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    async function login() {
+        let item = { email, password };
+        try {
+            let response = await axios.post("http://godongbackend.test/api/login", item, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                }
+            });
+            localStorage.setItem("user-info", JSON.stringify(response.data));
+            const status = response.data
+            if (response.data == 1) {
+                navigate.push('/Dashboard');
+            } else {
+                alert("Login failed. Please check your credentials and try again.");
+            }
+        } catch (error) {
+            console.error("There was an error!", error);
+        }
+    }
     return (
         
         <div className="container-fluid login-container">
@@ -33,18 +53,16 @@ export default function Login() {
 
                             <div>
                                 <label htmlFor="email" className="block text-900 font-medium mb-2" >Email</label>
-                                <InputText id="email" type="text" placeholder="Email address" className="w-full mb-3" />
+                                <InputText  onChange={(e) => setEmail(e.target.value)} id="email" type="text" placeholder="Email address" className="w-full mb-3" />
 
                                 <label htmlFor="password" className="block text-900 font-medium mb-2">Password</label>
-                                <InputText id="password" type="password" placeholder="Password" className="w-full mb-3" />
+                                <InputText  onChange={(e) => setPassword(e.target.value)} id="password" type="password" placeholder="Password" className="w-full mb-3" />
 
                                 <div className="flex align-items-center justify-content-between mb-3">
                                     <span></span>
                                     <a className="font-medium no-underline ml-2 text-blue-500 text- cursor-pointer">Forgot your password?</a>
                                 </div>
-                                <Link href='/Dashboard'>
-                                    <Button label="Login" icon="pi pi-user" className="w-full" />
-                                </Link>
+                                <Button label="Login" icon="pi pi-user" className="w-full"  onClickCapture={login}/>
                                 <div className="flex align-items-center justify-content-center mt-3 mb-3 ">
                                     <span className="text-600 font-medium line-height-3">Don't have an account?</span>
                                     <Link href='/SignUp' className="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Create today!</Link>
