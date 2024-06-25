@@ -1,14 +1,7 @@
-"use client";
+import React from 'react'
 
-import React from 'react';
-import 'primereact/resources/themes/saga-blue/theme.css';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-
-const Navbar = () => {
+export default function page() {
   return (
-    <div>sdsda</div>
-  );
+    <div>page</div>
+  )
 }
-
-export default Navbar;
