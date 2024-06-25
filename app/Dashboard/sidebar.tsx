@@ -1,15 +1,13 @@
 "use client";
 
 import React from 'react';
+import 'primereact/resources/themes/saga-blue/theme.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { TieredMenu } from 'primereact/tieredmenu';
 import { MenuItem } from 'primereact/menuitem';
 import { useRouter } from 'next/navigation';
-// import { link } from 'fs';
-// import { Link, useHref } from 'react-router-dom';
-
-// import "../../styles/sidebar.css";
-// import styles from '../../styles/sidebar.module.css';
 
 const SideBar = ({ children }: any) => {
   const router = useRouter();
@@ -86,3 +84,4 @@ const SideBar = ({ children }: any) => {
 }
 
 export default SideBar;
+

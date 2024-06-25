@@ -1,11 +1,10 @@
-import Sidebar from './sidebar'
+import Nav from './nav'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 export const metadata = {
   title: 'Godong',
-  description: 'Godong',
 }
 
 export default function dashboardLayout({
@@ -14,9 +13,9 @@ export default function dashboardLayout({
   children: React.ReactNode
 }) {
   return (
-   <div className='d-flex flex-rows'>
-    <Sidebar/>
-    <div className='vw-100 vh-100'>
+   <div>
+    <Nav/>
+    <div>
       {children}
     </div>
    </div>
