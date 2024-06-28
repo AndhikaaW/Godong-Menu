@@ -1,4 +1,4 @@
-import '../../../styles/globals1.css';
+import '../../../styles/globals.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 export const metadata = {
   title: 'Godong',

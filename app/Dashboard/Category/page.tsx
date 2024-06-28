@@ -19,7 +19,7 @@ function Categorypage() {
 
                             <div className="card-body text-center">
                                 <h3 className="card-title">Food</h3>
-                                <p className="card-text">Godong resto menghadirkan berbagai jenis hidangan dari berbagai budaya dan masakan khas Indonesia.</p>
+                                <p className="card-text text-sm">Godong resto menghadirkan berbagai jenis hidangan dari berbagai budaya dan masakan khas Indonesia.</p>
                             </div>
                         </div>
                     </Link>
@@ -30,7 +30,7 @@ function Categorypage() {
                             </div>
                             <div className="card-body text-center">
                                 <h3 className="card-title">Drink</h3>
-                                <p className="card-text">Godong resto menghadirkan berbagai jenis hidangan dari berbagai budaya dan masakan khas Indonesia.</p>
+                                <p className="card-text text-sm">Godong resto menghadirkan berbagai jenis hidangan dari berbagai budaya dan masakan khas Indonesia.</p>
                             </div>
                         </div>
                     </Link>
@@ -41,7 +41,7 @@ function Categorypage() {
                             </div>
                             <div className="card-body text-center">
                                 <h3 className="card-title">Snack</h3>
-                                <p className="card-text">Godong resto menghadirkan berbagai jenis hidangan dari berbagai budaya dan masakan khas Indonesia.</p>
+                                <p className="card-text text-sm">Godong resto menghadirkan berbagai jenis hidangan dari berbagai budaya dan masakan khas Indonesia.</p>
                             </div>
                         </div>
                     </Link>

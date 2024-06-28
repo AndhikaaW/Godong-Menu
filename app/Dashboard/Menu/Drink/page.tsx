@@ -11,7 +11,7 @@ import {
 function Drinkpage() {
   return (
     <div className='row gap-4'>
-      <Card className='w-full h-full rounded mt-3 sm:w-4 '>
+      <Card className='w-full h-full rounded mt-3 sm:w-4 text-sm'>
         <CardHeader>
           <img src="/img-3.jpg" alt="" className='mb-4 shadow' style={{ width: '100%', borderRadius: '20px' }} />
         </CardHeader>
@@ -20,10 +20,10 @@ function Drinkpage() {
           <p className="card-text">Es Teh yang segar terbuat dari teh berkualitas, dan disajikan dengan es batu. Nikmati rasa teh yang menyegarkan di setiap tegukan.</p>
         </CardContent>
         <CardFooter>
-          <div className="col-6 d-flex align-items-center justify-content-around fw-bold">
-            <p className="mb-0">Rp 15.000</p>
+        <div className="col-7 d-flex align-items-center justify-content-around fw-bold">
+            <p className="mb-0 text-sm">Rp 15.000</p>
           </div>
-          <div className="col-5 d-flex align-items-center justify-content-around">
+          <div className="col-7 d-flex align-items-center justify-content-around">
             <CiCircleMinus size={'40px'} />
             <p className="mb-0 ms-2 me-2">1</p>
             <CiCirclePlus size={'40px'} />

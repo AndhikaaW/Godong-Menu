@@ -1,5 +1,5 @@
 import Nav from './nav'
-import '../../../styles/globals1.css';
+import '../../../styles/globals.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';

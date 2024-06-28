@@ -1,11 +1,8 @@
+"use client"
 import React from 'react'
-// import Homepage from './Home/page'
-
-function page() {
+import Admin from './admin'
+export default function page() {
   return (
-    // <Homepage/>
-    <div></div>
+    <Admin/>
   )
 }
-
-export default page

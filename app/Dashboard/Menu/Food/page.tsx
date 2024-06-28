@@ -13,20 +13,19 @@ import {
 function Foodpage() {
   return (
     <div className='row gap-3'>
-      <Card className=' h-full rounded mt-3 sm:w-4'>
+      <Card className=' h-full rounded mt-3 sm:w-4 text-sm'>
         <CardHeader>
           <img src="/img-4.jpg" alt="" className='shadow' style={{ width: '100%', borderRadius: '20px' }} />
         </CardHeader>
         <CardContent>
           <CardTitle>Nasi Pecel</CardTitle>
-          <CardDescription className=''>Nasi Pecel khas Madiun yang memadukan nasi putih dengan aneka sayuran segar yang disiram dengan bumbu kacang khas. Dalam setiap porsinya, Anda akan menemukan kombinasi lezat dari sayuran. </CardDescription>
-          
+          <CardDescription className='text-sm'>Nasi Pecel khas Madiun yang memadukan nasi putih dengan aneka sayuran segar yang disiram dengan bumbu kacang khas. Dalam setiap porsinya, Anda akan menemukan kombinasi lezat dari sayuran. </CardDescription>
         </CardContent>
         <CardFooter>
-          <div className="col-6 d-flex align-items-center justify-content-around fw-bold">
-            <p className="mb-0">Rp 15.000</p>
+          <div className="col-7 d-flex align-items-center justify-content-around fw-bold">
+            <p className="mb-0 text-sm">Rp 15.000</p>
           </div>
-          <div className="col-5 d-flex align-items-center justify-content-around">
+          <div className="col-7 d-flex align-items-center justify-content-around">
             <CiCircleMinus size={'40px'} />
             <p className="mb-0 ms-2 me-2">1</p>
             <CiCirclePlus size={'40px'} />

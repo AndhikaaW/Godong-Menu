@@ -1,10 +1,10 @@
-import '../../styles/globals1.css';
+import '../../styles/globals.css';
 import SidebarDekstop from '@/components/SidebarDekstop';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
-import Sidebar from '../../components/sidebar';
+import Sidebar from '../../components/sidebarAdmin';
 
 export const metadata = {
   title: 'Godong',
@@ -17,15 +17,13 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className='flex flex-row'>
-      <div className='mx-3 sm:w-[280px]'>
-      <Sidebar/>
-      </div>
-      <div>
-      <main className='ml-2 mt-16 sm:ml-0 sm:mt-3'>
-        {children}
-      </main>
-      </div>
-    </div>
+    <div className="flex items-start justify-between" style={{overflow:"hidden"}}>
+      <div className='fixed w-[300px] '><Sidebar/></div>
+     
+
+    <main className=' overflow-auto sm:ml-[260px] w-screen h-screen sm:p-0 p-10'>
+      {children}
+    </main>
+  </div>
   );
 }

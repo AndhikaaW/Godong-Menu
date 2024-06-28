@@ -4,22 +4,22 @@ import { TbRosetteDiscount } from "react-icons/tb";
 import { MdOutlineShoppingCart } from 'react-icons/md';
 function Homepage() {
     return (
-        <div className="surface-0 vh-100" >
+        <div className="surface-0 vh-100">
             <div className="text-900 font-bold text-6xl mb-5 text-center pt-5">Welcome, Tian</div>
             <div className="container">
                 <div className="row">
                     <div className="col-6 m-lg-2 ">
                         <div className="flex">
-                            <img src="/img-1.jpg" alt="gambar" width="250px" id='img-1' className="p-2 mb-5" style={{ borderRadius: '30px', marginTop: '-20px' }} />
+                            <img src="/img-1.jpg" alt="gambar" width="200px" id='img-1' className="p-2 mb-5" style={{ borderRadius: '30px', marginTop: '-20px' }} />
                             <div className='flex-col'>
-                                <img src="/img-2.jpg" alt="gambar" width="250px" className="p-2" style={{ borderRadius: '30px' }} />
-                                <img src="/img-2.jpg" alt="gambar" width="250px" className="p-2" style={{ borderRadius: '30px' }} />
+                                <img src="/img-2.jpg" alt="gambar" width="200px" className="p-2" style={{ borderRadius: '30px' }} />
+                                <img src="/img-2.jpg" alt="gambar" width="200px" className="p-2" style={{ borderRadius: '30px' }} />
                             </div>
                         </div>
                     </div>
                     <div className="description col-5 m-lg-2 w-full sm:w-5">
                         <h1 className="text-4xl font-bold mb-4">Godong Menu</h1>
-                        <p className="text-lg text-gray-700 w-full">
+                        <p className="text-gray-700 w-full text-sm">
                             Selamat datang di Godong, restoran yang menyajikan cita rasa autentik Indonesia dalam suasana yang nyaman dan ramah.
                             Godong menghadirkan beragam hidangan khas Nusantara, mulai dari makanan utama yang mengenyangkan hingga camilan ringan dan minuman tradisional yang menyegarkan.
                             Kunjungi Godong dan rasakan sendiri kelezatan masakan Indonesia dalam setiap suapan!
