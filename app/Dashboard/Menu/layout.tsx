@@ -1,4 +1,5 @@
 import Nav from './nav'
+import '../../../styles/globals1.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
@@ -7,15 +8,15 @@ export const metadata = {
   title: 'Godong',
 }
 
-export default function dashboardLayout({
+export default function MenuLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-   <div>
+   <div className='w-full'>
     <Nav/>
-    <div>
+    <div className='mx-5'>
       {children}
     </div>
    </div>
