@@ -1,5 +1,5 @@
 
-export default function Layout({
+export default function dashboardLayout({
  children
 }: {
  children: React.ReactNode;
