@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, User } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -24,31 +24,42 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 interface Product {
-  idCategory: string;
+  idUser: string;
   name: string;
   icon?: LucideIcon;
-  description: string;
+  email:string;
+  noTelp:string;
 }
 
 export default function Component() {
   const [products, setProducts] = useState<Product[]>([
     {
-      idCategory: "322002",
-      name: "Makanan",
-      icon: UtensilsCrossed,
-      description: "Kategori Makanan Untuk seperti Nasgor dkk",
+      idUser: "322002",
+      name: "Suntoyo",
+      icon: User,
+      email: "suntoyopakesopo@gmail.com",
+      noTelp:"082132186213"
     },
     {
-      idCategory: "312002",
-      name: "Minuman",
-      icon: CupSoda,
-      description: "Kategori Minuman untuk seperti Ice dkk",
+      idUser: "322012",
+      name: "Suntolo",
+      icon: User,
+      email: "suntolopakesopo@gmail.com",
+      noTelp:"082132186213"
     },
     {
-      idCategory: "332002",
-      name: "Snack",
-      icon: Popcorn,
-      description: "Snack untuk seperti popcorndkk",
+      idUser: "3220122",
+      name: "Suntoko",
+      icon: User,
+      email: "suntokopakesopo@gmail.com",
+      noTelp:"082132186213"
+    },
+    {
+      idUser: "322302",
+      name: "Suntowo",
+      icon: User,
+      email: "suntowopakesopo@gmail.com",
+      noTelp:"082132186213"
     },
   ]);
 
@@ -60,15 +71,15 @@ export default function Component() {
   const handleDelete = (id: string) => {
     // Implement delete functionality here
     console.log(`Delete product with id: ${id}`);
-    setProducts(products.filter((product) => product.idCategory !== id));
+    setProducts(products.filter((product) => product.idUser !== id));
   };
 
   return (
     <div className="p-6 space-y-6">
       {/* Breadcrumb and Header */}
       <div>
-        <p className="text-sm text-gray-500">Pages / Category</p>
-        <h1 className="text-4xl font-semibold mt-2">Category</h1>
+        <p className="text-sm text-gray-500">Pages / Users</p>
+        <h1 className="text-4xl font-semibold mt-2">Users</h1>
       </div>
 
       {/* Search and Action Buttons on the right, with Search above Add and Export */}
@@ -127,6 +138,12 @@ export default function Component() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+          <Button className="bg-[#F4F7FE] rounded-full text-gray-700 px-4 py-2 flex items-center">
+            <span className="mr-2">
+              <Upload size={15} />
+            </span>{" "}
+            Export
+          </Button>
         </div>
       </div>
 
@@ -135,16 +152,19 @@ export default function Component() {
         <TableHeader>
           <TableRow>
             <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300">
-              ID Category
+              ID User
             </TableHead>
             <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300">
-              Name
+              Pictures
             </TableHead>
             <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
-              Icon
+              Name
             </TableHead>
             <TableHead className="text-[13px] w-[250px] p-0 text-black text-center bg-gray-300 hidden md:table-cell">
-              Description
+              Email
+            </TableHead>
+            <TableHead className="text-[13px] w-[250px] p-0 text-black text-center bg-gray-300 hidden md:table-cell">
+              No Telp
             </TableHead>
             <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300">
               Action
@@ -153,32 +173,28 @@ export default function Component() {
         </TableHeader>
         <TableBody>
           {products.map((product) => (
-            <TableRow key={product.idCategory}>
+            <TableRow key={product.idUser}>
               <TableCell className="text-blue-500 text-center">
-                {product.idCategory}
+                {product.idUser}
               </TableCell>
-              <TableCell className="text-blue-500 text-center">
-                {product.name}
+              <TableCell className="text-black text-center">
+              {product.icon && <product.icon size={24} />}
               </TableCell>
               <TableCell className="text-center hidden sm:table-cell">
-                {product.icon && <product.icon size={24} />}
+              {product.name}
               </TableCell>
               <TableCell className="text-center hidden md:table-cell">
-                {product.description}
+                {product.email}
+              </TableCell>
+              <TableCell className="text-center hidden md:table-cell">
+                {product.noTelp}
               </TableCell>
               <TableCell>
                 <div className="flex flex-col">
                   <div className="flex flex-col sm:flex-row justify-center gap-2">
                     <Button
-                      className="bg-[#2B3674] mb-2 opacity-75 sm:w-[70px] text-white w-[50px] p-2"
-                      onClick={() => handleEdit(product.idCategory)}
-                    >
-                      <Pen className="sm:mr-2" size={12} />
-                      <span className="hidden sm:inline text-[12px]">Edit</span>
-                    </Button>
-                    <Button
                       className="bg-[#F13023] opacity-80 sm:w-[70px] text-white w-[50px] p-2"
-                      onClick={() => handleDelete(product.idCategory)}
+                      onClick={() => handleDelete(product.idUser)}
                     >
                       <Trash2 size={15} className="sm:mr-2" />
                       <span className="hidden sm:inline text-[12px]">
