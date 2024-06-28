@@ -25,38 +25,65 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 interface Product {
+  idMenu: string;
   idCategory: string;
   name: string;
   image: StaticImageData;
   description: string;
+  price: string;
 }
 
-export default function Component() {
+export default function category() {
   const [products, setProducts] = useState<Product[]>([
     {
+      idMenu: "322002",
       idCategory: "302002",
       name: "Iwak Lamongan",
       image: soto,
       description: "Soto Lamongan, soto khas Jawa Timur -",
+      price: "Rp.20.000",
     },
     {
+      idMenu: "302002",
       idCategory: "302002",
-      name: "Iwak Lamongan",
+      name: "Soto Lamongan",
       image: soto,
       description: "Soto Lamongan, soto khas Jawa Timur -",
+      price: "Rp.20.000",
     },
     {
+      idMenu: "302002",
       idCategory: "302002",
-      name: "Iwak Lamongan",
+      name: "Soto Lamongan",
       image: soto,
       description: "Soto Lamongan, soto khas Jawa Timur -",
+      price: "Rp.20.000",
     },
     {
+      idMenu: "302002",
       idCategory: "302002",
-      name: "Iwak Lamongan",
+      name: "Soto Lamongan",
       image: soto,
       description: "Soto Lamongan, soto khas Jawa Timur -",
+      price: "Rp.20.000",
     },
+    {
+      idMenu: "302002",
+      idCategory: "302002",
+      name: "Soto Lamongan",
+      image: soto,
+      description: "Soto Lamongan, soto khas Jawa Timur -",
+      price: "Rp.20.000",
+    },
+    {
+      idMenu: "302002",
+      idCategory: "302002",
+      name: "Soto Lamongan",
+      image: soto,
+      description: "Soto Lamongan, soto khas Jawa Timur -",
+      price: "Rp.20.000",
+    },
+    // Add more products here if needed
   ]);
 
   const handleEdit = (id: string) => {
@@ -67,15 +94,15 @@ export default function Component() {
   const handleDelete = (id: string) => {
     // Implement delete functionality here
     console.log(`Delete product with id: ${id}`);
-    setProducts(products.filter((product) => product.idCategory !== id));
+    setProducts(products.filter((product) => product.idMenu !== id));
   };
 
   return (
     <div className="p-6 space-y-6">
       {/* Breadcrumb and Header */}
       <div>
-        <p className="text-sm text-gray-500">Pages / Category</p>
-        <h1 className="text-4xl font-semibold mt-2">Category</h1>
+        <p className="text-sm text-gray-500">Pages / Menu</p>
+        <h1 className="text-4xl font-semibold mt-2">Menu</h1>
       </div>
 
       {/* Search and Action Buttons on the right, with Search above Add and Export */}
@@ -147,17 +174,23 @@ export default function Component() {
       <Table className="min-w-full overflow-x-auto border">
         <TableHeader>
           <TableRow>
+            <TableHead className="border-r text-[13px] w-[90px] p-0 text-black text-center bg-gray-300">
+              ID Menu
+            </TableHead>
             <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
-              ID
+              ID Category
             </TableHead>
             <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300">
               Name
             </TableHead>
             <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
-              Icon
+              Pictures
             </TableHead>
             <TableHead className="text-[13px] w-[250px] p-0 text-black text-center bg-gray-300 hidden md:table-cell">
               Description
+            </TableHead>
+            <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300 hidden md:table-cell">
+              Price
             </TableHead>
             <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300">
               Action
@@ -166,7 +199,8 @@ export default function Component() {
         </TableHeader>
         <TableBody>
           {products.map((product) => (
-            <TableRow key={product.idCategory}>
+            <TableRow key={product.idMenu}>
+              <TableCell className="text-blue-500">{product.idMenu}</TableCell>
               <TableCell className="text-blue-500 hidden sm:table-cell">
                 {product.idCategory}
               </TableCell>
@@ -183,18 +217,21 @@ export default function Component() {
               <TableCell className="hidden md:table-cell">
                 {product.description}
               </TableCell>
+              <TableCell className="hidden md:table-cell">
+                {product.price}
+              </TableCell>
               <TableCell>
                 <div className="flex center flex-col sm:flex-row">
                   <Button
                     className="bg-[#2B3674] sm:mr-3 mb-2 sm:opacity-75 sm:w-[70px] text-white w-[50px] p-2"
-                    onClick={() => handleEdit(product.idCategory)}
+                    onClick={() => handleEdit(product.idMenu)}
                   >
                     <Pen className="sm:mr-2" size={12} />
                     <span className="hidden sm:inline text-[12px] ">Edit</span>
                   </Button>
                   <Button
                     className="bg-[#F13023] sm:opacity-80 sm:w-[70px] text-white w-[50px] p-2"
-                    onClick={() => handleDelete(product.idCategory)}
+                    onClick={() => handleDelete(product.idMenu)}
                   >
                     <Trash2 size={15} className="sm:mr-2" />
                     <span className="hidden sm:inline text-[12px] ">

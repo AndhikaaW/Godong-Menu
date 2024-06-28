@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import Image, { StaticImageData } from "next/image";
-import soto from "../../../public/soto.png";
+import { LucideIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -20,42 +19,36 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Pen, Plus, Search, Trash2, Upload } from "lucide-react";
+import { CupSoda, Pen, Plus, Popcorn, Search, Trash2, Upload, UtensilsCrossed } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 interface Product {
   idCategory: string;
   name: string;
-  image: StaticImageData;
+  icon?: LucideIcon;
   description: string;
 }
 
 export default function Component() {
   const [products, setProducts] = useState<Product[]>([
     {
-      idCategory: "302002",
-      name: "Iwak Lamongan",
-      image: soto,
-      description: "Soto Lamongan, soto khas Jawa Timur -",
+      idCategory: "322002",
+      name: "Makanan",
+      icon: UtensilsCrossed,
+      description: "Kategori Makanan Untuk seperti Nasgor dkk",
     },
     {
-      idCategory: "302002",
-      name: "Iwak Lamongan",
-      image: soto,
-      description: "Soto Lamongan, soto khas Jawa Timur -",
+      idCategory: "312002",
+      name: "Minuman",
+      icon: CupSoda,
+      description: "Kategori Minuman untuk seperti Ice dkk",
     },
     {
-      idCategory: "302002",
-      name: "Iwak Lamongan",
-      image: soto,
-      description: "Soto Lamongan, soto khas Jawa Timur -",
-    },
-    {
-      idCategory: "302002",
-      name: "Iwak Lamongan",
-      image: soto,
-      description: "Soto Lamongan, soto khas Jawa Timur -",
+      idCategory: "332002",
+      name: "Snack",
+      icon: Popcorn,
+      description: "Snack untuk seperti popcorndkk",
     },
   ]);
 
@@ -83,7 +76,7 @@ export default function Component() {
         <div className="relative w-full sm:w-1/3">
           <input
             type="text"
-            className="w-full  bg-[#F4F7FE] p-2 border border-gray-300 rounded-xl shadow-xl pl-10"
+            className="w-full bg-[#F4F7FE] p-2 border border-gray-300 rounded-xl shadow-xl pl-10"
             placeholder="Search"
           />
           <Search
@@ -94,10 +87,10 @@ export default function Component() {
         <div className="flex gap-4">
           <Dialog>
             <DialogTrigger className="bg-[#F4F7FE] rounded-full text-black px-4 py-2 flex items-center">
-                <span className="mr-2">
-                  <Plus size={15} color="black" />
-                </span>{" "}
-                Add
+              <span className="mr-2">
+                <Plus size={15} color="black" />
+              </span>{" "}
+              Add
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
@@ -134,7 +127,7 @@ export default function Component() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Button className="bg-[#F4F7FE] rounded-full text-gray-700 px-4 py-2  flex items-center">
+          <Button className="bg-[#F4F7FE] rounded-full text-gray-700 px-4 py-2 flex items-center">
             <span className="mr-2">
               <Upload size={15} />
             </span>{" "}
@@ -147,8 +140,8 @@ export default function Component() {
       <Table className="min-w-full overflow-x-auto border">
         <TableHeader>
           <TableRow>
-            <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
-              ID
+            <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300">
+              ID Category
             </TableHead>
             <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300">
               Name
@@ -167,40 +160,38 @@ export default function Component() {
         <TableBody>
           {products.map((product) => (
             <TableRow key={product.idCategory}>
-              <TableCell className="text-blue-500 hidden sm:table-cell">
+              <TableCell className="text-blue-500 text-center">
                 {product.idCategory}
               </TableCell>
-              <TableCell className="text-blue-500">{product.name}</TableCell>
-              <TableCell className="hidden sm:table-cell">
-                <Image
-                  alt="Product image"
-                  className="aspect-square rounded-md object-cover"
-                  height="64"
-                  src={product.image}
-                  width="64"
-                />
+              <TableCell className="text-blue-500 text-center">
+                {product.name}
               </TableCell>
-              <TableCell className="hidden md:table-cell">
+              <TableCell className="text-center hidden sm:table-cell">
+                {product.icon && <product.icon size={24} />}
+              </TableCell>
+              <TableCell className="text-center hidden md:table-cell">
                 {product.description}
               </TableCell>
               <TableCell>
-                <div className="flex center flex-col sm:flex-row">
-                  <Button
-                    className="bg-[#2B3674] sm:mr-3 mb-2 sm:opacity-75 sm:w-[70px] text-white w-[50px] p-2"
-                    onClick={() => handleEdit(product.idCategory)}
-                  >
-                    <Pen className="sm:mr-2" size={12} />
-                    <span className="hidden sm:inline text-[12px] ">Edit</span>
-                  </Button>
-                  <Button
-                    className="bg-[#F13023] sm:opacity-80 sm:w-[70px] text-white w-[50px] p-2"
-                    onClick={() => handleDelete(product.idCategory)}
-                  >
-                    <Trash2 size={15} className="sm:mr-2" />
-                    <span className="hidden sm:inline text-[12px] ">
-                      Delete
-                    </span>
-                  </Button>
+                <div className="flex flex-col">
+                  <div className="flex flex-col sm:flex-row justify-center gap-2">
+                    <Button
+                      className="bg-[#2B3674] mb-2 opacity-75 sm:w-[70px] text-white w-[50px] p-2"
+                      onClick={() => handleEdit(product.idCategory)}
+                    >
+                      <Pen className="sm:mr-2" size={12} />
+                      <span className="hidden sm:inline text-[12px]">Edit</span>
+                    </Button>
+                    <Button
+                      className="bg-[#F13023] opacity-80 sm:w-[70px] text-white w-[50px] p-2"
+                      onClick={() => handleDelete(product.idCategory)}
+                    >
+                      <Trash2 size={15} className="sm:mr-2" />
+                      <span className="hidden sm:inline text-[12px]">
+                        Delete
+                      </span>
+                    </Button>
+                  </div>
                 </div>
               </TableCell>
             </TableRow>
