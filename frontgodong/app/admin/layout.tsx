@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
-import Sidebar from '../../components/sidebarClient';
+import Sidebar from '../../components/sidebarAdmin';
 
 export const metadata = {
   title: 'Godong',
@@ -17,13 +17,13 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className='flex w-screen h-screen'>
-      <div className='w-[280px] sm:w-[280px] flex-shrink-0'>
-        <Sidebar />
-      </div>
-      <div className='flex-grow p-3 overflow-auto'>
-        {children}
-      </div>
-    </div>
+    <div className="flex items-start justify-between" style={{overflow:"hidden"}}>
+      <div className='fixed w-[300px] '><Sidebar/></div>
+     
+
+    <main className=' overflow-auto sm:ml-[260px] w-screen h-screen sm:p-0 p-10'>
+      {children}
+    </main>
+  </div>
   );
 }

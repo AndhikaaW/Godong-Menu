@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
- 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 .font-poppins {
   font-family: 'Poppins', sans-serif;
 }
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -27,7 +27,7 @@
     --border: 20 5.9% 90%;
     --input: 20 5.9% 90%;
     --ring: 24.6 95% 53.1%;
-    --radius: 0.75rem;
+    --radius: 1rem;
   }
 
   .dark {
@@ -52,13 +52,3 @@
     --ring: 20.5 90.2% 48.2%;
   }
 }
-
-  @layer base {
-    * {
-      @apply border-border;
-    }
-    body {
-      @apply bg-background text-foreground;
-    }
-  }
-

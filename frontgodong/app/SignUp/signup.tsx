@@ -1,72 +1,118 @@
 "use client";
-import React,{
-    useState
-} from 'react';
-import axios from 'axios';
-import { useRouter } from 'next/navigation'
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-// import { Checkbox } from 'primereact/checkbox';
+import '../../styles/globals.css'
+import React, { useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import bg from "../../public/bg_login.png";
+import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
-import Link from 'next/link';
 export default function SignUp() {
-    const [nama,setName]=useState("")
-    const [email,setEmail]=useState("")
-    const [password,setPassword]=useState("")
-    const [status]=useState(2)
-    const navigate = useRouter()
-    async function usersignup() {
-        let item = { nama, password, email, status };
-        try {
-            let response = await axios.post("http://godongbackend.test/api/register", item, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                }
-            });
-            localStorage.setItem("user-info", JSON.stringify(response.data));
-            navigate.push('/');
-        } catch (error) {
-            console.error("There was an error!", error);
+  const [nama, setNama] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useRouter();
+
+  async function usersignup() {
+    let item = { nama, password, email };
+    setIsLoading(true);
+    try {
+      let response = await axios.post(
+        "http://godongbackend.test/api/register",
+        item,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
         }
+      );
+      localStorage.setItem("user-info", JSON.stringify(response.data));
+      navigate.push("/");
+    } catch (error) {
+      console.error("There was an error!", error);
+    } finally {
+      setIsLoading(false);
     }
-    return (
-        <div className="container-fluid login-container">
-            <div className="login-form">
-                <div className="login-box">
-                    <div className="flex align-items-center justify-content-center">
-                        <div className=" p-4 lg:w-6">
-                            <div className="text-left mb-5">
-                                <img src="./hyper.svg" alt="hyper" height={50} className="mb-3" />
-                                <div className="text-900 text-3xl font-medium mb-3">
-                                    Welcome to <br /><strong>Godong Menu</strong>
-                                </div>
-                            </div>
+  }
 
-                            <div>
-                                <label htmlFor="username" className="block text-900 font-medium mb-2">Username</label>
-                                <InputText value={nama} onChange={(e)=>setName(e.target.value)} id="username" type="text" placeholder="Username" className="w-full mb-3" />
+  const isFormValid = () => {
+    return nama && email && password;
+  };
 
-                                <label htmlFor="email" className="block text-900 font-medium mb-2">Email</label>
-                                <InputText value={email} onChange={(e)=>setEmail(e.target.value)} id="email" type="text" placeholder="Email address" className="w-full mb-3" />
-
-                                <label htmlFor="password" className="block text-900 font-medium mb-2">Password</label>
-                                <InputText value={password} onChange={(e)=>setPassword(e.target.value)} id="password" type="password" placeholder="Password" className="w-full mb-3" />
-
-                                <Link href='/'>
-                                    <Button onClick={usersignup} label="Sign Up" icon="pi pi-user" className="w-full mt-4" />
-                                </Link>
-                            </div>
-                            <div className="flex align-items-center justify-content-center mt-3 mb-3 ">
-                                    <span className="text-600 font-medium line-height-3">have an account?</span>
-                                    <Link href='/' className="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Login</Link>
-                                </div>
-                        </div>
-                    </div>
-
-                </div>
+  return (
+    <div className="flex flex-col lg:flex-row h-screen w-full">
+      <div className="flex items-center justify-center h-full w-full lg:w-1/2">
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+          <CardTitle className="text-lg mb-0">Welcome To</CardTitle>
+          <CardTitle className="text-2xl mt-0">Godong Menu</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="nama">Nama</Label>
+                <Input
+                  id="nama"
+                  placeholder="Max"
+                  required
+                  value={nama}
+                  onChange={(e) => setNama(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <Button
+                type="submit"
+                className={`w-full ${isFormValid() ? 'bg-[#6358DC] text-white' : 'bg-gray-400 text-gray-200 cursor-not-allowed'}`}
+                onClick={isFormValid() ? usersignup : () => {}}
+                disabled={!isFormValid() || isLoading}
+              >
+                {isLoading ? 'Loading...' : 'Create an account'}
+              </Button>
             </div>
-            <div className="login-image" ></div>
-        </div>
-    )
+            <div className="mt-4 text-center text-sm">
+              Already have an account?{" "}
+              <Link href="/" className="underline">
+                Sign in
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="hidden lg:flex h-full w-full lg:w-1/2 items-center justify-center bg-muted">
+        <Image src={bg} alt="Image" className="h-full w-full object-cover" />
+      </div>
+    </div>
+  );
 }

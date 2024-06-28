@@ -30,7 +30,7 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
               <Link key={index} href={link.href}>
                 <SideBarButton 
                   variant="outline"
-                  className={isActive ? 'border-1 border-orange-500 text-orange-500' : ''}
+                  className={`border-1 ${isActive ? 'border-orange-500 text-orange-500' : 'border-transparent text-gray-700 hover:border-orange-500 hover:text-orange-500'}`}
                   icon={link.icon}
                 >
                   {link.label}
@@ -55,7 +55,7 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
                 </div>
               </PopoverTrigger>
             </Button>
-            <PopoverContent className="mb-2 w-56 p-3 ronded-[1rem]">
+            <PopoverContent className="mb-2 w-56 p-3 rounded-[1rem]">
               <div className="space-y-1">
                 <Link href='/'>
                   <SideBarButton size="sm" icon={LogOut} className="w-full">

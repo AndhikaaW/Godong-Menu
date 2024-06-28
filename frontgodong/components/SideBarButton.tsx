@@ -7,27 +7,29 @@ import { SheetClose } from './ui/sheet';
 
 interface SideBarButtonProps extends ButtonProps {
     icon?: LucideIcon;
+    iconClassName?: string; // Add iconClassName prop
 }
 
-export default function SideBarButton({ icon: Icon, className, children, ...props }: SideBarButtonProps) {
+export default function SideBarButton({ icon: Icon, iconClassName, className, children, ...props }: SideBarButtonProps) {
     return (
         <Button
             variant='ghost'
             className={cn(
-                'gap-3 justify-start w-full text-black border-1 border-white hover:text-orange-500 hover:border-orange-500',
+                'gap-3 justify-start w-full',
                 className
             )}
             {...props}
         >
-            {Icon && <Icon size={20} className="hover:text-orange-500" />}
+            {Icon && <Icon size={20} className={cn(iconClassName)} />} {/* Apply iconClassName */}
             <span>{children}</span>
         </Button>
     );
 }
-export function SideBarButtonSheet(props:SideBarButtonProps){
-    return(
+
+export function SideBarButtonSheet(props: SideBarButtonProps) {
+    return (
         <SheetClose asChild>
-            <SideBarButton {...props}/>
+            <SideBarButton {...props} />
         </SheetClose>
     )
 }
