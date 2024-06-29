@@ -38,7 +38,7 @@ export default function Login() {
       );
       localStorage.setItem("user-info", JSON.stringify(response.data));
       if (response.data == 1) {
-        navigate.push("/Dashboard");
+        navigate.push("/dashboard/home");
       } else {
         alert("Login failed. Please check your credentials and try again.");
       }

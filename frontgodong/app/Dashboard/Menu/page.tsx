@@ -1,8 +1,10 @@
 import React from 'react'
-import Menu from './menu'
+import Foodpage from './food/page'
 
-export default function Menupage() {
-  return (
-    <Menu/>
-  )
+function Menupage() {
+    return (
+        <Foodpage/>
+    )
 }
+
+export default Menupage
