@@ -30,7 +30,7 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
               <Link key={index} href={link.href}>
                 <SideBarButton 
                   variant="outline"
-                  className={`border-1 ${isActive ? 'border-orange-500 text-orange-500' : 'border-transparent text-gray-700 hover:border-orange-500 hover:text-orange-500'}`}
+                  className={`border-1 ${isActive ? 'border-[#61AB5B] text-[#61AB5B]' : 'border-transparent text-gray-700 hover:border-[#61AB5B] hover:text-[#61AB5B]'}`}
                   icon={link.icon}
                 >
                   {link.label}

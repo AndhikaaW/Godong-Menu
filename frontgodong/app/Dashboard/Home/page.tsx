@@ -1,11 +1,44 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import { FaRegClock } from 'react-icons/fa'
 import { TbRosetteDiscount } from "react-icons/tb";
 import { MdOutlineShoppingCart } from 'react-icons/md';
+import axios from 'axios';
 function Homepage() {
+    const [userData, setUserData] = useState<any>(null);
+    const [error, setError] = useState<string | null>(null);
+    
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const userinfo = localStorage.getItem('user-info');
+            let email = userinfo!.replace(/["]/g, '')
+            if (!email) {
+                setError('Email tidak ditemukan di localStorage');
+                return;
+            }
+
+            try {
+                const response = await axios.get(`http://godongbackend.test/api/user/${email}`);
+                setUserData(response.data);
+            } catch (err) {
+                setError('Gagal mengambil data user');
+                console.error(err);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    if (!userData) {
+        return <div>{localStorage.getItem("user-info")}</div>;
+    }
     return (
         <div className="surface-0 vh-100">
-            <div className="text-900 font-bold text-6xl mb-5 text-center pt-5">Welcome, Tian</div>
+            <div className="text-900 font-bold text-6xl mb-5 text-center pt-5">Welcome, {userData.nama}</div>
             <div className="container">
                 <div className="flex sm:flex-row flex-col ">
                     <div className="col-6 m-lg-2 ">

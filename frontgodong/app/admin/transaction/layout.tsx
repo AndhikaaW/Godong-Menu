@@ -1,5 +1,4 @@
-
-export default function dashboardLayout({
+export default function TransactionLayout({
  children
 }: {
  children: React.ReactNode;

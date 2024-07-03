@@ -47,10 +47,7 @@ export default function SidebarMobile(props: SidebarMobileProps) {
               <Link key={idx} href={link.href}>
                 <SideBarButton
                   variant="outline"
-                  className={`border-1 ${pathname === link.href ? "border-orange-500 text-orange-500" : "border-transparent text-gray-700 hover:border-orange-500 hover:text-orange-500"
-                  }`}
-                  icon={link.icon}
-                >
+                  className={`border-1 ${pathname === link.href ? "border-orange-500 text-orange-500" : "border-transparent text-gray-700 hover:border-orange-500 hover:text-orange-500"}`}icon={link.icon}>
                   {link.label}
                 </SideBarButton>
               </Link>

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import bg from "../public/bg_login.png";
+import bg from "../public/bg-login.png";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -16,11 +16,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogOverlay,
+  AlertDialogCancel
+} from "@/components/ui/alert-dialog"
+import { Frown } from 'lucide-react';
+
 export default function Login() {
   const navigate = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   async function login() {
     let item = { email, password };
@@ -36,14 +50,15 @@ export default function Login() {
           },
         }
       );
-      localStorage.setItem("user-info", JSON.stringify(response.data));
+      localStorage.setItem("user-info", JSON.stringify(email));
       if (response.data == 1) {
         navigate.push("/dashboard/home");
       } else {
-        alert("Login failed. Please check your credentials and try again.");
+        setShowAlert(true);
       }
     } catch (error) {
       console.error("There was an error!", error);
+      setShowAlert(true);
     } finally {
       setIsLoading(false);
     }
@@ -89,15 +104,12 @@ export default function Login() {
                   Forgot your password?
                 </Link>
               </div>
-              <Button
-                variant="ghost"
-                type="submit"
-                className={`w-full ${isFormValid() ? 'bg-[#6358DC] text-white' : 'bg-gray-400 text-gray-200 cursor-not-allowed'}`}
-                onClick={isFormValid() ? login : () => {}}
+
+              <Button variant="ghost" type="submit"
+                className={`w-full ${isFormValid() ? 'bg-[#61AB5B] text-white' : 'bg-gray-400 text-gray-200 cursor-not-allowed'}`}
+                onClick={isFormValid() ? login : () => { }}
                 disabled={!isFormValid() || isLoading}
-              >
-                {isLoading ? 'Loading...' : 'Login'}
-              </Button>
+              >{isLoading ? 'Loading...' : 'Sign in'} </Button>
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
@@ -115,6 +127,23 @@ export default function Login() {
           className="h-full w-full object-cover"
         />
       </div>
+
+      {/* AlertDialog for login failure */}
+      <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
+        <AlertDialogOverlay className="bg-red-300/70">
+          <AlertDialogContent className="bg-red-300 flex justify-center w-1/4 border-none">
+            <AlertDialogHeader className="gap-2">
+              {/* <AlertDialogTitle><TfiFaceSad size="100px" className="text-red-500 fw-bold"/></AlertDialogTitle> */}
+              <AlertDialogTitle className="flex justify-center"><Frown size={'100px'} className="text-red-600" /></AlertDialogTitle>
+              <AlertDialogDescription className="text-center">
+                <p>Oh Sorry!</p>
+                <p>Try again for your login</p>
+              </AlertDialogDescription>
+              <AlertDialogCancel className="bg-red-400 border-none">Try Again</AlertDialogCancel>
+            </AlertDialogHeader>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </div>
   );
 }

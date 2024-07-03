@@ -3,7 +3,7 @@ import '../../styles/globals.css'
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import bg from "../../public/bg_login.png";
+import bg from "../../public/bg-login.png";
 import Link from "next/link";
 import {
   Card,
@@ -21,11 +21,14 @@ export default function SignUp() {
   const [nama, setNama] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const status = 2;
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useRouter();
 
   async function usersignup() {
-    let item = { nama, password, email };
+    let item = { nama, password, email, address, phone, status};
     setIsLoading(true);
     try {
       let response = await axios.post(
@@ -34,7 +37,7 @@ export default function SignUp() {
         {
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
+            "Accept": "application/json",
           },
         }
       );
@@ -48,7 +51,7 @@ export default function SignUp() {
   }
 
   const isFormValid = () => {
-    return nama && email && password;
+    return nama && email && password && address && phone;
   };
 
   return (
@@ -88,13 +91,36 @@ export default function SignUp() {
                   id="password"
                   type="password"
                   required
+                  placeholder='*********'
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+              <div className="grid gap-2">
+                <Label htmlFor="address">Address</Label>
+                <Input
+                  id="address"
+                  type="address"
+                  required
+                  placeholder="perumahan indah besari"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  type="phone"
+                  placeholder="08XXXXXXXXXX"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </div>
               <Button
                 type="submit"
-                className={`w-full ${isFormValid() ? 'bg-[#6358DC] text-white' : 'bg-gray-400 text-gray-200 cursor-not-allowed'}`}
+                className={`w-full ${isFormValid() ? 'bg-[#61AB5B] text-white' : 'bg-gray-400 text-gray-200 cursor-not-allowed'}`}
                 onClick={isFormValid() ? usersignup : () => {}}
                 disabled={!isFormValid() || isLoading}
               >

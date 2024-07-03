@@ -1,212 +1,111 @@
-"use client";
-import React, { useState } from "react";
-import Image, { StaticImageData } from "next/image";
-import soto from "../../../public/soto.png";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Pen, Plus, Search, Trash2, Upload } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+"use client"
+import { Card, CardContent } from "@/components/ui/card"
+import  {DateRangePicker}  from "@/components/DateRangesPicker"
+import { Calendar } from "@/components/ui/calendar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Line } from "react-chartjs-2"
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 
-interface Product {
-  idCategory: string;
-  name: string;
-  image: StaticImageData;
-  description: string;
-}
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
-export default function Component() {
-  const [products, setProducts] = useState<Product[]>([
-    {
-      idCategory: "302002",
-      name: "Iwak Lamongan",
-      image: soto,
-      description: "Soto Lamongan, soto khas Jawa Timur -",
-    },
-    {
-      idCategory: "302002",
-      name: "Iwak Lamongan",
-      image: soto,
-      description: "Soto Lamongan, soto khas Jawa Timur -",
-    },
-    {
-      idCategory: "302002",
-      name: "Iwak Lamongan",
-      image: soto,
-      description: "Soto Lamongan, soto khas Jawa Timur -",
-    },
-    {
-      idCategory: "302002",
-      name: "Iwak Lamongan",
-      image: soto,
-      description: "Soto Lamongan, soto khas Jawa Timur -",
-    },
-  ]);
-
-  const handleEdit = (id: string) => {
-    // Implement edit functionality here
-    console.log(`Edit product with id: ${id}`);
-  };
-
-  const handleDelete = (id: string) => {
-    // Implement delete functionality here
-    console.log(`Delete product with id: ${id}`);
-    setProducts(products.filter((product) => product.idCategory !== id));
-  };
+export default function Dashboard() {
+  // Data untuk grafik
+  const chartData = {
+    labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'],
+    datasets: [{
+      data: [25, 40, 60, 95, 40, 55, 75],
+      fill: true,
+      borderColor: 'rgb(53, 162, 235)',
+      backgroundColor: 'rgba(53, 162, 235, 0.5)',
+    }]
+  }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Breadcrumb and Header */}
+    <div className="p-4">
       <div>
-        <p className="text-sm text-gray-500">Pages / Category</p>
-        <h1 className="text-4xl font-semibold mt-2">Category</h1>
+        <p className="text-sm text-gray-500">Pages / Dashboard</p>
+        <h1 className="text-4xl font-semibold mt-2">Dashboard</h1>
+      </div>
+      <div className="grid grid-cols-3 gap-4 mt-3 mb-8">
+        <Card>
+          <CardContent className="flex items-center p-6">
+            <div className="bg-blue-100 p-3 rounded-full mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-blue-500">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Total Penjualan</p>
+              <p className="text-xl font-bold">Rp. 1.320.000,00</p>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="flex items-center p-6">
+            <div className="bg-red-100 p-3 rounded-full mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-red-500">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Jumlah Order</p>
+              <p className="text-xl font-bold">51</p>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="flex items-center p-6">
+            <div className="bg-green-100 p-3 rounded-full mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-green-500">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Client</p>
+              <p className="text-xl font-bold">70</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Search and Action Buttons on the right, with Search above Add and Export */}
-      <div className="flex justify-end items-end flex-col space-y-4">
-        <div className="relative w-full sm:w-1/3">
-          <input
-            type="text"
-            className="w-full  bg-[#F4F7FE] p-2 border border-gray-300 rounded-xl shadow-xl pl-10"
-            placeholder="Search"
-          />
-          <Search
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
-            size={20}
-          />
+      <div className="grid grid-cols-3 gap-8">
+        <div className="col-span-2">
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-xl font-bold mb-4">Dinamika Pejualan</h2>
+              <Line data={chartData} />
+            </CardContent>
+          </Card>
         </div>
-        <div className="flex gap-4">
-          <Dialog>
-            <DialogTrigger className="bg-[#F4F7FE] rounded-full text-black px-4 py-2 flex items-center">
-                <span className="mr-2">
-                  <Plus size={15} color="black" />
-                </span>{" "}
-                Add
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
-                  </Label>
-                  <Input
-                    id="name"
-                    defaultValue="Pedro Duarte"
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="username" className="text-right">
-                    Username
-                  </Label>
-                  <Input
-                    id="username"
-                    defaultValue="@peduarte"
-                    className="col-span-3"
-                  />
-                </div>
+        
+        <div>
+          <Card>
+            <CardContent className="p-0">
+            <DateRangePicker />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      <Card className="mt-8">
+        <CardContent className="p-6">
+          <h2 className="text-xl font-bold mb-4">Review</h2>
+          {['user1', 'user2', 'user3'].map((user, index) => (
+            <div key={index} className="flex items-center mb-4">
+              <Avatar>
+                <AvatarImage src={`https://github.com/${user}.png`} />
+                <AvatarFallback>{user[0].toUpperCase()}</AvatarFallback>
+              </Avatar>
+              <div className="ml-4">
+                <p className="font-semibold">{user}</p>
+                <p className="text-sm text-gray-500">Review pelanggan</p>
               </div>
-              <DialogFooter>
-                <Button type="submit">Save changes</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          <Button className="bg-[#F4F7FE] rounded-full text-gray-700 px-4 py-2  flex items-center">
-            <span className="mr-2">
-              <Upload size={15} />
-            </span>{" "}
-            Export
-          </Button>
-        </div>
-      </div>
-
-      {/* Table */}
-      <Table className="min-w-full overflow-x-auto border">
-        <TableHeader>
-          <TableRow>
-            <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
-              ID
-            </TableHead>
-            <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300">
-              Name
-            </TableHead>
-            <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
-              Icon
-            </TableHead>
-            <TableHead className="text-[13px] w-[250px] p-0 text-black text-center bg-gray-300 hidden md:table-cell">
-              Description
-            </TableHead>
-            <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300">
-              Action
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {products.map((product) => (
-            <TableRow key={product.idCategory}>
-              <TableCell className="text-blue-500 hidden sm:table-cell">
-                {product.idCategory}
-              </TableCell>
-              <TableCell className="text-blue-500">{product.name}</TableCell>
-              <TableCell className="hidden sm:table-cell">
-                <Image
-                  alt="Product image"
-                  className="aspect-square rounded-md object-cover"
-                  height="64"
-                  src={product.image}
-                  width="64"
-                />
-              </TableCell>
-              <TableCell className="hidden md:table-cell">
-                {product.description}
-              </TableCell>
-              <TableCell>
-                <div className="flex center flex-col sm:flex-row">
-                  <Button
-                    className="bg-[#2B3674] sm:mr-3 mb-2 sm:opacity-75 sm:w-[70px] text-white w-[50px] p-2"
-                    onClick={() => handleEdit(product.idCategory)}
-                  >
-                    <Pen className="sm:mr-2" size={12} />
-                    <span className="hidden sm:inline text-[12px] ">Edit</span>
-                  </Button>
-                  <Button
-                    className="bg-[#F13023] sm:opacity-80 sm:w-[70px] text-white w-[50px] p-2"
-                    onClick={() => handleDelete(product.idCategory)}
-                  >
-                    <Trash2 size={15} className="sm:mr-2" />
-                    <span className="hidden sm:inline text-[12px] ">
-                      Delete
-                    </span>
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
+            </div>
           ))}
-        </TableBody>
-      </Table>
+        </CardContent>
+      </Card>
     </div>
-  );
+  )
 }
