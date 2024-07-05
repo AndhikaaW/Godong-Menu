@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, { useEffect, useState } from "react";
 import { SidebarItems } from "@/types/sidebartypes";
 import {
   Sheet,
@@ -15,6 +16,7 @@ import { SideBarButtonSheet as SideBarButton } from "./SideBarButton";
 import { Separator } from "./ui/separator";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import axios from "axios";
 
 interface SidebarMobileProps {
   sidebarItems: SidebarItems;
@@ -22,6 +24,39 @@ interface SidebarMobileProps {
 
 export default function SidebarMobile(props: SidebarMobileProps) {
   const pathname = usePathname();
+
+  const [userData, setUserData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userinfo = localStorage.getItem('user-info');
+      let email = userinfo!.replace(/["]/g, '')
+      if (!email) {
+        setError('Email tidak ditemukan di localStorage');
+        return;
+      }
+
+      try {
+        const response = await axios.get(`http://godongbackend.test/api/user/${email}`);
+        setUserData(response.data);
+      } catch (err) {
+        setError('Gagal mengambil data user');
+        console.error(err);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!userData) {
+    // return <div>{localStorage.getItem("user-info")}</div>;
+    return <div></div>;
+  }
 
   return (
     <Sheet>
@@ -47,7 +82,7 @@ export default function SidebarMobile(props: SidebarMobileProps) {
               <Link key={idx} href={link.href}>
                 <SideBarButton
                   variant="outline"
-                  className={`border-1 ${pathname === link.href ? "border-orange-500 text-orange-500" : "border-transparent text-gray-700 hover:border-orange-500 hover:text-orange-500"}`}icon={link.icon}>
+                  className={`border-1 ${pathname === link.href ? 'border-[#61AB5B] text-[#61AB5B]' : "border-transparent text-gray-700 hover:border-[#61AB5B] hover:text-[#61AB5B]"}`} icon={link.icon}>
                   {link.label}
                 </SideBarButton>
               </Link>
@@ -64,7 +99,7 @@ export default function SidebarMobile(props: SidebarMobileProps) {
                         <AvatarImage src="https://img.freepik.com/free-photo/curly-man-with-broad-smile-shows-perfect-teeth-being-amused-by-interesting-talk-has-bushy-curly-dark-hair-stands-indoor-against-white-blank-wall_273609-17092.jpg" />
                         <AvatarFallback>Max Programming</AvatarFallback>
                       </Avatar>
-                      <span className="align-self-center">Username</span>
+                      <span className="align-self-center">{userData.nama}</span>
                     </div>
                     <MoreHorizontal size={20} />
                   </div>

@@ -4,8 +4,10 @@ import Link from 'next/link'
 // import { LucideIcon } from "lucide-react";
 // import { CupSoda, Pen, Plus, Popcorn, Search, Trash2, Upload, UtensilsCrossed, Cake } from "lucide-react";
 import axios from "axios";
+
 interface Categories {
     name: string;
+    icon: string | null;
     description: string;
 }
 function Categorypage() {
@@ -14,7 +16,7 @@ function Categorypage() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://godongbackend.test/api/getCategory');
+                const response = await axios.get('http://godongbackend.test/api/categories');
                 setCategories(response.data);
             } catch (error) {
                 console.error('There was an error fetching the users!', error);
@@ -36,7 +38,7 @@ function Categorypage() {
         <div className='surface-0 p-lg-5 vh-100 '>
             <div className='text-center'>
                 <h1>Category</h1>
-                <div className="underline" style={{ width: '150px', height: '4px', background: '#d4a123', margin: 'auto auto 50px' }}></div>
+                <div className="underline" style={{ width: '150px', height: '4px', background: '#61AB5B', margin: 'auto auto 50px'}}></div>
             </div>
             <div className="container">
                 <div className='container mx-auto'>
@@ -44,8 +46,23 @@ function Categorypage() {
                         {categories.map((category) => (
                             <Link href={'/dashboard/menu/'} className='no-underline p-5'>
                                 <div className="card justify-content-center align-items-center ">
-                                    <div className="rounded-circle bg-dark-subtle d-flex justify-content-center align-items-center mt-3" style={{ width: '100px', height: '100px' }}>
-                                        {/* {product.icon && <product.icon size={24} />} */}
+                                    {/* <div className="rounded-circle bg-dark-subtle d-flex justify-content-center align-items-center mt-3" style={{ width: '100px', height: '100px' }}>
+                                        {category.icon && (
+                                                <img src={`data:image/jpeg;base64,${category.icon}`}
+                                                    alt={category.name}
+                                                    style={{ maxWidth: "100px", maxHeight: "100px" ,borderRadius:"100%"}} />
+                                            )}
+                                    </div> */}
+                                    <div style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid #ccc' ,marginTop:'20px',background:'#ccc'}}>
+                                        {category.icon ? (
+                                            <img
+                                                src={`data:image/jpeg;base64,${category.icon}`}
+                                                alt={category.name}
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                            />
+                                        ) : (
+                                            <div className="avatar-fallback">img</div>
+                                        )}
                                     </div>
                                     <div className="card-body text-center">
                                         <h3 className="card-title">

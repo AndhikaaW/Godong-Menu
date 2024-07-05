@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { LucideIcon, User } from "lucide-react";
 import {
   Dialog,
@@ -9,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogOverlay,
 } from "@/components/ui/dialog";
 import {
   Table,
@@ -19,59 +21,68 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { CupSoda, Pen, Plus, Popcorn, Search, Trash2, Upload, UtensilsCrossed } from "lucide-react";
-import { Label } from "@/components/ui/label";
+import { Search, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-interface Product {
-  idUser: string;
-  name: string;
+interface User {
+  id: string;
+  nama: string;
   icon?: LucideIcon;
-  email:string;
-  noTelp:string;
+  email: string;
+  address: string;
+  phone: string;
 }
 
 export default function Component() {
-  const [products, setProducts] = useState<Product[]>([
-    {
-      idUser: "322002",
-      name: "Suntoyo",
-      icon: User,
-      email: "suntoyopakesopo@gmail.com",
-      noTelp:"082132186213"
-    },
-    {
-      idUser: "322012",
-      name: "Suntolo",
-      icon: User,
-      email: "suntolopakesopo@gmail.com",
-      noTelp:"082132186213"
-    },
-    {
-      idUser: "3220122",
-      name: "Suntoko",
-      icon: User,
-      email: "suntokopakesopo@gmail.com",
-      noTelp:"082132186213"
-    },
-    {
-      idUser: "322302",
-      name: "Suntowo",
-      icon: User,
-      email: "suntowopakesopo@gmail.com",
-      noTelp:"082132186213"
-    },
-  ]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const handleEdit = (id: string) => {
-    // Implement edit functionality here
-    console.log(`Edit product with id: ${id}`);
-  };
+  useEffect(() => {
+    async function fetchUsers() {
+      setIsLoading(true);
+      try {
+        const response = await axios.get("http://godongbackend.test/api/getUser", {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+        setUsers(response.data);
+      } catch (error) {
+        console.error("There was an error!", error);
+        setShowAlert(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
 
-  const handleDelete = (id: string) => {
-    // Implement delete functionality here
-    console.log(`Delete product with id: ${id}`);
-    setProducts(products.filter((product) => product.idUser !== id));
+    fetchUsers();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    setIsLoading(true);
+    try {
+      const response = await axios.delete(`http://godongbackend.test/api/deleteuser/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+
+      if (response.status === 200) {
+        setUsers(users.filter((user) => user.id !== id));
+      } else {
+        setShowAlert(true);
+      }
+    } catch (error) {
+      console.error("There was an error!", error);
+      setShowAlert(true);
+    } finally {
+      setIsLoading(false);
+      setSelectedUser(null); // Close the dialog
+    }
   };
 
   return (
@@ -85,7 +96,7 @@ export default function Component() {
       {/* Search and Action Buttons on the right, with Search above Add and Export */}
       <div className="flex justify-end items-end flex-col space-y-4">
         <div className="relative w-full sm:w-1/3">
-          <input
+          <Input
             type="text"
             className="w-full bg-[#F4F7FE] p-2 border border-gray-300 rounded-xl shadow-xl pl-10"
             placeholder="Search"
@@ -95,58 +106,7 @@ export default function Component() {
             size={20}
           />
         </div>
-        <div className="flex gap-4">
-          <Dialog>
-            <DialogTrigger className="bg-[#F4F7FE] rounded-full text-black px-4 py-2 flex items-center">
-              <span className="mr-2">
-                <Plus size={15} color="black" />
-              </span>{" "}
-              Add
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
-                  </Label>
-                  <Input
-                    id="name"
-                    defaultValue="Pedro Duarte"
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="username" className="text-right">
-                    Username
-                  </Label>
-                  <Input
-                    id="username"
-                    defaultValue="@peduarte"
-                    className="col-span-3"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit">Save changes</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          <Button className="bg-[#F4F7FE] rounded-full text-gray-700 px-4 py-2 flex items-center">
-            <span className="mr-2">
-              <Upload size={15} />
-            </span>{" "}
-            Export
-          </Button>
-        </div>
       </div>
-
       {/* Table */}
       <Table className="min-w-full overflow-x-auto border">
         <TableHeader>
@@ -164,6 +124,9 @@ export default function Component() {
               Email
             </TableHead>
             <TableHead className="text-[13px] w-[250px] p-0 text-black text-center bg-gray-300 hidden md:table-cell">
+              Address
+            </TableHead>
+            <TableHead className="text-[13px] w-[250px] p-0 text-black text-center bg-gray-300 hidden md:table-cell">
               No Telp
             </TableHead>
             <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300">
@@ -172,29 +135,32 @@ export default function Component() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {products.map((product) => (
-            <TableRow key={product.idUser}>
+          {users.map((user) => (
+            <TableRow key={user.id}>
               <TableCell className="text-blue-500 text-center">
-                {product.idUser}
+                {user.id}
               </TableCell>
               <TableCell className="text-black text-center">
-              {product.icon && <product.icon size={24} />}
+                {user.icon && <user.icon size={24} />}
               </TableCell>
               <TableCell className="text-center hidden sm:table-cell">
-              {product.name}
+                {user.nama}
               </TableCell>
               <TableCell className="text-center hidden md:table-cell">
-                {product.email}
+                {user.email}
               </TableCell>
               <TableCell className="text-center hidden md:table-cell">
-                {product.noTelp}
+                {user.address}
+              </TableCell>
+              <TableCell className="text-center hidden md:table-cell">
+                {user.phone}
               </TableCell>
               <TableCell>
                 <div className="flex flex-col">
                   <div className="flex flex-col sm:flex-row justify-center gap-2">
                     <Button
                       className="bg-[#F13023] opacity-80 sm:w-[70px] text-white w-[50px] p-2"
-                      onClick={() => handleDelete(product.idUser)}
+                      onClick={() => setSelectedUser(user)}
                     >
                       <Trash2 size={15} className="sm:mr-2" />
                       <span className="hidden sm:inline text-[12px]">
@@ -208,6 +174,30 @@ export default function Component() {
           ))}
         </TableBody>
       </Table>
+
+      {/* Confirmation Dialog */}
+      {selectedUser && (
+        <Dialog open={true} onOpenChange={() => setSelectedUser(null)}>
+          <DialogOverlay className="fixed inset-0" />
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete User</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete user {selectedUser.nama}?
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button onClick={() => setSelectedUser(null)}>Cancel</Button>
+              <Button
+                className="bg-red-600 text-white"
+                onClick={() => handleDelete(selectedUser.id)}
+              >
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

@@ -69,6 +69,7 @@ export default function SignUp() {
                 <Input
                   id="nama"
                   placeholder="Max"
+                  autoComplete='off'
                   required
                   value={nama}
                   onChange={(e) => setNama(e.target.value)}
@@ -80,6 +81,7 @@ export default function SignUp() {
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  autoComplete='off'
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -103,6 +105,7 @@ export default function SignUp() {
                   type="address"
                   required
                   placeholder="perumahan indah besari"
+                  autoComplete='off'
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                 />
@@ -113,6 +116,7 @@ export default function SignUp() {
                   id="phone"
                   type="phone"
                   placeholder="08XXXXXXXXXX"
+                  autoComplete='off'
                   required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}

@@ -1,7 +1,7 @@
 import React from 'react'
-import Dasboard from './dashboard/page';
+import Dashboard from './dashboard/page';
 export default function admin() {
   return (
-    <Dasboard/>
+    <Dashboard/>
   )
 }

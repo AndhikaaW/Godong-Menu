@@ -47,7 +47,8 @@ function Profilepage() {
     }
 
     if (!userData) {
-        return <div>{localStorage.getItem("user-info")}</div>;
+        // return <div>{localStorage.getItem("user-info")}</div>;
+        return <div></div>;
     }
 
 
@@ -95,9 +96,7 @@ function Profilepage() {
             <div id='box' className=" p-5 shadow-lg rounded-lg bg-light sm:w-1/2">
                 <div className="row g-2 mb-3 ps-0">
                     <div className="col-3 position-relative d-inline-block me-2 ">
-                        {/* <FaCircleUser size={70} className="position-relative">
-
-                            </FaCircleUser> */}
+                        {/* <FaCircleUser size={70} className="position-relative"> */}
                         {imagePreviewUrl && <img src={imagePreviewUrl} alt="Preview" style={{ width: '100px', height: '100px', borderRadius: '100%' }} />}
                         <Dialog>
                             <DialogTrigger asChild>
@@ -167,4 +166,3 @@ function Profilepage() {
 }
 
 export default Profilepage
-

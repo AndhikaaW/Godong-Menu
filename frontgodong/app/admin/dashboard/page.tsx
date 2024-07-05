@@ -5,10 +5,45 @@ import { Calendar } from "@/components/ui/calendar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Line } from "react-chartjs-2"
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
+import { useEffect, useState } from "react"
+import axios from "axios"
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
+interface User {
+  id: string;
+  email: string;
+  message: string;
+}
+
 export default function Dashboard() {
+
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  
+  useEffect(() => {
+    async function fetchUsers() {
+      setIsLoading(true);
+      try {
+        const response = await axios.get("http://godongbackend.test/api/contact", {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+        setUsers(response.data);
+      } catch (error) {
+        console.error("There was an error!", error);
+        setShowAlert(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchUsers();
+  }, []);
+
   // Data untuk grafik
   const chartData = {
     labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'],
@@ -92,15 +127,15 @@ export default function Dashboard() {
       <Card className="mt-8">
         <CardContent className="p-6">
           <h2 className="text-xl font-bold mb-4">Review</h2>
-          {['user1', 'user2', 'user3'].map((user, index) => (
-            <div key={index} className="flex items-center mb-4">
+          {users.map((user) => (
+            <div key={user.id} className="flex items-center mb-4">
               <Avatar>
                 <AvatarImage src={`https://github.com/${user}.png`} />
-                <AvatarFallback>{user[0].toUpperCase()}</AvatarFallback>
+                <AvatarFallback>{user.email[1].toUpperCase()}</AvatarFallback>
               </Avatar>
               <div className="ml-4">
-                <p className="font-semibold">{user}</p>
-                <p className="text-sm text-gray-500">Review pelanggan</p>
+                <p className="font-semibold">{user.email}</p>
+                <p className="text-sm text-gray-500">{user.message}</p>
               </div>
             </div>
           ))}

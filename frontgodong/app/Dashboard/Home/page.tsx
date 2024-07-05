@@ -37,7 +37,7 @@ function Homepage() {
         return <div>{localStorage.getItem("user-info")}</div>;
     }
     return (
-        <div className="surface-0 vh-100">
+        <div className="surface-0 vh-100 pt-4">
             <div className="text-900 font-bold text-6xl mb-5 text-center pt-5">Welcome, {userData.nama}</div>
             <div className="container">
                 <div className="flex sm:flex-row flex-col ">
@@ -52,7 +52,7 @@ function Homepage() {
                     </div>
                     <div className="w-full m-lg-2 text-xl">
                         <h1 className="text-4xl font-bold mb-4">Godong Menu</h1>
-                        <p className="text-gray-700 w-full ">
+                        <p className="text-gray-700 w-full mb-4">
                             Selamat datang di Godong, restoran yang menyajikan cita rasa autentik Indonesia dalam suasana yang nyaman dan ramah.
                             Godong menghadirkan beragam hidangan khas Nusantara, mulai dari makanan utama yang mengenyangkan hingga camilan ringan dan minuman tradisional yang menyegarkan.
                             Kunjungi Godong dan rasakan sendiri kelezatan masakan Indonesia dalam setiap suapan!

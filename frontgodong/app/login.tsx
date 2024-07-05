@@ -50,9 +50,17 @@ export default function Login() {
           },
         }
       );
+  
       localStorage.setItem("user-info", JSON.stringify(email));
-      if (response.data == 1) {
-        navigate.push("/dashboard/home");
+      
+      if (response.data.success) {
+        if (response.data.status === 2) {
+          navigate.push("/dashboard/home");
+        } else if (response.data.status === 1) {
+          navigate.push("/admin");
+        } else {
+          setShowAlert(true);
+        }
       } else {
         setShowAlert(true);
       }
@@ -67,6 +75,9 @@ export default function Login() {
   const isFormValid = () => {
     return email && password;
   };
+
+  
+
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">

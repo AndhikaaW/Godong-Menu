@@ -22,13 +22,14 @@ import { Button } from "@/components/ui/button";
 import { CupSoda, Pen, Plus, Popcorn, Search, Trash2, Upload, UtensilsCrossed } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import ButtonDetail from "@/components/detailButton";
 
 interface Product {
-  idOrder : string;
-  idPemesan : String;
-  Alamat:String;
-  noTelp:String;
-  Total:String;
+  idOrder: string;
+  idPemesan: String;
+  Alamat: String;
+  noTelp: String;
+  Total: String;
   Tanggal: string;
   Status: string;
   Detail: string;
@@ -38,53 +39,53 @@ export default function Component() {
   const [products, setProducts] = useState<Product[]>([
     {
       idOrder: "322002",
-      idPemesan:"21313",
+      idPemesan: "21313",
       Alamat: "Ngawi",
       noTelp: "092131313123",
       Total: "Rp. 250.000",
-      Tanggal:"11/11/2004",
-      Status:"Completed",
-      Detail:"Detail"
+      Tanggal: "11/11/2004",
+      Status: "Completed",
+      Detail: "Detail"
     },
     {
       idOrder: "322002",
-      idPemesan:"21313",
+      idPemesan: "21313",
       Alamat: "Ngawi",
       noTelp: "092131313123",
       Total: "Rp. 250.000",
-      Tanggal:"11/11/2004",
-      Status:"Completed",
-      Detail:"Detail"
+      Tanggal: "11/11/2004",
+      Status: "Completed",
+      Detail: "Detail"
     },
     {
       idOrder: "322002",
-      idPemesan:"21313",
+      idPemesan: "21313",
       Alamat: "Ngawi",
       noTelp: "092131313123",
       Total: "Rp. 250.000",
-      Tanggal:"11/11/2004",
-      Status:"Completed",
-      Detail:"Detail"
+      Tanggal: "11/11/2004",
+      Status: "Completed",
+      Detail: "Detail"
     },
     {
       idOrder: "322002",
-      idPemesan:"21313",
+      idPemesan: "21313",
       Alamat: "Ngawi",
       noTelp: "092131313123",
       Total: "Rp. 250.000",
-      Tanggal:"11/11/2004",
-      Status:"Completed",
-      Detail:"Detail"
+      Tanggal: "11/11/2004",
+      Status: "Completed",
+      Detail: "Detail"
     },
     {
       idOrder: "322002",
-      idPemesan:"21313",
+      idPemesan: "21313",
       Alamat: "Ngawi",
       noTelp: "092131313123",
       Total: "Rp. 250.000",
-      Tanggal:"11/11/2004",
-      Status:"Completed",
-      Detail:"Detail"
+      Tanggal: "11/11/2004",
+      Status: "Completed",
+      Detail: "Detail"
     },
   ]);
 
@@ -171,14 +172,15 @@ export default function Component() {
                 {product.Tanggal}
               </TableCell>
               <TableCell className="text-center hidden md:table-cell">
-                <div className="bg-green-400 w-[70px] text-white cursor-grabbing rounded-full h-[20px] text-[12px]">
-                {product.Status}
+                <div className="bg-green-400 w-[70px] text-white cursor-pointer rounded-full h-[20px] text-[12px]">
+                  {product.Status}
                 </div>
               </TableCell>
-              <TableCell className="text-center hidden text-[12px] md:table-cell">
-              <div className="bg-[#4ED4F1] w-[70px] text-white cursor-grabbing rounded-full h-[20px] text-[12px]">
-                {product.Detail}
-                </div>
+              <TableCell className="text-center hidden md:table-cell">
+              <ButtonDetail/>
+                {/* <div className="bg-[#4ED4F1] w-[70px] text-white cursor-pointer rounded-full h-[20px] text-[12px]">
+                  {product.Detail}
+                </div> */}
               </TableCell>
             </TableRow>
           ))}

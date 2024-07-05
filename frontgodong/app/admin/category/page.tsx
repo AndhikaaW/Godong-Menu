@@ -1,15 +1,7 @@
+// File: src/pages/category.tsx
+
 "use client";
-import React, { useState } from "react";
-import { LucideIcon } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Table,
   TableBody,
@@ -18,114 +10,64 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import ButtonAdd from "@/components/addButtonCategory";
+import EditButton from "@/components/editButtonCategory";
 import { Button } from "@/components/ui/button";
-import { CupSoda, Pen, Plus, Popcorn, Search, Trash2, Upload, UtensilsCrossed } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Pen, Search, Trash2 } from "lucide-react";
+import axios from "axios";
 
-interface Product {
-  idCategory: string;
+interface Category {
+  id: string;
   name: string;
-  icon?: LucideIcon;
+  icon: string | null;
   description: string;
 }
 
-export default function Component() {
-  const [products, setProducts] = useState<Product[]>([
-    {
-      idCategory: "322002",
-      name: "Makanan",
-      icon: UtensilsCrossed,
-      description: "Kategori Makanan Untuk seperti Nasgor dkk",
-    },
-    {
-      idCategory: "322002",
-      name: "Makanan",
-      icon: UtensilsCrossed,
-      description: "Kategori Makanan Untuk seperti Nasgor dkk",
-    },
-    {
-      idCategory: "322002",
-      name: "Makanan",
-      icon: UtensilsCrossed,
-      description: "Kategori Makanan Untuk seperti Nasgor dkk",
-    },
-    {
-      idCategory: "322002",
-      name: "Makanan",
-      icon: UtensilsCrossed,
-      description: "Kategori Makanan Untuk seperti Nasgor dkk",
-    },
-    {
-      idCategory: "322002",
-      name: "Makanan",
-      icon: UtensilsCrossed,
-      description: "Kategori Makanan Untuk seperti Nasgor dkk",
-    },
-    {
-      idCategory: "322002",
-      name: "Makanan",
-      icon: UtensilsCrossed,
-      description: "Kategori Makanan Untuk seperti Nasgor dkk",
-    },
-    {
-      idCategory: "322002",
-      name: "Makanan",
-      icon: UtensilsCrossed,
-      description: "Kategori Makanan Untuk seperti Nasgor dkk",
-    },
-    {
-      idCategory: "322002",
-      name: "Makanan",
-      icon: UtensilsCrossed,
-      description: "Kategori Makanan Untuk seperti Nasgor dkk",
-    },
-    {
-      idCategory: "322002",
-      name: "Makanan",
-      icon: UtensilsCrossed,
-      description: "Kategori Makanan Untuk seperti Nasgor dkk",
-    },
-    {
-      idCategory: "322002",
-      name: "Makanan",
-      icon: UtensilsCrossed,
-      description: "Kategori Makanan Untuk seperti Nasgor dkk",
-    },
-    {
-      idCategory: "312002",
-      name: "Minuman",
-      icon: CupSoda,
-      description: "Kategori Minuman untuk seperti Ice dkk",
-    },
-    {
-      idCategory: "332002",
-      name: "Snack",
-      icon: Popcorn,
-      description: "Snack untuk seperti popcorndkk",
-    },
-  ]);
+const fetchCategories = async (): Promise<Category[]> => {
+  const response = await axios.get("http://godongbackend.test/api/categories");
+  return response.data;
+};
 
-  const handleEdit = (id: string) => {
-    // Implement edit functionality here
-    console.log(`Edit product with id: ${id}`);
+const deleteCategory = async (id: string): Promise<void> => {
+  await axios.delete(`http://godongbackend.test/api/categories/${id}`);
+};
+
+export default function CategoryPage() {
+  const [products, setProducts] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const refreshCategories = useCallback(async () => {
+    const categories = await fetchCategories();
+    setProducts(categories);
+  }, []);
+
+  useEffect(() => {
+    refreshCategories();
+  }, [refreshCategories]);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteCategory(id);
+      setProducts(products.filter((product) => product.id !== id));
+      console.log(`Deleted category with id: ${id}`);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Failed to delete category:', error);
+    }
   };
 
-  const handleDelete = (id: string) => {
-    // Implement delete functionality here
-    console.log(`Delete product with id: ${id}`);
-    setProducts(products.filter((product) => product.idCategory !== id));
+  const openModal = (category: Category) => {
+    setSelectedCategory(category);
+    setIsModalOpen(true);
   };
 
   return (
     <div className="p-6 space-y-6">
-      {/* Breadcrumb and Header */}
       <div>
         <p className="text-sm text-gray-500">Pages / Category</p>
         <h1 className="text-4xl font-semibold mt-2">Category</h1>
       </div>
-
-      {/* Search and Action Buttons on the right, with Search above Add and Export */}
       <div className="flex justify-end items-end flex-col space-y-4">
         <div className="relative w-full sm:w-1/3">
           <input
@@ -139,58 +81,9 @@ export default function Component() {
           />
         </div>
         <div className="flex gap-4">
-          <Dialog>
-            <DialogTrigger className="bg-[#F4F7FE] rounded-full text-black px-4 py-2 flex items-center">
-              <span className="mr-2">
-                <Plus size={15} color="black" />
-              </span>{" "}
-              Add
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
-                  </Label>
-                  <Input
-                    id="name"
-                    defaultValue="Pedro Duarte"
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="username" className="text-right">
-                    Username
-                  </Label>
-                  <Input
-                    id="username"
-                    defaultValue="@peduarte"
-                    className="col-span-3"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit">Save changes</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          <Button className="bg-[#F4F7FE] rounded-full text-gray-700 px-4 py-2 flex items-center">
-            <span className="mr-2">
-              <Upload size={15} />
-            </span>{" "}
-            Export
-          </Button>
+          <ButtonAdd onCategoryAdded={refreshCategories} />
         </div>
       </div>
-
-      {/* Table */}
       <Table className="min-w-full overflow-x-auto border">
         <TableHeader>
           <TableRow>
@@ -200,10 +93,10 @@ export default function Component() {
             <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300">
               Name
             </TableHead>
-            <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
+            <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300">
               Icon
             </TableHead>
-            <TableHead className="text-[13px] w-[250px] p-0 text-black text-center bg-gray-300 hidden md:table-cell">
+            <TableHead className="text-[13px] w-[250px] p-0 text-black text-center bg-gray-300">
               Description
             </TableHead>
             <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300">
@@ -213,32 +106,34 @@ export default function Component() {
         </TableHeader>
         <TableBody>
           {products.map((product) => (
-            <TableRow key={product.idCategory}>
+            <TableRow key={product.id}>
               <TableCell className="text-blue-500 text-center">
-                {product.idCategory}
+                {product.id}
               </TableCell>
-              <TableCell className="text-blue-500 text-center">
+              <TableCell className=" text-center">
                 {product.name}
               </TableCell>
-              <TableCell className="text-center hidden sm:table-cell">
-                {product.icon && <product.icon size={24} />}
+              <TableCell className="text-center">
+                <div className="flex justify-center">
+                  {product.icon && (
+                    <img
+                      src={`data:image/jpeg;base64,${product.icon}`}
+                      alt={product.name}
+                      style={{ maxWidth: "50px", maxHeight: "50px" }}
+                    />
+                  )}
+                </div>
               </TableCell>
-              <TableCell className="text-center hidden md:table-cell">
+              <TableCell className="text-center">
                 {product.description}
               </TableCell>
               <TableCell>
                 <div className="flex flex-col">
                   <div className="flex flex-col sm:flex-row justify-center gap-2">
-                    <Button
-                      className="bg-[#2B3674] mb-2 opacity-75 sm:w-[70px] text-white w-[50px] p-2"
-                      onClick={() => handleEdit(product.idCategory)}
-                    >
-                      <Pen className="sm:mr-2" size={12} />
-                      <span className="hidden sm:inline text-[12px]">Edit</span>
-                    </Button>
+                    <EditButton category={product} onCategoryEdited={refreshCategories} />
                     <Button
                       className="bg-[#F13023] opacity-80 sm:w-[70px] text-white w-[50px] p-2"
-                      onClick={() => handleDelete(product.idCategory)}
+                      onClick={() => openModal(product)}
                     >
                       <Trash2 size={15} className="sm:mr-2" />
                       <span className="hidden sm:inline text-[12px]">
@@ -252,6 +147,23 @@ export default function Component() {
           ))}
         </TableBody>
       </Table>
+
+      {isModalOpen && selectedCategory && (
+        <div className="fixed inset-0 h-screen w-screen flex items-center justify-center bg-red-100 bg-opacity-75">
+          <div className="bg-red-500 p-6 rounded-lg shadow-lg text-white">
+            <h2 className="text-lg font-semibold mb-4">Confirm Delete</h2>
+            <p>Are you sure you want to delete category {selectedCategory.name}?</p>
+            <div className="flex justify-end mt-4 gap-2">
+              <Button className="bg-gray-300 text-black" onClick={() => setIsModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button className="bg-red-700 text-white" onClick={() => handleDelete(selectedCategory.id)}>
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
