@@ -101,7 +101,7 @@ function Contactpage() {
                                             <DialogHeader>
                                                 <DialogTitle>Thank You 🙏</DialogTitle>
                                                 <DialogDescription>
-                                                    Thank you for your review of the menu at Godong restaurant. We really appreciate your time and input.
+                                                Thank you for your review of the menu at Godong Restaurant. We truly appreciate your feedback and are glad to hear your insights.
                                                 </DialogDescription>
                                             </DialogHeader>
                                             <DialogFooter className="sm:justify-center">

@@ -27,7 +27,7 @@ import {
   AlertDialogOverlay,
   AlertDialogCancel
 } from "@/components/ui/alert-dialog"
-import { Frown } from 'lucide-react';
+import { Eye, EyeOff, Frown } from 'lucide-react';
 
 export default function Login() {
   const navigate = useRouter();
@@ -35,6 +35,12 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   async function login() {
     let item = { email, password };
@@ -50,9 +56,9 @@ export default function Login() {
           },
         }
       );
-  
+
       localStorage.setItem("user-info", JSON.stringify(email));
-      
+
       if (response.data.success) {
         if (response.data.status === 2) {
           navigate.push("/dashboard/home");
@@ -76,7 +82,7 @@ export default function Login() {
     return email && password;
   };
 
-  
+
 
 
   return (
@@ -97,6 +103,7 @@ export default function Login() {
                   placeholder="m@example.com"
                   required
                   value={email}
+                  autoComplete='off'
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
@@ -104,13 +111,23 @@ export default function Login() {
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+
+                <div className="relative flex items-center">
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pr-10 w-full border rounded px-3 py-2 focus:outline-none"/>
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-2 bg-transparent border-none cursor-pointer text-gray-600 focus:outline-none">
+                    {showPassword ? <EyeOff/> :  <Eye />}
+                  </button>
+                </div>
+
                 <Link href="#" className="ml-auto inline-block text-sm underline">
                   Forgot your password?
                 </Link>
@@ -124,7 +141,7 @@ export default function Login() {
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
-              <Link href="/SignUp" className="underline">
+              <Link href="/signup" className="underline">
                 Sign up
               </Link>
             </div>

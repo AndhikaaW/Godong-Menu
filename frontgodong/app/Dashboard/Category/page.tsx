@@ -38,22 +38,15 @@ function Categorypage() {
         <div className='surface-0 p-lg-5 vh-100 '>
             <div className='text-center'>
                 <h1>Category</h1>
-                <div className="underline" style={{ width: '150px', height: '4px', background: '#61AB5B', margin: 'auto auto 50px'}}></div>
+                <div className="underline" style={{ width: '150px', height: '4px', background: '#61AB5B', margin: 'auto auto 50px' }}></div>
             </div>
             <div className="container">
                 <div className='container mx-auto'>
                     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 sm:flex-row justify-content-center align-items-center '>
                         {categories.map((category) => (
                             <Link href={'/dashboard/menu/'} className='no-underline p-5'>
-                                <div className="card justify-content-center align-items-center ">
-                                    {/* <div className="rounded-circle bg-dark-subtle d-flex justify-content-center align-items-center mt-3" style={{ width: '100px', height: '100px' }}>
-                                        {category.icon && (
-                                                <img src={`data:image/jpeg;base64,${category.icon}`}
-                                                    alt={category.name}
-                                                    style={{ maxWidth: "100px", maxHeight: "100px" ,borderRadius:"100%"}} />
-                                            )}
-                                    </div> */}
-                                    <div style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid #ccc' ,marginTop:'20px',background:'#ccc'}}>
+                                <div className="card justify-content-center align-items-center w-auto h-[400px]">
+                                    <div style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid #ccc', marginTop: '20px', background: '#ccc' }}>
                                         {category.icon ? (
                                             <img
                                                 src={`data:image/jpeg;base64,${category.icon}`}
@@ -68,9 +61,11 @@ function Categorypage() {
                                         <h3 className="card-title">
                                             {category.name}
                                         </h3>
-                                        <p className="card-text text-lg">
-                                            {category.description}
-                                        </p>
+                                        <div style={{ width: '200px', height: '200px', overflow: "auto" ,scrollbarWidth:'none'}}>
+                                            <p className="card-text text-lg">
+                                                {category.description}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </Link>

@@ -34,7 +34,8 @@ function Homepage() {
     }
 
     if (!userData) {
-        return <div>{localStorage.getItem("user-info")}</div>;
+        // return <div>{localStorage.getItem("user-info")}</div>;
+        return <div></div>;
     }
     return (
         <div className="surface-0 vh-100 pt-4">

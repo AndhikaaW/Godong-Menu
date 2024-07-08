@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function SignUp() {
   const [nama, setNama] = useState("");
@@ -26,6 +27,12 @@ export default function SignUp() {
   const status = 2;
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useRouter();
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   async function usersignup() {
     let item = { nama, password, email, address, phone, status};
@@ -89,14 +96,21 @@ export default function SignUp() {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  placeholder='*********'
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <div className="relative flex items-center">
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pr-10 w-full border rounded px-3 py-2 focus:outline-none"/>
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-2 bg-transparent border-none cursor-pointer text-gray-600 focus:outline-none">
+                    {showPassword ? <EyeOff/> :  <Eye />}
+                  </button>
+                </div>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="address">Address</Label>
