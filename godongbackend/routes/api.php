@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -46,3 +47,4 @@ Route::post('/menu-items', [MenuController::class, 'store']);
 Route::get('/menu-items', [MenuController::class, 'index']);
 Route::delete('/menu-items/{id}', [MenuController::class, 'destroy']);
 Route::post('/editmenu', [MenuController::class, 'update']);
+Route::post('/upload-profile-picture', [UserController::class, 'uploadProfilePicture']);
