@@ -124,7 +124,7 @@ export default function Login() {
                     type="button"
                     onClick={togglePasswordVisibility}
                     className="absolute right-2 bg-transparent border-none cursor-pointer text-gray-600 focus:outline-none">
-                    {showPassword ? <EyeOff/> :  <Eye />}
+                    {showPassword ? <EyeOff size={'17px'}/> :  <Eye size={'17px'}/>}
                   </button>
                 </div>
 
