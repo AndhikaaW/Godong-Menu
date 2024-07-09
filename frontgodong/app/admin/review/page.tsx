@@ -149,7 +149,7 @@ export default function Component() {
 
       {/* Search and Action Buttons on the right, with Search above Add and Export */}
       <div className="flex justify-end items-end flex-col space-y-4">
-        <div className="relative w-full sm:w-1/3">
+        {/* <div className="relative w-full sm:w-1/3">
           <input
             type="text"
             className="w-full bg-[#F4F7FE] p-2 border border-gray-300 rounded-xl shadow-xl pl-10"
@@ -159,7 +159,7 @@ export default function Component() {
             className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
             size={20}
           />
-        </div>
+        </div> */}
         <div className="flex gap-4">
           <Button variant={"outline"} onClick={() => onGetExporProduct("Review", "ReviewExport")} className="bg-[#F4F7FE] rounded-full text-gray-700 px-4 py-2 flex items-center hover:bg-gray-300" >
             <span className="mr-2">

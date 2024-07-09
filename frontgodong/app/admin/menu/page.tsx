@@ -177,14 +177,14 @@ export default function Menu() {
               <TableCell className="text-blue-500 hidden sm:table-cell">
                 {product.category_id}
               </TableCell>
-              <TableCell>{product.name}</TableCell>
-              <TableCell className="hidden sm:table-cell">
+              <TableCell >{product.name}</TableCell>
+              <TableCell className="hidden sm:table-cell ">
                 {product.image && (
                   <Image
                     src={`data:image/jpeg;base64,${product.image}`}
                     alt={product.name}
                     width={50}
-                    height={50}
+                    height={50} 
                     style={{ maxWidth: "50px", maxHeight: "50px" }}
                   />
                 )}
@@ -192,7 +192,7 @@ export default function Menu() {
               <TableCell className="hidden md:table-cell">
                 {product.description}
               </TableCell>
-              <TableCell className="hidden md:table-cell">
+              <TableCell className="hidden md:table-cell text-center">
                 {product.price}
               </TableCell>
               <TableCell>
