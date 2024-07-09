@@ -34,8 +34,12 @@ const deleteCategory = async (id: string): Promise<void> => {
 
 export default function CategoryPage() {
   const [products, setProducts] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const refreshCategories = useCallback(async () => {
     const categories = await fetchCategories();
@@ -53,7 +57,14 @@ export default function CategoryPage() {
       console.log(`Deleted category with id: ${id}`);
       setIsModalOpen(false);
     } catch (error) {
-      console.error('Failed to delete category:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessage =
+          error.response.data.reason || "Failed to delete category";
+        setErrorMessage(errorMessage);
+      } else {
+        console.error("Failed to delete category:", error);
+        setErrorMessage("An unexpected error occurred");
+      }
     }
   };
 
@@ -61,6 +72,9 @@ export default function CategoryPage() {
     setSelectedCategory(category);
     setIsModalOpen(true);
   };
+  const filteredCategories = products.filter((category) =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="p-6 space-y-6">
@@ -74,6 +88,8 @@ export default function CategoryPage() {
             type="text"
             className="w-full bg-[#F4F7FE] p-2 border border-gray-300 rounded-xl shadow-xl pl-10"
             placeholder="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <Search
             className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
@@ -105,14 +121,12 @@ export default function CategoryPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {products.map((product) => (
+          {filteredCategories.map((product) => (
             <TableRow key={product.id}>
               <TableCell className="text-blue-500 text-center">
                 {product.id}
               </TableCell>
-              <TableCell className=" text-center">
-                {product.name}
-              </TableCell>
+              <TableCell className=" text-center">{product.name}</TableCell>
               <TableCell className="text-center">
                 <div className="flex justify-center">
                   {product.icon && (
@@ -130,7 +144,10 @@ export default function CategoryPage() {
               <TableCell>
                 <div className="flex flex-col">
                   <div className="flex flex-col sm:flex-row justify-center gap-2">
-                    <EditButton category={product} onCategoryEdited={refreshCategories} />
+                    <EditButton
+                      category={product}
+                      onCategoryEdited={refreshCategories}
+                    />
                     <Button
                       className="bg-[#F13023] opacity-80 sm:w-[70px] text-white w-[50px] p-2"
                       onClick={() => openModal(product)}
@@ -152,13 +169,41 @@ export default function CategoryPage() {
         <div className="fixed inset-0 h-screen w-screen flex items-center justify-center bg-red-100 bg-opacity-75">
           <div className="bg-red-500 p-6 rounded-lg shadow-lg text-white">
             <h2 className="text-lg font-semibold mb-4">Confirm Delete</h2>
-            <p>Are you sure you want to delete category {selectedCategory.name}?</p>
+            <p>
+              Are you sure you want to delete category {selectedCategory.name}?
+            </p>
             <div className="flex justify-end mt-4 gap-2">
-              <Button className="bg-gray-300 text-black" onClick={() => setIsModalOpen(false)}>
+              <Button
+                className="bg-gray-300 text-black"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button className="bg-red-700 text-white" onClick={() => handleDelete(selectedCategory.id)}>
+              <Button
+                className="bg-red-700 text-white"
+                onClick={() => handleDelete(selectedCategory.id)}
+              >
                 Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className="fixed inset-0 h-screen w-screen flex items-center justify-center bg-transparent">
+          <div className="bg-red-500 p-6 rounded-lg h-[150px] w-[400px] shadow-lg text-white">
+            <h2 className="text-lg font-semibold mb-4">Error</h2>
+            <p>{errorMessage}</p>
+            <div className="flex justify-end mt-4">
+              <Button
+                className="bg-gray-300 text-black"
+                onClick={() => {
+                  setErrorMessage(null);
+                  setIsModalOpen(false);
+                }}
+              >
+                Close
               </Button>
             </div>
           </div>

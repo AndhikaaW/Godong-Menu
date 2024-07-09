@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import axios from "axios";
 import {
   Dialog,
@@ -23,6 +23,8 @@ import { useMediaQuery } from "usehooks-ts";
 import { cn } from "@/lib/utils";
 import { Textarea } from "./ui/textarea";
 import { log } from "console";
+import { AspectRatio } from "@radix-ui/react-aspect-ratio";
+import Image from "next/image";
 
 interface ButtonAddProps {
   onCategoryAdded: () => void;
@@ -33,19 +35,42 @@ export default function ButtonAdd({ onCategoryAdded }: ButtonAddProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const AddCategoryForm = ({ className }: React.ComponentProps<"form">) => {
+    const [base64Image, setBase64Image] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        // Remove the prefix from the base64 string
+        const base64WithoutPrefix = base64String.replace(/^data:image\/\w+;base64,/, '');
+        setBase64Image(base64WithoutPrefix);
+        setImagePreview(URL.createObjectURL(file));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
     setError(null);
 
     const formData = new FormData(event.currentTarget);
+    formData.delete('icon');
+
+    // Add the base64 image string if it exists
+    if (base64Image) {
+      formData.append('icon', base64Image);
+    }
+    // fo
     // for (const pair of formData.entries()) {
     //   console.log(`${pair[0]}: ${pair[1]}`);
     // }
 
     try {
-      const response = await axios.post('http://godongbackend.test/api/categories',formData, {
+      const response = await axios.post('http://godongbackend.test/api/categoriesAdd',formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -61,8 +86,6 @@ export default function ButtonAdd({ onCategoryAdded }: ButtonAddProps) {
       setIsSubmitting(false);
     }
   };
-
-  const AddCategoryForm = ({ className }: React.ComponentProps<"form">) => {
     return (
       <form onSubmit={handleSubmit} className={cn("grid items-start gap-4 w-full", className)}>
         <div className="flex flex-row w-full gap-2">
@@ -75,7 +98,7 @@ export default function ButtonAdd({ onCategoryAdded }: ButtonAddProps) {
               <Label className="w-full mb-2 h-fit" htmlFor="description">Description</Label>
               <Textarea
                 name="description"
-                className="rounded-xl h-full"
+                className="rounded-xl h-[217px] resize-none"
                 id="description"
                 placeholder="Description of Category"
               />
@@ -86,19 +109,22 @@ export default function ButtonAdd({ onCategoryAdded }: ButtonAddProps) {
               <Label htmlFor="name">Category Name</Label>
               <Input name="name" id="name" className="rounded-xl" placeholder="Name of Category" required />
             </div>
-            <div className="mt-9 flex items-center h-full justify-center w-full">
-              <label
-                htmlFor="icon"
-                className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
-              >
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <Upload className="w-8 h-8 mb-4 text-gray-500" />
-                  <p className="mb-2 text-sm text-gray-500">
-                    <span className="font-semibold">Choose picture</span>
-                  </p>
-                </div>
-                <input name="icon" id="icon" type="file" className="hidden" accept="image/*" required />
-              </label>
+            <div className="mt-2">
+              <Label
+                htmlFor="icon">
+                Gambar
+              </Label>
+              <Input name="icon" id="icon"  onChangeCapture={handleFileChange} className=" mt-1 rounded-xl" type="file" accept="image/*" required />
+              <div className="w-[300px] h-[180px] mt-2 rounded-xl p-3 border-[1px] bg-white">
+                <AspectRatio ratio={16 / 9}  className="rounded-xl">
+                <Image
+                    className="rounded-xl "
+                    fill
+                    src={imagePreview}
+                    alt="Preview"
+                  />
+                </AspectRatio>
+              </div>
             </div>
           </div>
         </div>

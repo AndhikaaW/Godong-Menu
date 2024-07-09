@@ -44,10 +44,11 @@ const deleteMenu = async (id: string): Promise<void> => {
   await axios.delete(`http://godongbackend.test/api/menu-items/${id}`);
 };
 
-export default function Category() {
+export default function Menu() {
   const [menu, setMenu] = useState<Menu[]>([]);
   const [selectedMenu, setSelectedMenu] = useState<Menu | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const refreshMenu = useCallback(async () => {
     const menuItems = await fetchMenu();
@@ -109,6 +110,10 @@ export default function Category() {
     }
   };
 
+  const filteredMenu = menu.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="p-6 space-y-6">
       <div>
@@ -121,6 +126,8 @@ export default function Category() {
             type="text"
             className="w-full bg-[#F4F7FE] p-2 border border-gray-300 rounded-xl shadow-xl pl-10"
             placeholder="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <Search
             className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
@@ -128,7 +135,7 @@ export default function Category() {
           />
         </div>
         <div className="flex gap-4">
-          <ButtonAdd  onMenuAdded={refreshMenu}/>
+          <ButtonAdd onMenuAdded={refreshMenu} />
           <Button variant={"outline"} onClick={() => onGetExportProduct("Menu", "MenuExport")} className="bg-[#F4F7FE] rounded-full text-gray-700 px-4 py-2 flex items-center hover:bg-gray-300" >
             <span className="mr-2">
               <Upload size={15} />
@@ -164,7 +171,7 @@ export default function Category() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {menu.map((product) => (
+          {filteredMenu.map((product) => (
             <TableRow key={product.id}>
               <TableCell className="text-blue-500">{product.id}</TableCell>
               <TableCell className="text-blue-500 hidden sm:table-cell">
@@ -190,7 +197,7 @@ export default function Category() {
               </TableCell>
               <TableCell>
                 <div className="flex center flex-col gap-2 sm:flex-row">
-                  <EditButton menu={product} onMenuEditted={refreshMenu}/>
+                  <EditButton menu={product} onMenuEditted={refreshMenu} />
                   <Dialog open={isModalOpen} onOpenChange={(open) => setIsModalOpen(open)}>
                     <DialogTrigger asChild>
                       <Button

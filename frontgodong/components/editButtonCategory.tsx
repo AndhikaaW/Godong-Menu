@@ -1,6 +1,6 @@
 // File: src/components/EditButtonCategory.tsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import axios from 'axios';
 import {
   Dialog,
@@ -13,8 +13,10 @@ import { Label } from '@/components/ui/label';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
-import { Upload } from 'lucide-react';
+import { Pen} from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AspectRatio } from '@radix-ui/react-aspect-ratio';
+import Image from 'next/image';
 
 interface EditButtonProps {
   category: {
@@ -47,39 +49,44 @@ export default function EditButton({ category, onCategoryEdited }: EditButtonPro
     });
   }, [category]);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-
-    const form = new FormData(event.currentTarget);
-    // for (const pair of form.entries()) {
-    //   console.log(`${pair[0]}: ${pair[1]}`);
-    // }
-
-    // const config = {
-        // headers: {
-        //   'Content-Type': 'multipart/form-data',
-        //   "Access-Control-Allow-Origin": "*",
-        //   "Access-Control-Allow-Headers": "Content-Type",
-        //   "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
-        // },
-        // withCredentials: true,
-    // };
-    try {
-      const response = await axios.post('http://godongbackend.test/api/editcategories', form);
-      console.log('Category edited successfully:', response.data);
-      setOpen(false);
-      onCategoryEdited(); // Call the function to refresh the category list
-    } catch (error) {
-      console.error('Error editing category:', error);
-      setError('Failed to edit category. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const EditCategoryForm = ({ className }: React.ComponentProps<'form'>) => {
+    const [base64Image, setBase64Image] = useState<string | null>(null);
+    const [imagePreview, setImagePreview] = useState<string>("");
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64String = reader.result as string;
+          const base64WithoutPrefix = base64String.replace(/^data:image\/\w+;base64,/, "");
+          setBase64Image(base64WithoutPrefix);
+          setImagePreview(URL.createObjectURL(file));
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      setIsSubmitting(true);
+      setError(null);
+      const form = new FormData(event.currentTarget);
+      form.delete("icon");
+      if (base64Image) {
+        form.append("icon", base64Image);
+      }
+      try {
+        const response = await axios.post('http://godongbackend.test/api/editcategories', form);
+        console.log('Category edited successfully:', response.data);
+        setOpen(false);
+        onCategoryEdited(); // Call the function to refresh the category list
+      } catch (error) {
+        console.error('Error editing category:', error);
+        setError('Failed to edit category. Please try again.');
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
+  
     return (
       <form onSubmit={handleSubmit} className={cn('grid items-start gap-4 w-full', className)}>
         <div className="flex flex-row w-full gap-2">
@@ -100,24 +107,41 @@ export default function EditButton({ category, onCategoryEdited }: EditButtonPro
             </div>
           </div>
           <div className="flex flex-col w-1/2">
-            <div className="grid gap-2">
+          <div className="grid gap-2">
               <Label htmlFor="name">Category Name</Label>
-              <Input name="name" id="name" className="rounded-xl" placeholder="Name of Category" defaultValue={formData.name} required />
+              <Input name="name" defaultValue={formData.name} id="name" className="rounded-xl" placeholder="Name of Category" />
             </div>
-            <div className="mt-9 flex items-center h-full justify-center w-full">
-              <label
-                htmlFor="icon"
-                className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
-              >
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <Upload className="w-8 h-8 mb-4 text-gray-500" />
-                  <p className="mb-2 text-sm text-gray-500">
-                    <span className="font-semibold">Choose picture</span>
-                  </p>
-                </div>
-                <input name="icon" id="icon" type="file" className="hidden" accept="image/*" />
-              </label>
-            </div>
+            <div className="mt-2">
+              <Label
+                htmlFor="icon">
+                Gambar
+              </Label>
+              <Input name="icon" id="icon"  onChangeCapture={handleFileChange} className=" mt-1 rounded-xl" type="file" accept="image/*"/>
+              {formData.icon && !imagePreview && (
+                  <div className="w-[300px] h-[180px] mt-2 rounded-xl p-3 border-[1px] bg-white">
+                    <AspectRatio ratio={16 / 9} className="rounded-xl">
+                      <Image
+                        className="rounded-xl"
+                        fill
+                        src={`data:image/jpeg;base64,${formData.icon}`}
+                        alt="Current"
+                      />
+                    </AspectRatio>
+                  </div>
+                )}
+                {imagePreview && (
+                  <div className="w-[300px] h-[180px] mt-2 rounded-xl p-3 border-[1px] bg-white">
+                    <AspectRatio ratio={16 / 9} className="rounded-xl">
+                      <Image
+                        className="rounded-xl"
+                        fill
+                        src={imagePreview}
+                        alt="Preview"
+                      />
+                    </AspectRatio>
+                  </div>
+                )}
+            </div>  
           </div>
         </div>
         {error && <p className="text-red-500">{error}</p>}
@@ -145,9 +169,10 @@ export default function EditButton({ category, onCategoryEdited }: EditButtonPro
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="bg-[#F4F7FE] text-black">
-          Edit
-        </Button>
+      <Button className="bg-[#2B3674] sm:mr-3 mb-2 sm:opacity-75 sm:w-[70px] text-white w-[50px] p-2">
+            <Pen className="sm:mr-2" size={12} />
+            <span className="hidden sm:inline text-[12px]">Edit</span>
+          </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[900px] sm:max--[500px] bg-[#F4F7FE]">
         <Content />
