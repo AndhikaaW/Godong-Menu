@@ -324,6 +324,11 @@ const ProductCard: React.FC<{ product: Menu, onAddToCart: (product: Menu, quanti
         });
     };
 
+    const handleAddToCart = () => {
+        if (count === 0) return;
+        onAddToCart(product, count);
+    };
+
     return (
         <div className="text-black m-3">
             <h5>{product.name}</h5>
@@ -339,7 +344,7 @@ const ProductCard: React.FC<{ product: Menu, onAddToCart: (product: Menu, quanti
                     <CiSquarePlus size={'40px'} onClick={handleIncrement} />
                 </div>
                 <DialogClose>
-                    <Button type="submit" className="bg-[#6CC765] text-white flex-grow ms-4" onClick={() => onAddToCart(product, count)}>Add to Cart</Button>
+                    <Button type="submit" className="bg-[#6CC765] text-white flex-grow ms-4" onClick={handleAddToCart}>Add to Cart</Button>
                 </DialogClose>
             </div>
         </div>
