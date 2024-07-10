@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LucideIcon } from "lucide-react";
 import {
   Dialog,
@@ -23,6 +23,7 @@ import { CupSoda, Pen, Plus, Popcorn, Search, Trash2, Upload, UtensilsCrossed } 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import ButtonDetail from "@/components/detailButton";
+import axios from "axios";
 
 interface Product {
   idOrder: string;
@@ -34,8 +35,12 @@ interface Product {
   Status: string;
   Detail: string;
 }
+interface Menu_item{
+  value:JSON;
+}
 
 export default function Component() {
+  const [menuItems, setmenuItems] = useState<Menu_item[]>([]);
   const [products, setProducts] = useState<Product[]>([
     {
       idOrder: "322002",
@@ -89,6 +94,23 @@ export default function Component() {
     },
   ]);
 
+  useEffect(() => {
+    async function fetchCart() {
+        try {
+            const response = await axios.get("http://godongbackend.test/api/allcart", {
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+            });
+            setmenuItems(response.data);
+        } catch (error) {
+            console.error("There was an error!", error);
+        }
+    }
+
+    fetchCart();
+}, []);
   return (
     <div className="p-6 space-y-6">
       {/* Breadcrumb and Header */}

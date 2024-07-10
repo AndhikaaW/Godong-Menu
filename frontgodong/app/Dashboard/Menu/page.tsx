@@ -33,10 +33,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { LuShoppingCart } from "react-icons/lu";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CircleCheck, CirclePlus, Plus } from "lucide-react";
+import { CircleCheck, CirclePlus, Delete, Plus, Trash } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 interface Menu {
-    id: string;
+    id: number;
     category_id: string;
     name: string;
     image: string;
@@ -52,12 +53,13 @@ interface Category {
 }
 
 interface Cart {
-    id: string;
+    id: number;
     name: string;
     image: string;
     count: number;
     price: number;
 }
+
 
 const fetchCategories = async (): Promise<Category[]> => {
     const response = await axios.get("http://godongbackend.test/api/categories");
@@ -78,9 +80,12 @@ export default function Menu() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [menu, setMenu] = useState<Menu[]>([]);
     const [cart, setCart] = useState<Cart[]>([]);
+
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [selectedProduct, setSelectedProduct] = useState<Menu | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
+
+    const [notification, setNotification] = useState<string | null>(null);
 
     const refreshCategories = useCallback(async () => {
         const categories = await fetchCategories();
@@ -133,13 +138,30 @@ export default function Menu() {
                 return [...prevCart, { ...product, count: quantity }];
             }
         });
-
     };
 
     const filteredMenu = menu.filter((item) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const handleSubmit = async (e: { preventDefault: () => void; }) => {
+        e.preventDefault();
+        if (cart.length === 0) {
+            return;
+        }
+        try {
+            const response = await axios.post('http://godongbackend.test/api/cart', { value: JSON.stringify(cart) });
+            console.log(response.data);
+            setCart([]);
+        } catch (error) {
+            console.error(error);
+        }
+        setNotification('Pesanan berhasil dibuat!');
+        setTimeout(() => setNotification(null), 3000);
+    };
+    const handleDelete = (productId: number) => {
+        setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+    };
     return (
         <div className="container">
             <div className='flex justify-content-end sm:flex-row mt-5 me-4'>
@@ -163,8 +185,8 @@ export default function Menu() {
                                 {cart.map((item, index) => (
                                     <Card key={index} className='m-2 p-3'>
                                         <div className='flex justify-content-between '>
-                                            <div className='flex justify-center align-items-center gap-2 me-3'>
-                                                <Checkbox id={`cart-item-${index}`} />
+                                            <div className='flex justify-center align-items-center gap-2'>
+                                                {/* <Checkbox id={`cart-item-${index}`} /> */}
                                                 {item.image ? (
                                                     <img
                                                         src={`data:image/jpeg;base64,${item.image}`}
@@ -174,11 +196,14 @@ export default function Menu() {
                                                 ) : (
                                                     <div className="avatar-fallback">img</div>
                                                 )}
-                                                <label htmlFor={`cart-item-${index}`}>{item.name}</label>
+                                                <label htmlFor={`cart-item-${index}`} className=" text-start w-[80px]">{item.name}</label>
                                             </div>
-                                            <div className='flex justify-center align-items-center gap-3'>
+                                            <div className="flex justify-start align-items-center">
                                                 <label htmlFor={`cart-item-price-${index}`}><b>{item.count} x </b></label>
+                                            </div>
+                                            <div key={item.id} className='flex justify-start align-items-center gap-2'>
                                                 <label htmlFor={`cart-item-price-${index}`}>{item.price}</label>
+                                                <Trash size={'20px'} onClick={() => handleDelete(item.id)} />
                                             </div>
                                         </div>
                                     </Card>
@@ -197,8 +222,15 @@ export default function Menu() {
                                 </div>
                             </Card>
                             <SheetClose asChild>
-                                <Button type="submit" className='text-white bg-[#61AB5B]'>Tambah Pesanan</Button>
+                                <Button type="submit" className='text-white bg-[#61AB5B]' onClick={handleSubmit}>Tambah Pesanan</Button>
                             </SheetClose>
+                            <div>
+                                {notification && (
+                                    <h4 className="notification text-center">
+                                        {notification}
+                                    </h4>
+                                )}
+                            </div>
                         </SheetFooter>
                     </SheetContent>
                 </Sheet>
@@ -220,8 +252,7 @@ export default function Menu() {
                     <a key={category.id} href={`#${category.name.replace(/\s+/g, '-').toLowerCase()}`}>
                         <Button
                             onClick={() => handleCategoryChange(category.id)}
-                            className={`text-black hover:bg-[#61AB5B] hover:font-bold ${selectedCategory === category.id ? 'bg-[#61AB5B]' : 'bg-[#D5FFD4]'}`}
-                        >
+                            className={`text-black hover:bg-[#61AB5B] hover:font-bold ${selectedCategory === category.id ? 'bg-[#61AB5B]' : 'bg-[#D5FFD4]'}`}>
                             {category.name}
                         </Button>
                     </a>

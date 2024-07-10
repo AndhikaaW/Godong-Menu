@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
     Dialog,
@@ -27,12 +27,16 @@ import { log } from "console";
 // interface ButtonDetailProps {
 //     onCategoryAdded: () => void;
 // }
+interface Menu_item{
+    value:JSON;
+}
 
 export default function ButtonDetail() {
     const [open, setOpen] = useState(false);
     const isDesktop = useMediaQuery("(min-width: 768px)");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [menuItems, setmenuItems] = useState<Menu_item[]>([]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -61,6 +65,23 @@ export default function ButtonDetail() {
         //   setIsSubmitting(false);
         // }
     };
+    useEffect(() => {
+        async function fetchCart() {
+            try {
+                const response = await axios.get("http://godongbackend.test/api/allcart", {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                    },
+                });
+                setmenuItems(response.data);
+            } catch (error) {
+                console.error("There was an error!", error);
+            }
+        }
+
+        fetchCart();
+    }, []);
 
     const AddDetailForm = ({ className }: React.ComponentProps<"form">) => {
         return (
@@ -77,7 +98,11 @@ export default function ButtonDetail() {
                         </div>
                         <div className="h-full">
                             <Label htmlFor="">Items</Label>
-                            <p className="border h-full p-2 rounded">adssa</p>
+                            <p className="border h-full p-2 rounded">
+                            {menuItems.map((product) => (
+                                <p className="w-5">{product.value}</p>
+                            ))}
+                            </p>
                         </div>
                     </div>
 
