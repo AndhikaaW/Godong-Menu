@@ -1,6 +1,6 @@
 import '../../styles/globals.css'
 import React from 'react'
-import Homepage from '../dashboard/home/page'
+import Homepage from './home/page'
 
 function page() {
   return (

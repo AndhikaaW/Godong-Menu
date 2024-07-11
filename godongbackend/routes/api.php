@@ -50,5 +50,3 @@ Route::get('/menu-items', [MenuController::class, 'index']);
 Route::delete('/menu-items/{id}', [MenuController::class, 'destroy']);
 Route::post('/editmenu', [MenuController::class, 'update']);
 Route::post('/upload-profile-picture', [UserController::class, 'uploadProfilePicture']);
-
-Route::post('/data', [CartController::class, 'store']);
