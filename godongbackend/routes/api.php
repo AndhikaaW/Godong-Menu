@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CartsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MenuController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,3 +49,9 @@ Route::post('/menu-items', [MenuController::class, 'store']);
 Route::get('/menu-items', [MenuController::class, 'index']);
 Route::delete('/menu-items/{id}', [MenuController::class, 'destroy']);
 Route::post('/editmenu', [MenuController::class, 'update']);
+
+Route::post('/upload-profile-picture', [UserController::class, 'uploadProfilePicture']);
+
+Route::post('/cart', [CartController::class, 'store']);
+Route::get('/allcart', [CartController::class, 'index']);
+Route::delete('/cart/{id}', [CartController::class, 'destroy']);

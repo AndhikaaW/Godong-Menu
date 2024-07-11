@@ -21,48 +21,71 @@ class UserController extends Controller
         $user->save();
         return $user;
     }
-   // UserController.php
+    // UserController.php
 
-public function login(Request $req)
-{
-    // Validate the request data
-    $req->validate([
-        'email' => 'required|email',
-        'password' => 'required|string',
-    ]);
-
-    // Find the user by email
-    $user = User::where('email', $req->email)->first();
-
-    // Check if the user exists and the password is correct
-    if (!$user || !Hash::check($req->password, $user->password)) {
-        return response()->json(["Error" => "Sorry, email or password doesn't match"], 401);
-    }
-
-    // Return success response with user status
-    return response()->json([
-        'success' => true,
-        'status' => $user->status,
-        
-    ], 200);
-}
+    public function uploadProfilePicture(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'image' => 'required|string'
+        ]);
     
-public function deleteUser($id)
-{
-    // Find the user by ID
-    $user = User::find($id);
-
-    // Check if the user exists
-    if (!$user) {
-        return response()->json(["Error" => "User not found"], 404);
+        $user = User::where('email', $request->email)->first();
+    
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+    
+        // Simpan base64 string langsung ke database
+        $user->pictures = $request->image;
+        $user->save();
+    
+        return response()->json([
+            'success' => true, 
+            'image_url' => $user->pictures
+        ]);
     }
 
-    // Delete the user
-    $user->delete();
+    public function login(Request $req)
+    {
+        // Validate the request data
+        $req->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
 
-    // Return success response
-    return response()->json(["Message" => "User deleted successfully"], 200);
-}
+        // Find the user by email
+        $user = User::where('email', $req->email)->first();
+
+        // Check if the user exists and the password is correct
+        if (!$user || !Hash::check($req->password, $user->password)) {
+            return response()->json(["Error" => "Sorry, email or password doesn't match"], 401);
+        }
+
+        // Return success response with user status
+        return response()->json([
+            'success' => true,
+            'status' => $user->status,
+
+        ], 200);
+    }
+
+    public function deleteUser($id)
+    {
+        // Find the user by ID
+        $user = User::find($id);
+
+        // Check if the user exists
+        if (!$user) {
+            return response()->json(["Error" => "User not found"], 404);
+        }
+
+        // Delete the user
+        $user->delete();
+
+        // Return success response
+        return response()->json(["Message" => "User deleted successfully"], 200);
+    }
     public function index()
     {
         // Fetch all users from the database
@@ -70,7 +93,7 @@ public function deleteUser($id)
 
         // Return users as JSON response
         return response()->json($users);
-    }    
+    }
     public function getoneuser($email)
     {
         $user = User::where('email', $email)->first();
