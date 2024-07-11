@@ -65,16 +65,11 @@ export default function SidebarMobile(props: SidebarMobileProps) {
           <Menu size={20} />
         </Button>
       </SheetTrigger>
-      <SheetContent hideClose className="px-3 py-4 " side="left">
+      <SheetContent className="px-3 py-4 " side="left">
         <SheetHeader className="flex flex-row justify-between items-center space-y-0">
           <span className="text-lg font-semibold text-foreground mx-3">
             Godong Menu
           </span>
-          <SheetClose asChild>
-            <Button className="h-5 w-5 p-0" variant="ghost">
-              <X size={15} className="m-0" />
-            </Button>
-          </SheetClose>
         </SheetHeader>
         <div>
           <div className="flex flex-column gap-2 mt-3">
