@@ -149,16 +149,20 @@ export default function Menu() {
         if (cart.length === 0) {
             return;
         }
+    
+        const total = cart.reduce((total, item) => total + item.price * item.count, 0);
+    
         try {
-            const response = await axios.post('http://godongbackend.test/api/cart', { value: JSON.stringify(cart) });
+            const response = await axios.post('http://godongbackend.test/api/cart', { value: JSON.stringify(cart), total });
             console.log(response.data);
+            setNotification('Pesanan berhasil dibuat!');
             setCart([]);
+            setTimeout(() => setNotification(null), 3000);
         } catch (error) {
             console.error(error);
         }
-        setNotification('Pesanan berhasil dibuat!');
-        setTimeout(() => setNotification(null), 3000);
     };
+
     const handleDelete = (productId: number) => {
         setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
     };
