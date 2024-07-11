@@ -23,11 +23,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Search, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
 
 interface User {
   id: string;
   nama: string;
-  icon?: LucideIcon;
+  pictures: string;
   email: string;
   address: string;
   phone: string;
@@ -141,7 +142,15 @@ export default function Component() {
                 {user.id}
               </TableCell>
               <TableCell className="text-black text-center">
-                {user.icon && <user.icon size={24} />}
+              {user.pictures && (
+                  <Image
+                    src={user.pictures}
+                    alt={user.nama}
+                    width={50}
+                    height={50} 
+                    style={{ maxWidth: "50px", maxHeight: "50px" }}
+                  />
+                )}
               </TableCell>
               <TableCell className="text-center hidden sm:table-cell">
                 {user.nama}
