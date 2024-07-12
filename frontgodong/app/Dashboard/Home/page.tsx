@@ -46,8 +46,8 @@ function Homepage() {
                         <div className="flex">
                             <img src="/img-1.jpg" alt="gambar" width="250px" id='img-1' className="p-2 mb-5" style={{ borderRadius: '30px', marginTop: '-20px' }} />
                             <div className='flex-col'>
-                                <img src="/img-2.jpg" alt="gambar" width="250px" className="p-2" style={{ borderRadius: '30px' }} />
-                                <img src="/img-2.jpg" alt="gambar" width="250px" className="p-2" style={{ borderRadius: '30px' }} />
+                                <img src="/img-6.png" alt="gambar" width="210px" className="p-2" style={{ borderRadius: '30px' }} />
+                                <img src="/img-2.png" alt="gambar" width="210px" className="p-2" style={{ borderRadius: '30px' }} />
                             </div>
                         </div>
                     </div>

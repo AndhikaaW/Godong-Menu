@@ -24,7 +24,7 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const userinfo = localStorage.getItem('user-info');
+      const userinfo = localStorage.getItem('admin-info');
       let email = userinfo!.replace(/["]/g, '')
       if (!email) {
         setError('Email tidak ditemukan di localStorage');

@@ -149,9 +149,9 @@ export default function Menu() {
         if (cart.length === 0) {
             return;
         }
-    
+
         const total = cart.reduce((total, item) => total + item.price * item.count, 0);
-    
+
         try {
             const response = await axios.post('http://godongbackend.test/api/cart', { value: JSON.stringify(cart), total });
             console.log(response.data);
@@ -207,7 +207,7 @@ export default function Menu() {
                                             </div>
                                             <div key={item.id} className='flex justify-start align-items-center gap-2'>
                                                 <label htmlFor={`cart-item-price-${index}`}>{item.price}</label>
-                                                <Trash size={'20px'} onClick={() => handleDelete(item.id)} />
+                                                <Trash size={'20px'} onClick={() => handleDelete(item.id)} className="cursor-pointer"/>
                                             </div>
                                         </div>
                                     </Card>
@@ -226,7 +226,7 @@ export default function Menu() {
                                 </div>
                             </Card>
                             <SheetClose asChild>
-                                <Button type="submit" className='text-white bg-[#61AB5B]' onClick={handleSubmit}>Tambah Pesanan</Button>
+                                <Button type="submit" className='text-white bg-[#61AB5B]' onClick={handleSubmit}>Order</Button>
                             </SheetClose>
                             <div>
                                 {notification && (
@@ -289,14 +289,14 @@ export default function Menu() {
                                 </div>
                             </CardDescription>
                         </CardContent>
-                        <CardFooter className="flex justify-between">
-                            <div className="flex items-center">
+                        <CardFooter className="flex sm:flex-row flex-col">
+                            <div className="flex items-center sm:w-full mb-2">
                                 <p className="mb-0 text-sm fw-bold">Rp.{product.price}</p>
                             </div>
                             <div className="flex items-center">
                                 <Dialog>
                                     <DialogTrigger asChild>
-                                        <div className=" flex align-items-center bg-[#76C16F] ms rounded font-bold ms-1 p-2 sm:bg-[#76C16F]  sm:w-full sm:p-2" onClick={() => handleAddClick(product)}>
+                                        <div className=" flex align-items-center bg-[#76C16F] rounded font-bold  py-2 px-2 sm:bg-[#76C16F]" onClick={() => handleAddClick(product)}>
                                             add
                                             <div className="bg-white rounded-xl ms-2 ">
                                                 <Plus size={'20px'} />
@@ -359,6 +359,14 @@ const ProductCard: React.FC<{ product: Menu, onAddToCart: (product: Menu, quanti
         });
     };
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newCount = parseInt(e.target.value, 10);
+        if (!isNaN(newCount) && newCount >= 0) {
+            setCount(newCount);
+            setTotalPrice(newCount * product.price);
+        }
+    };
+
     const handleAddToCart = () => {
         if (count === 0) return;
         onAddToCart(product, count);
@@ -375,7 +383,12 @@ const ProductCard: React.FC<{ product: Menu, onAddToCart: (product: Menu, quanti
             <div className="flex justify-between">
                 <div className="flex items-center text-black">
                     <CiSquareMinus size={'40px'} onClick={handleDecrement} />
-                    <p className="mb-0 mx-2">{count}</p>
+                    <input
+                        type="text"
+                        value={count}
+                        onChange={handleInputChange}
+                        className="mx-2 w-12 text-center"
+                    />
                     <CiSquarePlus size={'40px'} onClick={handleIncrement} />
                 </div>
                 <DialogClose>
@@ -385,4 +398,3 @@ const ProductCard: React.FC<{ product: Menu, onAddToCart: (product: Menu, quanti
         </div>
     );
 };
-
