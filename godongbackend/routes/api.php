@@ -60,3 +60,5 @@ Route::delete('/cart/{id}', [CartController::class, 'destroy']);
 Route::post('/transaksi', [TransaksiController::class, 'store']);
 Route::get('/alltransaksi', [TransaksiController::class, 'index']);
 Route::delete('/transaksi/{id}', [TransaksiController::class, 'destroy']);
+Route::get('/transaksi/statistics', [TransaksiController::class, 'statistics']); 
+Route::post('/transaksi/date-range', [TransaksiController::class, 'getTransactionsByDateRange']);

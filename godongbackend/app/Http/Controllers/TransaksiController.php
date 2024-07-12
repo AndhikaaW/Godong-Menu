@@ -40,5 +40,27 @@ class TransaksiController extends Controller
 
         return response()->json(['message' => 'Transaksi deleted successfully'], 200);
     }
+    public function statistics()
+    {
+        $totalPenjualan = Transaksi::sum('total');
+        $jumlahOrder = Transaksi::count();
+        $jumlahClient = Transaksi::distinct('id_user')->count('id_user');
 
+        return response()->json([
+            'total_penjualan' => $totalPenjualan,
+            'jumlah_order' => $jumlahOrder,
+            'jumlah_client' => $jumlahClient
+        ]);
+    }
+    public function getTransactionsByDateRange(Request $request)
+{
+    $request->validate([
+        'from' => 'required|date',
+        'to' => 'required|date',
+    ]);
+
+    $transactions = Transaksi::whereBetween('tanggal', [$request->from, $request->to])->get();
+
+    return response()->json($transactions);
+}
 }
