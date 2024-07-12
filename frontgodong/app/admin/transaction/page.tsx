@@ -1,15 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { LucideIcon } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Search, Upload } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -19,98 +10,35 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { CupSoda, Pen, Plus, Popcorn, Search, Trash2, Upload, UtensilsCrossed } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import ButtonDetail from "@/components/detailButton";
 import axios from "axios";
 
 interface Product {
-  idOrder: string;
-  idPemesan: String;
-  Alamat: String;
-  noTelp: String;
-  Total: String;
-  Tanggal: string;
-  Status: string;
-  Detail: string;
-}
-interface Menu_item{
-  value:JSON;
+  id: number;
+  id_user: number;
+  no_telepon: string;
+  alamat: string;
+  item: string; // JSON string
+  tanggal: string;
+  total: number;
 }
 
-export default function Component() {
-  const [menuItems, setmenuItems] = useState<Menu_item[]>([]);
-  const [products, setProducts] = useState<Product[]>([
-    {
-      idOrder: "322002",
-      idPemesan: "21313",
-      Alamat: "Ngawi",
-      noTelp: "092131313123",
-      Total: "Rp. 250.000",
-      Tanggal: "11/11/2004",
-      Status: "Completed",
-      Detail: "Detail"
-    },
-    {
-      idOrder: "322002",
-      idPemesan: "21313",
-      Alamat: "Ngawi",
-      noTelp: "092131313123",
-      Total: "Rp. 250.000",
-      Tanggal: "11/11/2004",
-      Status: "Completed",
-      Detail: "Detail"
-    },
-    {
-      idOrder: "322002",
-      idPemesan: "21313",
-      Alamat: "Ngawi",
-      noTelp: "092131313123",
-      Total: "Rp. 250.000",
-      Tanggal: "11/11/2004",
-      Status: "Completed",
-      Detail: "Detail"
-    },
-    {
-      idOrder: "322002",
-      idPemesan: "21313",
-      Alamat: "Ngawi",
-      noTelp: "092131313123",
-      Total: "Rp. 250.000",
-      Tanggal: "11/11/2004",
-      Status: "Completed",
-      Detail: "Detail"
-    },
-    {
-      idOrder: "322002",
-      idPemesan: "21313",
-      Alamat: "Ngawi",
-      noTelp: "092131313123",
-      Total: "Rp. 250.000",
-      Tanggal: "11/11/2004",
-      Status: "Completed",
-      Detail: "Detail"
-    },
-  ]);
+export default function TransactionPage() {
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    async function fetchCart() {
-        try {
-            const response = await axios.get("http://godongbackend.test/api/allcart", {
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-            });
-            setmenuItems(response.data);
-        } catch (error) {
-            console.error("There was an error!", error);
-        }
+    async function fetchTransaksi() {
+      try {
+        const response = await axios.get("http://godongbackend.test/api/alltransaksi");
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching transaksi:", error);
+      }
     }
 
-    fetchCart();
-}, []);
+    fetchTransaksi();
+  }, []);
+
   return (
     <div className="p-6 space-y-6">
       {/* Breadcrumb and Header */}
@@ -119,7 +47,7 @@ export default function Component() {
         <h1 className="text-4xl font-semibold mt-2">Transaction</h1>
       </div>
 
-      {/* Search and Action Buttons on the right, with Search above Add and Export */}
+      {/* Search and Action Buttons */}
       <div className="flex justify-end items-end flex-col space-y-4">
         <div className="relative w-full sm:w-1/3">
           <input
@@ -174,35 +102,32 @@ export default function Component() {
         </TableHeader>
         <TableBody>
           {products.map((product) => (
-            <TableRow key={product.idOrder}>
+            <TableRow key={product.id}>
               <TableCell className="text-blue-500 text-[12px] text-center">
-                {product.idOrder}
+                {product.id}
               </TableCell>
               <TableCell className="text-blue-500 text-[12px] text-center">
-                {product.idPemesan}
+                {product.id_user}
               </TableCell>
               <TableCell className="text-center hidden text-[12px] sm:table-cell">
-                {product.Alamat}
+                {product.alamat}
               </TableCell>
               <TableCell className="text-center text-[12px] hidden md:table-cell">
-                {product.noTelp}
+                {product.no_telepon}
               </TableCell>
               <TableCell className="text-center hidden text-[12px] md:table-cell">
-                {product.Total}
+                Rp. {product.total.toFixed(2)}
               </TableCell>
               <TableCell className="text-center text-[12px] hidden md:table-cell">
-                {product.Tanggal}
+                {new Date(product.tanggal).toLocaleDateString()}
               </TableCell>
               <TableCell className="text-center hidden md:table-cell">
                 <div className="bg-green-400 w-[70px] text-white cursor-pointer rounded-full h-[20px] text-[12px]">
-                  {product.Status}
+                  Completed
                 </div>
               </TableCell>
               <TableCell className="text-center hidden md:table-cell">
-              <ButtonDetail/>
-                {/* <div className="bg-[#4ED4F1] w-[70px] text-white cursor-pointer rounded-full h-[20px] text-[12px]">
-                  {product.Detail}
-                </div> */}
+                <ButtonDetail product={product} />
               </TableCell>
             </TableRow>
           ))}

@@ -35,7 +35,13 @@ import { LuShoppingCart } from "react-icons/lu";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CircleCheck, CirclePlus, Delete, Plus, Trash } from "lucide-react";
 import { Label } from "@/components/ui/label";
-
+interface User{
+    id: number;
+    nama: string;
+    email: string;
+    address: string;
+    phone: string;
+}
 interface Menu {
     id: number;
     category_id: string;
@@ -60,12 +66,10 @@ interface Cart {
     price: number;
 }
 
-
 const fetchCategories = async (): Promise<Category[]> => {
     const response = await axios.get("http://godongbackend.test/api/categories");
     return response.data;
 };
-
 const fetchMenu = async (): Promise<Menu[]> => {
     const response = await axios.get("http://godongbackend.test/api/menu-items");
     return response.data;
@@ -80,12 +84,34 @@ export default function Menu() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [menu, setMenu] = useState<Menu[]>([]);
     const [cart, setCart] = useState<Cart[]>([]);
+    const [userData, setUserData] = useState<any>(null);
 
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [selectedProduct, setSelectedProduct] = useState<Menu | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
-
     const [notification, setNotification] = useState<string | null>(null);
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const userinfo = localStorage.getItem("user-info");
+            let email = userinfo ? userinfo.replace(/["]/g, "") : "";
+            if (!email) {
+                setError("Email tidak ditemukan di localStorage");
+                return;
+            }
+
+            try {
+                const response = await axios.get(
+                    `http://godongbackend.test/api/user/${email}`
+                );
+                setUserData(response.data);
+            } catch (err) {
+                setError("Gagal mengambil data user");
+                console.error(err);
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     const refreshCategories = useCallback(async () => {
         const categories = await fetchCategories();
@@ -145,24 +171,32 @@ export default function Menu() {
     );
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
-        e.preventDefault();
-        if (cart.length === 0) {
-            return;
-        }
-    
-        const total = cart.reduce((total, item) => total + item.price * item.count, 0);
-    
-        try {
-            const response = await axios.post('http://godongbackend.test/api/cart', { value: JSON.stringify(cart), total });
-            console.log(response.data);
-            setNotification('Pesanan berhasil dibuat!');
-            setCart([]);
-            setTimeout(() => setNotification(null), 3000);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    e.preventDefault();
+    if (cart.length === 0) {
+        return;
+    }
 
+    const total = cart.reduce((total, item) => total + item.price * item.count, 0);
+
+    try {
+        const transactionData = {
+            id_user: userData.id, // Assuming userData is an array with user information
+            no_telepon: userData.phone,
+            alamat: userData.address,
+            item: JSON.stringify(cart),
+            total: total,
+            tanggal: new Date().toISOString().split('T')[0] // Current date in YYYY-MM-DD format
+        };
+
+        const response = await axios.post('http://godongbackend.test/api/transaksi', transactionData);
+        console.log(response.data);
+        setNotification('Pesanan berhasil dibuat!');
+        setCart([]);
+        setTimeout(() => setNotification(null), 3000);
+    } catch (error) {
+        console.error(error);
+    }
+};
     const handleDelete = (productId: number) => {
         setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
     };
@@ -385,4 +419,8 @@ const ProductCard: React.FC<{ product: Menu, onAddToCart: (product: Menu, quanti
         </div>
     );
 };
+
+function setError(arg0: string) {
+    throw new Error("Function not implemented.");
+}
 

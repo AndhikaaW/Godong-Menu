@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -16,125 +15,78 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Label } from "@/components/ui/label";
-import { Plus, Upload } from "lucide-react";
-import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useMediaQuery } from "usehooks-ts";
 import { cn } from "@/lib/utils";
-import { Textarea } from "./ui/textarea";
-import { log } from "console";
 
-// interface ButtonDetailProps {
-//     onCategoryAdded: () => void;
-// }
-interface Menu_item{
-    value:JSON;
+interface Product {
+  id: number;
+  id_user: number;
+  no_telepon: string;
+  alamat: string;
+  item: string; // JSON string
+  tanggal: string;
+  total: number;
 }
 
-export default function ButtonDetail() {
+interface ButtonDetailProps {
+  product: Product;
+}
+
+export default function ButtonDetail({ product }: ButtonDetailProps) {
     const [open, setOpen] = useState(false);
     const isDesktop = useMediaQuery("(min-width: 768px)");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [menuItems, setmenuItems] = useState<Menu_item[]>([]);
-
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setIsSubmitting(true);
-        setError(null);
-
-        const formData = new FormData(event.currentTarget);
-        //// for (const pair of formData.entries()) {
-        ////   console.log(`${pair[0]}: ${pair[1]}`);
-        //// }
-
-        // try {
-        //   const response = await axios.post('http://godongbackend.test/api/categories',formData, {
-        //     headers: {
-        //       'Content-Type': 'multipart/form-data',
-        //     },
-        //   });
-
-        //   console.log('Category added successfully:', response.data);
-        //   setOpen(false);
-        //   onCategoryAdded();
-        // } catch (error) {
-        //   console.error('Error adding category:', error);
-        //   setError('Failed to add category. Please try again.');
-        // } finally {
-        //   setIsSubmitting(false);
-        // }
-    };
-    useEffect(() => {
-        async function fetchCart() {
-            try {
-                const response = await axios.get("http://godongbackend.test/api/allcart", {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Accept: "application/json",
-                    },
-                });
-                setmenuItems(response.data);
-            } catch (error) {
-                console.error("There was an error!", error);
-            }
-        }
-
-        fetchCart();
-    }, []);
 
     const AddDetailForm = ({ className }: React.ComponentProps<"form">) => {
+        const items = JSON.parse(product.item);
+        
         return (
-            <form onSubmit={handleSubmit} className={cn("grid items-start gap-4 w-full", className)}>
+            <div className={cn("grid items-start gap-4 w-full", className)}>
                 <div className="flex flex-row w-full gap-2">
                     <div className="flex flex-col w-1/2 ">
                         <div className="mb-3">
                             <Label htmlFor="id">Order ID</Label>
-                            <Input name="id" type="text" id="id" className="rounded-xl" placeholder="G-21 Category" required />
+                            <p className="border p-2 rounded">{product.id}</p>
                         </div>
                         <div>
                             <Label htmlFor="">Id Pemesan</Label>
-                            <p className="border p-2 rounded">123</p>
+                            <p className="border p-2 rounded">{product.id_user}</p>
                         </div>
                         <div className="h-full">
                             <Label htmlFor="">Items</Label>
-                            <p className="border h-full p-2 rounded">
-                            {menuItems.map((product) => (
-                                <p className="w-5">{product.value}</p>
-                            ))}
-                            </p>
+                            <div className="border h-full p-2 rounded">
+                                {items.map((item: any, index: number) => (
+                                    <p key={index}>{item.name} - Rp.{item.price} x {item.count}</p>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
                     <div className="flex flex-col w-1/2">
                         <div>
                             <Label htmlFor="">Harga Total</Label>
-                            <p className="border p-2 rounded">123</p>
+                            <p className="border p-2 rounded">Rp. {product.total.toFixed(2)}</p>
                         </div>
                         <div>
                             <Label htmlFor="">Alamat</Label>
-                            <p className="border p-2 rounded">123</p>
+                            <p className="border p-2 rounded">{product.alamat}</p>
                         </div>
                         <div>
                             <Label htmlFor="">No Telepon</Label>
-                            <p className="border p-2 rounded">123</p>
+                            <p className="border p-2 rounded">{product.no_telepon}</p>
                         </div>
                         <div>
                             <Label htmlFor="">Tanggal</Label>
-                            <p className="border p-2 rounded">123</p>
+                            <p className="border p-2 rounded">{new Date(product.tanggal).toLocaleDateString()}</p>
                         </div>
                     </div>
                 </div>
-                {error && <p className="text-red-500">{error}</p>}
                 <div className="flex justify-end gap-2 border-t pt-4 mt-4">
                     <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
-                        Cancel
-                    </Button>
-                    <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? 'Adding...' : 'Add'}
+                        Close
                     </Button>
                 </div>
-            </form>
+            </div>
         );
     };
 
@@ -149,7 +101,7 @@ export default function ButtonDetail() {
         return (
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
-                    <Button className=" bg-[#4ED4F1] w-[70px] text-white cursor-pointer rounded-full h-[20px] text-[12px]">
+                    <Button className="bg-[#4ED4F1] w-[70px] text-white cursor-pointer rounded-full h-[20px] text-[12px]">
                         Detail
                     </Button>
                 </DialogTrigger>
@@ -163,9 +115,9 @@ export default function ButtonDetail() {
     return (
         <Drawer open={open} onOpenChange={setOpen}>
             <DrawerTrigger asChild>
-                {/* <Button variant="outline" className="bg-[#F4F7FE] text-black">
-                    <Plus className="mr-2 h-4 w-4" /> Add
-                </Button> */}
+                <Button className="bg-[#4ED4F1] w-[70px] text-white cursor-pointer rounded-full h-[20px] text-[12px]">
+                    Detail
+                </Button>
             </DrawerTrigger>
             <DrawerContent>
                 <DrawerHeader className="text-left">
