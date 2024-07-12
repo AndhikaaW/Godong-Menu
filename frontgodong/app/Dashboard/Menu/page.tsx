@@ -168,7 +168,7 @@ export default function Menu() {
     };
     return (
         <div className="container">
-            <div className='flex justify-content-end sm:flex-row mt-5 me-4'>
+            <div className='flex justify-content-end sm:flex-row mt-5 me-4 sticky top-0 py-4 px-3 w-full bg-white z-10'>
                 <Input
                     type="search"
                     placeholder="Search"
