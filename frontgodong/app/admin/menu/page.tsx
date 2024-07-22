@@ -193,7 +193,7 @@ export default function Menu() {
                 {product.description}
               </TableCell>
               <TableCell className="hidden md:table-cell text-center">
-                {product.price}
+                Rp {product.price}
               </TableCell>
               <TableCell>
                 <div className="flex center flex-col gap-2 sm:flex-row">

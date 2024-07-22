@@ -81,7 +81,7 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
                 <div className="flex justify-between items-center w-full">
                   <div className="flex gap-2">
                     <Avatar className="h-5 w-5">
-                      <AvatarImage src="https://img.freepik.com/free-photo/curly-man-with-broad-smile-shows-perfect-teeth-being-amused-by-interesting-talk-has-bushy-curly-dark-hair-stands-indoor-against-white-blank-wall_273609-17092.jpg" />
+                      <AvatarImage src={userData.pictures} />
                       <AvatarFallback>Max Programming</AvatarFallback>
                     </Avatar>
                     <span className="align-self-center">{userData.nama}</span>

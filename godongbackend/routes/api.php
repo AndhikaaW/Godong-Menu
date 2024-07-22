@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\TransaksiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -55,3 +56,9 @@ Route::post('/upload-profile-picture', [UserController::class, 'uploadProfilePic
 Route::post('/cart', [CartController::class, 'store']);
 Route::get('/allcart', [CartController::class, 'index']);
 Route::delete('/cart/{id}', [CartController::class, 'destroy']);
+
+Route::post('/transaksi', [TransaksiController::class, 'store']);
+Route::get('/alltransaksi', [TransaksiController::class, 'index']);
+Route::delete('/transaksi/{id}', [TransaksiController::class, 'destroy']);
+Route::get('/transaksi/statistics', [TransaksiController::class, 'statistics']); 
+Route::post('/transaksi/date-range', [TransaksiController::class, 'getTransactionsByDateRange']);

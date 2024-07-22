@@ -80,12 +80,36 @@ export default function Menu() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [menu, setMenu] = useState<Menu[]>([]);
     const [cart, setCart] = useState<Cart[]>([]);
+    const [userData, setUserData] = useState<any>(null);
 
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [selectedProduct, setSelectedProduct] = useState<Menu | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
 
     const [notification, setNotification] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const userinfo = localStorage.getItem("user-info");
+            let email = userinfo ? userinfo.replace(/["]/g, "") : "";
+            if (!email) {
+                setError("Email tidak ditemukan di localStorage");
+                return;
+            }
+
+            try {
+                const response = await axios.get(
+                    `http://godongbackend.test/api/user/${email}`
+                );
+                setUserData(response.data);
+            } catch (err) {
+                setError("Gagal mengambil data user");
+                console.error(err);
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     const refreshCategories = useCallback(async () => {
         const categories = await fetchCategories();
@@ -153,7 +177,17 @@ export default function Menu() {
         const total = cart.reduce((total, item) => total + item.price * item.count, 0);
 
         try {
-            const response = await axios.post('http://godongbackend.test/api/cart', { value: JSON.stringify(cart), total });
+            const transactionData = {
+                id_user: userData.id,
+                nama: userData.nama,
+                no_telepon: userData.phone,
+                alamat: userData.address,
+                item: JSON.stringify(cart),
+                total: total,
+                tanggal: new Date().toISOString().split('T')[0]
+            };
+
+            const response = await axios.post('http://godongbackend.test/api/transaksi', transactionData);
             console.log(response.data);
             setNotification('Pesanan berhasil dibuat!');
             setCart([]);
@@ -167,8 +201,8 @@ export default function Menu() {
         setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
     };
     return (
-        <div className="container">
-            <div className='flex justify-content-end sm:flex-row mt-5 me-4 sticky top-0 py-4 px-3 w-full bg-white z-10'>
+        <div className="container ">
+            <div className='flex justify-content-end sm:flex-row mt-2 me-4 sticky top-0 py-3 px-3 w-full bg-white z-10'>
                 <Input
                     type="search"
                     placeholder="Search"
@@ -207,7 +241,7 @@ export default function Menu() {
                                             </div>
                                             <div key={item.id} className='flex justify-start align-items-center gap-2'>
                                                 <label htmlFor={`cart-item-price-${index}`}>{item.price}</label>
-                                                <Trash size={'20px'} onClick={() => handleDelete(item.id)} className="cursor-pointer"/>
+                                                <Trash size={'20px'} onClick={() => handleDelete(item.id)} className="cursor-pointer" />
                                             </div>
                                         </div>
                                     </Card>
@@ -221,7 +255,7 @@ export default function Menu() {
                                         <label htmlFor="total">Total pesanan anda</label>
                                     </div>
                                     <div className='flex justify-center align-items-center gap-3'>
-                                        <label htmlFor="price">Rp. {cart.reduce((total, item) => total + item.price * item.count, 0)}</label>
+                                        <label htmlFor="price">Rp {cart.reduce((total, item) => total + item.price * item.count, 0)}</label>
                                     </div>
                                 </div>
                             </Card>
@@ -291,7 +325,7 @@ export default function Menu() {
                         </CardContent>
                         <CardFooter className="flex sm:flex-row flex-col">
                             <div className="flex items-center sm:w-full mb-2">
-                                <p className="mb-0 text-sm fw-bold">Rp.{product.price}</p>
+                                <p className="mb-0 text-sm fw-bold">Rp {product.price}</p>
                             </div>
                             <div className="flex items-center">
                                 <Dialog>
@@ -368,17 +402,17 @@ const ProductCard: React.FC<{ product: Menu, onAddToCart: (product: Menu, quanti
     };
 
     const handleAddToCart = () => {
-        if (count === 0) return;
         onAddToCart(product, count);
+        alert("pesanan anda ditambahkan ke keranjang")
     };
 
     return (
         <div className="text-black m-3">
             <h5>{product.name}</h5>
-            <label htmlFor="price">Rp.{product.price}</label>
+            <label htmlFor="price">Rp {product.price}</label>
             <div className="flex justify-between pt-3 pb-2">
                 <label>Total Price</label>
-                <label>Rp.{totalPrice}</label>
+                <label>Rp {totalPrice}</label>
             </div>
             <div className="flex justify-between">
                 <div className="flex items-center text-black">
@@ -391,10 +425,21 @@ const ProductCard: React.FC<{ product: Menu, onAddToCart: (product: Menu, quanti
                     />
                     <CiSquarePlus size={'40px'} onClick={handleIncrement} />
                 </div>
-                <DialogClose>
-                    <Button type="submit" className="bg-[#6CC765] text-white flex-grow ms-4" onClick={handleAddToCart}>Add to Cart</Button>
-                </DialogClose>
+                {/* <DialogClose> */}
+                    <Button
+                        type="submit"
+                        className={`bg-[#6CC765] text-white flex-grow ms-4 ${count === 0 ? 'cursor-not-allowed opacity-50' : ''}`}
+                        onClick={handleAddToCart}
+                        disabled={count === 0}
+                    >
+                        Add to Cart
+                    </Button>
+                {/* </DialogClose> */}
             </div>
         </div>
     );
 };
+function setError(arg0: string) {
+    throw new Error("Function not implemented.");
+}
+

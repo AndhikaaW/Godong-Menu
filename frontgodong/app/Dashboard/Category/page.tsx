@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from 'next/link'
-// import { LucideIcon } from "lucide-react";
-// import { CupSoda, Pen, Plus, Popcorn, Search, Trash2, Upload, UtensilsCrossed, Cake } from "lucide-react";
 import axios from "axios";
 
 interface Categories {
@@ -25,14 +23,6 @@ function Categorypage() {
 
         fetchUsers();
     }, []);
-
-    // const [products, setProducts] = useState<Product[]>([
-    //     {
-    //         name: "Makanan",
-    //         icon: UtensilsCrossed,
-    //         description: "Kategori Makanan Untuk seperti Nasgor dkk",
-    //     }
-    // ]);
     return (
 
         <div className='surface-0 p-lg-5 vh-100 '>
