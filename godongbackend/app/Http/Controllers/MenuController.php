@@ -1,37 +1,65 @@
 <?php
 
-// app/Http/Controllers/MenuItemController.php
-
 namespace App\Http\Controllers;
 
 use App\Models\MenuItem;
+use App\Models\Categories;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class MenuController extends Controller
 {
+    function generateKodeBarang() {
+        $prefix = 'BRG';  // You can change this prefix as needed
+        $lastMenuItem = MenuItem::orderBy('kode_menu', 'desc')->first();
+    
+        if (!$lastMenuItem) {
+            // If no menu items exist, start with MENU0000000001
+            $nextNumber = 1;
+        } else {
+            $lastNumber = substr($lastMenuItem->kode_menu, 3); // Remove the prefix
+            $nextNumber = intval($lastNumber) + 1;
+        }
+    
+        // Keep incrementing until we find an unused kode_menu
+        do {
+            $kodeMenu = $prefix . str_pad($nextNumber, 12, '0', STR_PAD_LEFT);
+            $nextNumber++;
+        } while (MenuItem::where('kode_menu', $kodeMenu)->exists());
+    
+        return $kodeMenu;
+    }
     public function store(Request $request)
     {
-        // Validasi input
+        // Validate input
         $validator = Validator::make($request->all(), [
-            'id' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255',
+            'name' => 'required|string',
             'price' => 'required|numeric',
-            'image' => 'nullable|string', // Changed to string
+            'diskon_persen' => 'nullable|numeric',
+            'diskon_rupiah' => 'nullable|numeric',
             'description' => 'nullable|string',
+            'image' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Buat data menu item baru
+        try {
+            $kodeBarang = $this->generateKodeBarang();
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
         $menuItem = MenuItem::create([
-            'id' => $request->id,
+            'id'=>0,
+            'kode_menu' => $kodeBarang,
             'category_id' => $request->category_id,
             'name' => $request->name,
             'price' => $request->price,
+            'diskon_persen' => $request->diskon_persen,
+            'diskon_rupiah' => $request->diskon_rupiah,
             'image' => $request->image,
             'description' => $request->description,
         ]);
@@ -44,34 +72,37 @@ class MenuController extends Controller
         $menuItems = MenuItem::all();
         return response()->json($menuItems);
     }
-    public function destroy($id)
-    {
-        $menuItem = MenuItem::findOrFail($id);
-        $menuItem->delete();
 
+    public function destroy($kode_menu)
+    {
+        $menuItem = MenuItem::where('kode_menu', $kode_menu)->firstOrFail();
+        $menuItem->delete();
+    
         return response()->json(['message' => 'Menu item deleted successfully'], 200);
-    }
+    }    
+
     public function update(Request $request)
     {
         // Validate the request
         $validator = Validator::make($request->all(), [
-            'id' => 'nullable|numeric',
-            'category_id' => 'nullable|exists:categories,id',
-            'name' => 'nullable|string|max:255',
-            'price' => 'nullable|numeric',
-            'image' => 'nullable|string',
+            'kode_menu'=>'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string',
+            'price' => 'required|numeric',
+            'diskon_persen' => 'nullable|numeric',
+            'diskon_rupiah' => 'nullable|numeric',
             'description' => 'nullable|string',
+            'image' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
+        
         // Find the menu item
-        $menuItem = MenuItem::find($request->id);
-
+        $menuItem = MenuItem::where('kode_menu', $request->kode_menu)->first();
         if (!$menuItem) {
-            return response()->json(['message' => 'Menu item not found'], 404);
+            return response()->json(['message' => $request->kode_menu], 404);
         }
 
         // Update the menu item
@@ -90,9 +121,14 @@ class MenuController extends Controller
         if ($request->has('description')) {
             $menuItem->description = $request->description;
         }
-
+        if ($request->has('diskon_persen')) {
+            $menuItem->diskon_persen = $request->diskon_persen;
+        }
+        if ($request->has('diskon_rupiah')) {
+            $menuItem->diskon_rupiah = $request->diskon_rupiah;
+        }
         $menuItem->save();
-
         return response()->json(['message' => 'Menu item updated successfully', 'menuItem' => $menuItem], 200);
     }
 }
+

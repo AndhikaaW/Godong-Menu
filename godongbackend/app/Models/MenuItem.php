@@ -9,15 +9,16 @@ class MenuItem extends Model
 {
     use HasFactory;
 
-    // protected $fillable = [
-    //     'id',
-    //     'category_id',
-    //     'name',
-    //     'price',
-    //     'image',
-    //     'description',
-    // ];
-    protected $fillable = ['id', 'category_id', 'name', 'price', 'image','description'];
+    protected $fillable = [
+        'kode_menu',
+        'category_id',
+        'name',
+        'price',
+        'diskon_persen',
+        'diskon_rupiah',
+        'description',
+        'image',
+    ];
 
     public $timestamps=false;
 }
