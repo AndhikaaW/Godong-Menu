@@ -4,6 +4,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DetailTransaksiController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\TransaksiController;
@@ -48,7 +49,7 @@ Route::delete('/contact/{id}', [ContactController::class, 'destroy']);
 
 Route::post('/menu-items', [MenuController::class, 'store']);
 Route::get('/menu-items', [MenuController::class, 'index']);
-Route::delete('/menu-items/{id}', [MenuController::class, 'destroy']);
+Route::delete('/menu-items/{kode_menu}', [MenuController::class, 'destroy']);
 Route::post('/editmenu', [MenuController::class, 'update']);
 
 Route::post('/upload-profile-picture', [UserController::class, 'uploadProfilePicture']);
@@ -62,3 +63,6 @@ Route::get('/alltransaksi', [TransaksiController::class, 'index']);
 Route::delete('/transaksi/{id}', [TransaksiController::class, 'destroy']);
 Route::get('/transaksi/statistics', [TransaksiController::class, 'statistics']); 
 Route::post('/transaksi/date-range', [TransaksiController::class, 'getTransactionsByDateRange']);
+
+Route::get('/detail-transaksi', [DetailTransaksiController::class, 'index']);
+Route::get('/detail-transaksi/{faktur}', [DetailTransaksiController::class, 'showByFaktur']);
