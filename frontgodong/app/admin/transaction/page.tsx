@@ -15,12 +15,10 @@ import ButtonDetail from "@/components/detailButton";
 import axios from "axios";
 
 interface Product {
-  id: number;
+  faktur: string;
   id_user: number;
-  nama: string;
   no_telepon: string;
   alamat: string;
-  item: string; // JSON string
   tanggal: string;
   total: number;
 }
@@ -29,6 +27,14 @@ export default function TransactionPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
 
+  function formatCurrency(value : number) {
+    return value.toLocaleString('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).replace('Rp', 'Rp.').trim();
+  }  
   useEffect(() => {
     async function fetchTransaksi() {
       try {
@@ -45,26 +51,16 @@ export default function TransactionPage() {
   const onGetExportProduct = async (title = 'Export', worksheetname = 'Sheet1') => {
     try {
       setLoading(true);
-      // Assuming you fetch data from an API and store it in products
-      // const response = await axios.get("http://godongbackend.test/api/contactcol");
-      // const products = response.data;
   
       if (products && Array.isArray(products)) {
         const dataToExport = products.map((pro) => {
-          // Parsing the JSON items and joining them into a single string
-          const parsedItems = JSON.parse(pro.item);
-          const itemsString = parsedItems.map((item:any) => {
-            return `Name: ${item.name}, Quantity: ${item.count}, Price: ${item.price}`;
-          }).join('\n'); // Joining with newline for readability
-  
           return {
-            id: pro.id,
+            faktur: pro.faktur,
             id_user: pro.id_user,
             no_telepon: pro.no_telepon,
             alamat: pro.alamat,
             tanggal: pro.tanggal,
             total: pro.total,
-            items: itemsString,
           };
         });
   
@@ -122,19 +118,10 @@ export default function TransactionPage() {
         <TableHeader>
           <TableRow>
             <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300">
-              ID Order
+              Faktur
             </TableHead>
             <TableHead className="text-[13px] w-[90px] p-0 text-black text-center bg-gray-300">
               ID Pemesan
-            </TableHead>
-            <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
-              Nama
-            </TableHead>
-            <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
-              Alamat
-            </TableHead>
-            <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
-              No Telepon
             </TableHead>
             <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 sm:table-cell">
               Total
@@ -149,24 +136,15 @@ export default function TransactionPage() {
         </TableHeader>
         <TableBody>
           {products.map((product) => (
-            <TableRow key={product.id}>
+            <TableRow key={product.faktur}>
               <TableCell className="text-blue-500 text-[12px] text-center">
-                {product.id}
+                {product.faktur}
               </TableCell>
               <TableCell className="text-blue-500 text-[12px] text-center">
                 {product.id_user}
               </TableCell>
-              <TableCell className="text-[12px] text-center">
-                {product.nama}
-              </TableCell>
-              <TableCell className="text-center hidden text-[12px] sm:table-cell">
-                {product.alamat}
-              </TableCell>
-              <TableCell className="text-center text-[12px] hidden md:table-cell">
-                {product.no_telepon}
-              </TableCell>
               <TableCell className="text-center hidden text-[12px] md:table-cell">
-                Rp. {product.total.toFixed(2)}
+              {formatCurrency(product.total)}
               </TableCell>
               <TableCell className="text-center text-[12px] hidden md:table-cell">
                 {new Date(product.tanggal).toLocaleDateString()}

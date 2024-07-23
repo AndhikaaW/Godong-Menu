@@ -11,11 +11,14 @@ export default function MenuLayout({
   children: React.ReactNode
 }) {
   return (
-   <div className='w-full'>
-    {/* <Nav/> */}
-    <div className='lg:mx-10 '>
-      {children}
-    </div>
-   </div>
+  //  <div className='w-full bg-black'>
+  //   {/* <Nav/> */}
+  //   <div className='lg:mx-10 '>
+      
+  //   </div>
+  //  </div>
+  <div>
+    {children}
+  </div>
   )
 }

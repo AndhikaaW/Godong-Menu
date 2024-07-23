@@ -1,3 +1,5 @@
+// components/AddButton.tsx
+
 import {
   Dialog,
   DialogContent,
@@ -16,8 +18,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Label } from "@/components/ui/label";
-import bg from "../public/bg-login.png";
-import { Plus, Upload, UploadCloud } from "lucide-react";
+import { Plus } from "lucide-react";
 import React, { useState, ChangeEvent, useEffect } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -36,30 +37,35 @@ import {
 import Image from "next/image";
 import axios from "axios";
 import { AspectRatio } from "./ui/aspect-ratio";
+
 interface ButtonAddProps {
   onMenuAdded: () => void;
 }
 
-export default function AddButton({
-  onMenuAdded: onMenuAdded,
-}: ButtonAddProps) {
+export default function AddButton({ onMenuAdded }: ButtonAddProps) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [error, setError] = useState<string | null>(null);
+
   const AddCategoryForm = ({ className }: React.ComponentProps<"form">) => {
     const [categories, setCategories] = useState<{ id: string; name: string }[]>(
       []
     );
     const [base64Image, setBase64Image] = useState<string | null>(null);
     const [imagePreview, setImagePreview] = useState<string>("");
+    const [price, setPrice] = useState<string>("");
+    const [discountPercent, setDiscountPercent] = useState<string>("");
+    const [discountAmount, setDiscountAmount] = useState<string>("");
+    const [discountPercentError, setDiscountPercentError] = useState<string | null>(null);
+    const [discountAmountError, setDiscountAmountError] = useState<string | null>(null);
+
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64String = reader.result as string;
-          // Remove the prefix from the base64 string
           const base64WithoutPrefix = base64String.replace(/^data:image\/\w+;base64,/, '');
           setBase64Image(base64WithoutPrefix);
           setImagePreview(URL.createObjectURL(file));
@@ -67,36 +73,70 @@ export default function AddButton({
         reader.readAsDataURL(file);
       }
     };
+
+    const handlePriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+      setPrice(e.target.value);
+      setDiscountPercent("");
+      setDiscountAmount("");
+      setDiscountPercentError(null);
+      setDiscountAmountError(null);
+    };
+
+    const handleDiscountPercentChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      if (parseInt(value) > 100) {
+        setDiscountPercentError("Discount percent cannot exceed 100%");
+        setDiscountPercent("100");
+      } else {
+        setDiscountPercent(value);
+        setDiscountPercentError(null);
+        if (price && value) {
+          const discount = (parseInt(price) * parseInt(value)) / 100;
+          setDiscountAmount(discount.toFixed(2));
+        }
+      }
+    };
+    
+    const handleDiscountAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      if (price && parseInt(value) > parseInt(price)) {
+        setDiscountAmountError("Discount amount cannot exceed the price");
+        setDiscountAmount(price);
+      } else {
+        setDiscountAmount(value);
+        setDiscountAmountError(null);
+        if (price && value) {
+          const discount = (parseInt(value) / parseInt(price)) * 100;
+          setDiscountPercent(discount.toFixed(2));
+        }
+      }
+    };
+    
+
     const [selectedCategoryId, setSelectedCategoryId] = useState("");
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(
-          "http://godongbackend.test/api/categories"
-        );
+        const response = await axios.get("http://godongbackend.test/api/categories");
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
+
     useEffect(() => {
       fetchCategories();
     }, []);
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       setIsSubmitting(true);
 
       const formData = new FormData(event.currentTarget);
-
-      // Remove the file input from formData
       formData.delete('image');
-
-      // Add the base64 image string if it exists
       if (base64Image) {
         formData.append('image', base64Image);
       }
-      // for (const pair of formData.entries()) {
-      //   console.log(`${pair[0]}: ${pair[1]}`);
-      // }
+
       try {
         const response = await axios.post(
           "http://godongbackend.test/api/menu-items",
@@ -113,26 +153,19 @@ export default function AddButton({
         onMenuAdded();
       } catch (error) {
         console.error("Error adding menu item:", error);
-        // Handle error
+        setError("Error adding menu item. Please try again.");
       } finally {
         setIsSubmitting(false);
       }
     };
+
     return (
       <form
         onSubmit={handleSubmit}
-        className={cn("flex flex-row gap-4 w-full", className)}>
+        className={cn("flex flex-row gap-4 w-full", className)}
+      >
         <div className="w-1/3">
           <div className="flex flex-col gap-2">
-            <div>
-              <Label htmlFor="id">ID Menu</Label>
-              <Input
-                id="id"
-                name="id"
-                className="rounded-xl"
-                placeholder="Id of Menu"
-              />
-            </div>
             <div>
               <Label htmlFor="category_id">Id Category</Label>
               <Select
@@ -171,16 +204,42 @@ export default function AddButton({
               <Input
                 id="price"
                 name="price"
+                value={price}
+                onChange={handlePriceChange}
                 className="rounded-xl"
                 placeholder="Price of Menu"
               />
+            </div>
+            <div>
+              <Label htmlFor="diskon_persen">Diskon Persen</Label>
+              <Input
+                id="diskon_persen"
+                name="diskon_persen"
+                value={discountPercent}
+                onChange={handleDiscountPercentChange}
+                className="rounded-xl"
+                placeholder="Diskon Persen"
+              />
+              {discountPercentError && <p className="text-red-500">{discountPercentError}</p>}
+            </div>
+            <div>
+              <Label htmlFor="diskon_rupiah">Diskon Rupiah</Label>
+              <Input
+                id="diskon_rupiah"
+                name="diskon_rupiah"
+                value={discountAmount}
+                onChange={handleDiscountAmountChange}
+                className="rounded-xl"
+                placeholder="Diskon Rupiah"
+              />
+              {discountAmountError && <p className="text-red-500">{discountAmountError}</p>}
             </div>
           </div>
         </div>
         <div className="w-1/3">
           <div className="flex flex-col gap-2 w-full">
             <div>
-              <Label htmlFor="omage">Image</Label>
+              <Label htmlFor="image">Image</Label>
               <Input
                 id="image"
                 name="image"
@@ -193,7 +252,7 @@ export default function AddButton({
               <div className="w-full h-[155px] p-3 bg-white mt-2 rounded-xl justify-center items-center flex border border-gray-400">
                 <AspectRatio ratio={16 / 9} className="bg-muted">
                   <Image
-                    className="rounded-xl "
+                    className="rounded-xl"
                     fill
                     src={imagePreview}
                     alt="Preview"
@@ -241,10 +300,10 @@ export default function AddButton({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button variant="outline" className="bg-[#F4F7FE] text-black rounded-full hover:bg-gray-300">
-            <Plus className="mr-2 h-4 w-4 " /> Add
+            <Plus className="mr-2 h-4 w-4" /> Add
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[900px] sm:max--[500px] bg-light ">
+        <DialogContent className="sm:max-w-[900px] sm:max--[500px] bg-light">
           <Content>
             <AddCategoryForm />
           </Content>
@@ -265,15 +324,20 @@ export default function AddButton({
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Add Category</DrawerTitle>
+          <DrawerTitle>Add Menu</DrawerTitle>
         </DrawerHeader>
         <Content>
           <AddCategoryForm className="px-4" />
         </Content>
-        <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+        <DrawerFooter>
+          <DrawerClose>
+            <Button type="button" variant="secondary">
+              Cancel
+            </Button>
           </DrawerClose>
+          <Button type="submit" form="my-form" disabled={isSubmitting}>
+            {isSubmitting ? "Adding..." : "Add"}
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

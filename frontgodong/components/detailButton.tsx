@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -18,14 +18,22 @@ import { Label } from "@/components/ui/label";
 import { Button } from "./ui/button";
 import { useMediaQuery } from "usehooks-ts";
 import { cn } from "@/lib/utils";
+import axios from "axios";
 
 interface Product {
-  id: number;
+  faktur: string;
   id_user: number;
   no_telepon: string;
   alamat: string;
-  item: string; // JSON string
   tanggal: string;
+  total: number;
+}
+
+interface Items {
+  id: number;
+  faktur: string;
+  kode_menu: string;
+  jumlah: number;
   total: number;
 }
 
@@ -34,97 +42,121 @@ interface ButtonDetailProps {
 }
 
 export default function ButtonDetail({ product }: ButtonDetailProps) {
-    const [open, setOpen] = useState(false);
-    const isDesktop = useMediaQuery("(min-width: 768px)");
-
-    const AddDetailForm = ({ className }: React.ComponentProps<"form">) => {
-        const items = JSON.parse(product.item);
-        
-        return (
-            <div className={cn("grid items-start gap-4 w-full", className)}>
-                <div className="flex flex-row w-full gap-2">
-                    <div className="flex flex-col w-1/2 ">
-                        <div className="mb-3">
-                            <Label htmlFor="id">Order ID</Label>
-                            <p className="border p-2 rounded">{product.id}</p>
-                        </div>
-                        <div>
-                            <Label htmlFor="">Id Pemesan</Label>
-                            <p className="border p-2 rounded">{product.id_user}</p>
-                        </div>
-                        <div className="h-full">
-                            <Label htmlFor="">Items</Label>
-                            <div className="border h-full p-2 rounded">
-                                {items.map((item: any, index: number) => (
-                                    <p key={index}>{item.name} - Rp.{item.price} x {item.count}</p>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col w-1/2">
-                        <div>
-                            <Label htmlFor="">Harga Total</Label>
-                            <p className="border p-2 rounded">Rp. {product.total.toFixed(2)}</p>
-                        </div>
-                        <div>
-                            <Label htmlFor="">Alamat</Label>
-                            <p className="border p-2 rounded">{product.alamat}</p>
-                        </div>
-                        <div>
-                            <Label htmlFor="">No Telepon</Label>
-                            <p className="border p-2 rounded">{product.no_telepon}</p>
-                        </div>
-                        <div>
-                            <Label htmlFor="">Tanggal</Label>
-                            <p className="border p-2 rounded">{new Date(product.tanggal).toLocaleDateString()}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="flex justify-end gap-2 border-t pt-4 mt-4">
-                    <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
-                        Close
-                    </Button>
-                </div>
-            </div>
-        );
-    };
-
-    const Content = () => (
-        <div className="grid gap-4 py-4">
-            <DialogTitle>Detail Transaction</DialogTitle>
-            <AddDetailForm />
-        </div>
-    );
-
-    if (isDesktop) {
-        return (
-            <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger asChild>
-                    <Button className="bg-[#4ED4F1] w-[70px] text-white cursor-pointer rounded-full h-[20px] text-[12px]">
-                        Detail
-                    </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[900px] sm:max--[500px] bg-[#F4F7FE]">
-                    <Content />
-                </DialogContent>
-            </Dialog>
-        );
+  const [open, setOpen] = useState(false);
+  const [item, setItems] = useState<Items[]>([]);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  function formatCurrency(value : number) {
+    return value.toLocaleString('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).replace('Rp', 'Rp.').trim();
+  }  
+  useEffect(() => {
+    async function fetchDetailTransaksi(faktur: string) {
+      try {
+        const response = await axios.get(`http://godongbackend.test/api/detail-transaksi/${faktur}`);
+        setItems(response.data);
+      } catch (error) {
+        console.error("Error fetching transaksi:", error);
+      }
     }
+    if (open) {
+      fetchDetailTransaksi(product.faktur);
+    }
+  }, [open, product.faktur]);
 
+  const AddDetailForm = ({ className }: React.ComponentProps<"form">) => {
     return (
-        <Drawer open={open} onOpenChange={setOpen}>
-            <DrawerTrigger asChild>
-                <Button className="bg-[#4ED4F1] w-[70px] text-white cursor-pointer rounded-full h-[20px] text-[12px]">
-                    Detail
-                </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-                <DrawerHeader className="text-left">
-                    <DrawerTitle>Detail Transaction</DrawerTitle>
-                </DrawerHeader>
-                <Content />
-            </DrawerContent>
-        </Drawer>
+      <div className={cn("grid items-start gap-4 w-full", className)}>
+        <div className="flex flex-row w-full gap-2">
+          <div className="flex flex-col w-1/2 ">
+            <div className="mb-3">
+              <Label htmlFor="id">Faktur</Label>
+              <p className="border p-2 rounded">{product.faktur}</p>
+            </div>
+            <div>
+              <Label htmlFor="">Id Pemesan</Label>
+              <p className="border p-2 rounded">{product.id_user}</p>
+            </div>
+            <div className="h-full">
+              <Label htmlFor="">Items</Label>
+              <div className="border h-[100px] p-2 rounded overflow-auto">
+              <p>Pesanan : </p>
+                {item.map((items) => (
+                  <div key={items.id} className="mb-2 p-2 border-b-4">
+                    <p>{items.kode_menu}  x  {items.jumlah} = {formatCurrency(items.total)}</p>
+                    {/* <p>Jumlah: {items.jumlah}</p>
+                    <p>Total: {formatCurrency(items.total)}</p> */}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col w-1/2">
+            <div>
+              <Label htmlFor="">Harga Total</Label>
+              <p className="border p-2 rounded">Rp. {product.total.toFixed(2)}</p>
+            </div>
+            <div>
+              <Label htmlFor="">Alamat</Label>
+              <p className="border p-2 rounded">{product.alamat}</p>
+            </div>
+            <div>
+              <Label htmlFor="">No Telepon</Label>
+              <p className="border p-2 rounded">{product.no_telepon}</p>
+            </div>
+            <div>
+              <Label htmlFor="">Tanggal</Label>
+              <p className="border p-2 rounded">{new Date(product.tanggal).toLocaleDateString()}</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-end gap-2 border-t pt-4 mt-4">
+          <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
+            Close
+          </Button>
+        </div>
+      </div>
     );
+  };
+
+  const Content = () => (
+    <div className="grid gap-4 py-4">
+      <DialogTitle>Detail Transaction</DialogTitle>
+      <AddDetailForm />
+    </div>
+  );
+
+  if (isDesktop) {
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button className="bg-[#4ED4F1] w-[70px] text-white cursor-pointer rounded-full h-[20px] text-[12px]">
+            Detail
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[900px] sm:max-w-[500px] bg-[#F4F7FE]">
+          <Content />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger asChild>
+        <Button className="bg-[#4ED4F1] w-[70px] text-white cursor-pointer rounded-full h-[20px] text-[12px]">
+          Detail
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Detail Transaction</DrawerTitle>
+        </DrawerHeader>
+        <Content />
+      </DrawerContent>
+    </Drawer>
+  );
 }

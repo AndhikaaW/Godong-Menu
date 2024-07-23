@@ -61,11 +61,11 @@ export default function SidebarMobile(props: SidebarMobileProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" className="p-0 fixed top-3 left-3">
+        <Button variant="ghost" className="p-0 fixed top-3 left-3 ">
           <Menu size={20} />
         </Button>
       </SheetTrigger>
-      <SheetContent hideClose className="px-3 py-4 " side="left">
+      <SheetContent hideClose className="px-3 py-4" side="left">
         <SheetHeader className="flex flex-row justify-between items-center space-y-0">
           <span className="text-lg font-semibold text-foreground mx-3">
             Godong Menu
