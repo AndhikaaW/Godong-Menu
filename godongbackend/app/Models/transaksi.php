@@ -9,5 +9,5 @@ class transaksi extends Model
 {
     use HasFactory;
     public $timestamps=false;
-    protected $fillable = ['id_user', 'no_telepon', 'alamat','item','total','tanggal'];
+    protected $fillable = ['id_user', 'nama','no_telepon', 'alamat','item','total','tanggal'];
 }

@@ -32,7 +32,7 @@ class MenuController extends Controller
             'category_id' => $request->category_id,
             'name' => $request->name,
             'price' => $request->price,
-            'image' => $request->image, // Directly assign the base64 string
+            'image' => $request->image,
             'description' => $request->description,
         ]);
 
@@ -59,7 +59,7 @@ class MenuController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'name' => 'nullable|string|max:255',
             'price' => 'nullable|numeric',
-            'image' => 'nullable|string', // Assuming image is sent as base64 string
+            'image' => 'nullable|string',
             'description' => 'nullable|string',
         ]);
 

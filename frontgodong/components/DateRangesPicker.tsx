@@ -21,11 +21,11 @@ import {
 
 export function DateRangePicker({ className, onDateRangeChange }: { className?: string, onDateRangeChange: (dateRange: DateRange | undefined) => void }) {
   const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2024, 3, 27),
-    to: addDays(new Date(2024, 3, 27), 3),
+    from: new Date(2024, 0, 1),
+    to: addDays(new Date(2024, 6, 28), 3),
   });
 
-  const [month, setMonth] = React.useState(new Date(2024, 3))
+  const [month, setMonth] = React.useState(new Date(2024, 6))
 
   const years = Array.from({ length: 10 }, (_, i) => 2020 + i)
   const months = [

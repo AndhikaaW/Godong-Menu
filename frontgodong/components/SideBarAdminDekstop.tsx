@@ -24,7 +24,7 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const userinfo = localStorage.getItem('user-info');
+      const userinfo = localStorage.getItem('admin-info');
       let email = userinfo!.replace(/["]/g, '')
       if (!email) {
         setError('Email tidak ditemukan di localStorage');
@@ -78,7 +78,7 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
             })}
           </div>
         </div>
-        <div className="border-t">
+        <div className=" left-0 bottom-1 w-full border-top p-1">
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" className="w-full justify-start">

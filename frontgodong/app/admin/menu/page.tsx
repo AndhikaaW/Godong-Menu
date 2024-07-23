@@ -27,12 +27,14 @@ import axios from "axios";
 import EditButton from "@/components/editButtonMenu";
 
 interface Menu {
-  id: string;
+  kode_menu: string;
   category_id: string;
   name: string;
   image: string;
   description: string;
   price: string;
+  diskon_persen: string;
+  diskon_rupiah: string;
 }
 
 const fetchMenu = async (): Promise<Menu[]> => {
@@ -40,8 +42,8 @@ const fetchMenu = async (): Promise<Menu[]> => {
   return response.data;
 };
 
-const deleteMenu = async (id: string): Promise<void> => {
-  await axios.delete(`http://godongbackend.test/api/menu-items/${id}`);
+const deleteMenu = async (kode_menu: string): Promise<void> => {
+  await axios.delete(`http://godongbackend.test/api/menu-items/${kode_menu}`);
 };
 
 export default function Menu() {
@@ -59,11 +61,11 @@ export default function Menu() {
     refreshMenu();
   }, [refreshMenu]);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (kode_menu: string) => {
     try {
-      await deleteMenu(id);
-      setMenu(menu.filter((product) => product.id !== id));
-      console.log(`Deleted menu item with id: ${id}`);
+      await deleteMenu(kode_menu);
+      setMenu(menu.filter((product) => product.kode_menu !== kode_menu));
+      console.log(`Deleted menu item with id: ${kode_menu}`);
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to delete menu item:", error);
@@ -172,8 +174,8 @@ export default function Menu() {
         </TableHeader>
         <TableBody>
           {filteredMenu.map((product) => (
-            <TableRow key={product.id}>
-              <TableCell className="text-blue-500">{product.id}</TableCell>
+            <TableRow key={product.kode_menu}>
+              <TableCell className="text-blue-500">{product.kode_menu}</TableCell>
               <TableCell className="text-blue-500 hidden sm:table-cell">
                 {product.category_id}
               </TableCell>
@@ -193,11 +195,11 @@ export default function Menu() {
                 {product.description}
               </TableCell>
               <TableCell className="hidden md:table-cell text-center">
-                {product.price}
+                Rp {product.price}
               </TableCell>
               <TableCell>
                 <div className="flex center flex-col gap-2 sm:flex-row">
-                  <EditButton menu={product} onMenuEditted={refreshMenu} />
+                  <EditButton menu={product} onMenuEdited={refreshMenu} />
                   <Dialog open={isModalOpen} onOpenChange={(open) => setIsModalOpen(open)}>
                     <DialogTrigger asChild>
                       <Button
@@ -219,7 +221,7 @@ export default function Menu() {
                         <Button onClick={() => setIsModalOpen(false)}>
                           Cancel
                         </Button>
-                        <Button className="bg-red-700 text-white" onClick={() => handleDelete(selectedMenu!.id)}>
+                        <Button className="bg-red-700 text-white" onClick={() => handleDelete(selectedMenu!.kode_menu)}>
                           Delete
                         </Button>
                       </DialogFooter>

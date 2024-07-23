@@ -79,7 +79,7 @@ function Profilepage() {
             if (response.data.success) {
                 setUserData({ ...userData, pictures: response.data.image_url });
                 alert("Profile picture updated successfully!");
-                setIsDialogOpen(false);  // Close the dialog after successful upload
+                setIsDialogOpen(false);
             } else {
                 throw new Error("Image upload failed");
             }

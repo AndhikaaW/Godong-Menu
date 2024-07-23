@@ -15,9 +15,7 @@ export default function DashboardLayout({
   return (
     <div className="flex items-start justify-between" style={{overflow:"hidden"}}>
       <div className='fixed w-[300px] '><Sidebar/></div>
-     
-
-    <main className=' overflow-auto sm:ml-[260px] w-screen h-screen sm:p-0 p-10'>
+    <main className=' overflow-auto sm:ml-[260px] w-screen h-screen sm:p-0 ps-4 pe-2'>
       {children}
     </main>
   </div>

@@ -57,12 +57,12 @@ export default function Login() {
         }
       );
 
-      localStorage.setItem("user-info", JSON.stringify(email));
-
       if (response.data.success) {
         if (response.data.status === 2) {
+          localStorage.setItem("user-info", JSON.stringify(email));
           navigate.push("/dashboard/home");
         } else if (response.data.status === 1) {
+          localStorage.setItem("admin-info", JSON.stringify(email));
           navigate.push("/admin");
         } else {
           setShowAlert(true);
