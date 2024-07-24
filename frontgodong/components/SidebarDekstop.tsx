@@ -90,14 +90,12 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
                 </div>
               </PopoverTrigger>
             </Button>
-            <PopoverContent className="mb-2 w-56 p-3 rounded-[1rem]">
-              <div className="space-y-1">
+            <PopoverContent className="mb-2 w-auto h-auto p-3 rounded-[1rem]">
                 <Link href='/'>
-                  <SideBarButton size="sm" icon={LogOut} className="w-full">
+                  <SideBarButton size="sm" icon={LogOut} className="w-[200px] h-[35px] animate-none hover:animate-spin border-[1px] bg-[#61AB5B] text-white">
                     Log Out
                   </SideBarButton>
                 </Link>
-              </div>
             </PopoverContent>
           </Popover>
         </div>

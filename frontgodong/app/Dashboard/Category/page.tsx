@@ -20,7 +20,6 @@ function Categorypage() {
                 console.error('There was an error fetching the users!', error);
             }
         };
-
         fetchUsers();
     }, []);
     return (

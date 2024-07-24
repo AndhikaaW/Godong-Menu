@@ -89,4 +89,26 @@ public function getTransactionsByDateRange(Request $request)
 
     return response()->json($transactions);
 }
+public function getTransactionByUser($id){
+    $transaction = total_penjualan::where('id_user',$id)->get();
+    return response()->json($transaction);
+}
+public function getTransactionByUserWithDetails($id)
+{
+    $transactions = total_penjualan::where('id_user', $id)->get();
+
+    $transactionsWithDetails = $transactions->map(
+        function ($transaction) {
+        $details = detail_penjualan::where('faktur', $transaction->faktur)
+            ->join('menu_items', 'detail_penjualan.kode_menu', '=', 'menu_items.kode_menu')
+            ->select('detail_penjualan.*', 'menu_items.name as menu_name', 'menu_items.image')
+            ->get();
+        $transaction->details = $details;
+        $transaction->main_item = $details->first();
+        $transaction->other_items_count = $details->count() - 1;
+        return $transaction;
+    });
+
+    return response()->json($transactionsWithDetails);
+}
 }
