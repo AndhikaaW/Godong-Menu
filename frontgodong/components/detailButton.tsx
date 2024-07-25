@@ -56,7 +56,7 @@ export default function ButtonDetail({ product }: ButtonDetailProps) {
   useEffect(() => {
     async function fetchDetailTransaksi(faktur: string) {
       try {
-        const response = await axios.get(`http://godongbackend.test/api/detail-transaksi/${faktur}`);
+        const response = await axios.get(`http://192.168.200.100:8000/api/detail-transaksi/${faktur}`);
         setItems(response.data);
       } catch (error) {
         console.error("Error fetching transaksi:", error);

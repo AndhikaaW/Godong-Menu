@@ -39,7 +39,7 @@ export default function SignUp() {
     setIsLoading(true);
     try {
       let response = await axios.post(
-        "http://godongbackend.test/api/register",
+        "http://192.168.200.100:8000/api/register",
         item,
         {
           headers: {

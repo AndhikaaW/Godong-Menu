@@ -18,7 +18,7 @@ function Homepage() {
             }
 
             try {
-                const response = await axios.get(`http://godongbackend.test/api/user/${email}`);
+                const response = await axios.get(`http://192.168.200.100:8000/api/user/${email}`);
                 setUserData(response.data);
             } catch (err) {
                 setError('Gagal mengambil data user');

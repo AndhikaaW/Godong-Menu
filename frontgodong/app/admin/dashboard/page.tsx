@@ -58,7 +58,7 @@ const [dateRange, setDateRange] = useState<DateRange | undefined>({ from: new Da
       setIsLoading(true);
       try {
         const response = await axios.get(
-          "http://godongbackend.test/api/contact",
+          "http://192.168.200.100:8000/api/contact",
           {
             headers: {
               "Content-Type": "application/json",
@@ -158,7 +158,7 @@ const [dateRange, setDateRange] = useState<DateRange | undefined>({ from: new Da
               <p className="text-sm text-gray-500">Total Penjualan</p>
               <p className="text-xl font-bold">
                 {statistics
-                  ? `Rp. ${statistics.total_penjualan.toLocaleString()}`
+                  ? `Rp. ${statistics.total_penjualan}`
                   : "Loading..."}
               </p>
             </div>

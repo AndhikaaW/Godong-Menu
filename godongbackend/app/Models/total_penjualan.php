@@ -9,7 +9,7 @@ class total_penjualan extends Model
 {
     protected $table = 'total_penjualan';
     protected $fillable = [
-        'faktur', 'id_user', 'no_telepon',    'alamat', 'item', 'sub_total', 'total'
+        'faktur', 'id_user', 'no_telepon',    'alamat', 'item', 'sub_total', 'total','diskon_persen','diskon_rupiah'
 
     ];
     public $timestamps = false;

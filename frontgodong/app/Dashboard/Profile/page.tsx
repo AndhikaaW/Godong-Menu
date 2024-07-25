@@ -64,7 +64,7 @@ function Profilepage() {
 
         try {
             const response = await axios.post(
-                "http://godongbackend.test/api/upload-profile-picture",
+                "http://192.168.200.100:8000/api/upload-profile-picture",
                 {
                     image: selectedImage,
                     email: userData.email

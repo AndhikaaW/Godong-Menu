@@ -38,7 +38,7 @@ export default function SidebarMobile(props: SidebarMobileProps) {
       }
 
       try {
-        const response = await axios.get(`http://godongbackend.test/api/user/${email}`);
+        const response = await axios.get(`http://192.168.200.100:8000/api/user/${email}`);
         setUserData(response.data);
       } catch (err) {
         setError('Gagal mengambil data user');
@@ -65,7 +65,7 @@ export default function SidebarMobile(props: SidebarMobileProps) {
           <Menu size={20} />
         </Button>
       </SheetTrigger>
-      <SheetContent className="px-3 py-4 " side="left">
+      <SheetContent className="px-3 py-4 " side="left" aria-describedby="">
         <SheetHeader className="flex flex-row justify-between items-center space-y-0">
           <span className="text-lg font-semibold text-foreground mx-3">
             Godong Menu

@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { Check } from 'lucide-react';
 import axios from 'axios';
 import { AspectRatio } from '@radix-ui/react-aspect-ratio';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
 
 interface DetailItem {
   kode_menu: string;
@@ -36,48 +38,94 @@ interface User {
   pictures: string;
 }
 
+const SkeletonLoader = () => (
+  <Card className='w-full'>
+    <CardContent className="w-full flex p-4 bg-gray-50 rounded-lg items-center border-[1px] border-[#54844F]">
+      <Skeleton className="w-[75px] h-[75px] rounded-md mr-4" />
+      <div className="flex-grow">
+        <Skeleton className="h-6 w-3/4 mb-2" />
+        <Skeleton className="h-4 w-1/2 mb-2" />
+        <Skeleton className="h-4 w-1/4" />
+      </div>
+      <div className="text-right">
+        <Skeleton className="h-6 w-20 mb-2" />
+        <Skeleton className="h-10 w-24" />
+      </div>
+    </CardContent>
+  </Card>
+);
+
 const HistoryPage = () => {
   const [historyData, setHistoryData] = useState<Transaction[]>([]);
   const [userData, setUserData] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+
+  const fetchData = async (start?: string, end?: string) => {
+    setIsLoading(true);
+    setError(null);
+    const userinfo = localStorage.getItem("user-info");
+    let email = userinfo ? userinfo.replace(/["]/g, "") : "";
+    if (!email) {
+      setError("Email tidak ditemukan di localStorage");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const userResponse = await axios.get(
+        `http://192.168.200.100:8000/api/user/${email}`
+      );
+      setUserData(userResponse.data);
+      
+      if (userResponse.data && userResponse.data.id) {
+        let url = `http://192.168.200.100:8000/api/transaksi/${userResponse.data.id}/with-details`;
+        if (start) url += `?start_date=${start}`;
+        if (end) url += `${start ? '&' : '?'}end_date=${end}`;
+        
+        const transactionResponse = await axios.get(url);
+        setHistoryData(transactionResponse.data);
+      }
+    } catch (err) {
+      console.error("Gagal mengambil data", err);
+      setError("Gagal mengambil data. Silakan coba lagi nanti.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-      const userinfo = localStorage.getItem("user-info");
-      let email = userinfo ? userinfo.replace(/["]/g, "") : "";
-      if (!email) {
-        setError("Email tidak ditemukan di localStorage");
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const userResponse = await axios.get(
-          `http://127.0.0.1:8000/api/user/${email}`
-        );
-        setUserData(userResponse.data);
-        
-        if (userResponse.data && userResponse.data.id) {
-          const transactionResponse = await axios.get(
-            `http://127.0.0.1:8000/api/transaksi/${userResponse.data.id}/with-details`
-          );
-          setHistoryData(transactionResponse.data);
-        }
-      } catch (err) {
-        console.error("Gagal mengambil data", err);
-        setError("Gagal mengambil data. Silakan coba lagi nanti.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchData();
   }, []);
 
+  const handleFilter = () => {
+    if (startDate && !endDate) {
+      fetchData(startDate, startDate);
+    } else if (!startDate && endDate) {
+      fetchData(endDate, endDate);
+    } else {
+      fetchData(startDate, endDate);
+    }
+  };
+
+  const isFilterDisabled = !startDate && !endDate;
+
   if (isLoading) {
-    return <div className="container mx-auto p-4">Loading...</div>;
+    return (
+      <div className="container mx-auto p-4">
+        <div className='flex flex-col items-center w-full mb-10'>
+          <Skeleton className="h-8 w-32 mb-2" />
+          <Skeleton className="h-1 w-24" />
+        </div>
+        <div className="space-y-4 w-full">
+          {[...Array(3)].map((_, index) => (
+            <SkeletonLoader key={index} />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -89,6 +137,28 @@ const HistoryPage = () => {
       <div className='flex flex-col items-center w-full mb-10'>
         <h1>History</h1>
         <div className="underline" style={{ width: '100px', height: '4px', background: '#61AB5B', margin: '2px' }}></div>
+      </div>
+      <div className="mb-4 flex space-x-2">
+        <Input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          placeholder="Start Date"
+        />
+        <Input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          placeholder="End Date"
+        />
+        <Button 
+          variant={'outline'} 
+          className='bg-[#61AB5B] rounded-3xl' 
+          onClick={handleFilter}
+          disabled={isFilterDisabled}
+        >
+          Filter
+        </Button>
       </div>
       <div className="space-y-4 w-full ">
         {historyData.length > 0 ? (

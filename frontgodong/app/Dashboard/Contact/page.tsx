@@ -27,7 +27,7 @@ function Contactpage() {
         let item = { email, message };
         try {
             let response = await axios.post(
-                "http://godongbackend.test/api/contact",
+                "http://192.168.200.100:8000/api/contact",
                 item,
                 {
                     headers: {

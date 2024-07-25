@@ -14,7 +14,7 @@ function Categorypage() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://godongbackend.test/api/categories');
+                const response = await axios.get('http://192.168.200.100:8000/api/categories');
                 setCategories(response.data);
             } catch (error) {
                 console.error('There was an error fetching the users!', error);

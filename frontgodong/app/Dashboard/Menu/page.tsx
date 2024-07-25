@@ -73,17 +73,17 @@ interface Cart {
 
 
 const fetchCategories = async (): Promise<Category[]> => {
-    const response = await axios.get("http://godongbackend.test/api/categories");
+    const response = await axios.get("http://192.168.200.100:8000/api/categories");
     return response.data;
 };
 
 const fetchMenu = async (): Promise<Menu[]> => {
-    const response = await axios.get("http://godongbackend.test/api/menu-items");
+    const response = await axios.get("http://192.168.200.100:8000/api/menu-items");
     return response.data;
 };
 
 const fetchMenuByCategory = async (categoryId: string): Promise<Menu[]> => {
-    const response = await axios.get(`http://godongbackend.test/api/categories/${categoryId}/menu-items`);
+    const response = await axios.get(`http://192.168.200.100:8000/api/categories/${categoryId}/menu-items`);
     return response.data.menuItems;
 };
 
@@ -110,7 +110,7 @@ export default function Menu() {
 
             try {
                 const response = await axios.get(
-                    `http://godongbackend.test/api/user/${email}`
+                    `http://192.168.200.100:8000/api/user/${email}`
                 );
                 setUserData(response.data);
             } catch (err) {

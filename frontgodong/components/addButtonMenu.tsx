@@ -116,7 +116,7 @@ export default function AddButton({ onMenuAdded }: ButtonAddProps) {
     const [selectedCategoryId, setSelectedCategoryId] = useState("");
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://godongbackend.test/api/categories");
+        const response = await axios.get("http://192.168.200.100:8000/api/categories");
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -139,7 +139,7 @@ export default function AddButton({ onMenuAdded }: ButtonAddProps) {
 
       try {
         const response = await axios.post(
-          "http://godongbackend.test/api/menu-items",
+          "http://192.168.200.100:8000/api/menu-items",
           formData,
           {
             headers: {

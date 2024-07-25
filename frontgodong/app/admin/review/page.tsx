@@ -39,7 +39,7 @@ export default function Component() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await axios.get("http://godongbackend.test/api/contact", {
+        const response = await axios.get("http://192.168.200.100:8000/api/contact", {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",

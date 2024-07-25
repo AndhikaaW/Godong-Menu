@@ -75,7 +75,7 @@ export default function EditButton({ category, onCategoryEdited }: EditButtonPro
         form.append("icon", base64Image);
       }
       try {
-        const response = await axios.post('http://godongbackend.test/api/editcategories', form);
+        const response = await axios.post('http://192.168.200.100:8000/api/editcategories', form);
         console.log('Category edited successfully:', response.data);
         setOpen(false);
         onCategoryEdited(); // Call the function to refresh the category list

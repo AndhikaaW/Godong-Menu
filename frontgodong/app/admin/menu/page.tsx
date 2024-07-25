@@ -38,12 +38,12 @@ interface Menu {
 }
 
 const fetchMenu = async (): Promise<Menu[]> => {
-  const response = await axios.get("http://godongbackend.test/api/menu-items");
+  const response = await axios.get("http://192.168.200.100:8000/api/menu-items");
   return response.data;
 };
 
 const deleteMenu = async (kode_menu: string): Promise<void> => {
-  await axios.delete(`http://godongbackend.test/api/menu-items/${kode_menu}`);
+  await axios.delete(`http://192.168.200.100:8000/api/menu-items/${kode_menu}`);
 };
 
 export default function Menu() {
