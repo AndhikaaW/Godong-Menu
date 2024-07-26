@@ -17,6 +17,7 @@ import { Separator } from "./ui/separator";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import axios from "axios";
+import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 
 interface SidebarMobileProps {
   sidebarItems: SidebarItems;
@@ -36,9 +37,8 @@ export default function SidebarMobile(props: SidebarMobileProps) {
         setError('Email tidak ditemukan di localStorage');
         return;
       }
-
       try {
-        const response = await axios.get(`http://godongbackend.test/api/user/${email}`);
+        const response = await axios.get(`http://192.168.200.100:8000/api/user/${email}`);
         setUserData(response.data);
       } catch (err) {
         setError('Gagal mengambil data user');
@@ -67,15 +67,19 @@ export default function SidebarMobile(props: SidebarMobileProps) {
       </SheetTrigger>
       <SheetContent hideClose className="px-3 py-4" side="left">
         <SheetHeader className="flex flex-row justify-between items-center space-y-0">
-          <span className="text-lg font-semibold text-foreground mx-3">
+          <DialogTitle className="text-lg font-semibold text-foreground mx-3">
             Godong Menu
-          </span>
+          </DialogTitle>
+          <DialogDescription>
+
+          </DialogDescription>
           <SheetClose asChild>
             <Button className="h-5 w-5 p-0" variant="ghost">
               <X size={15} className="m-0" />
             </Button>
           </SheetClose>
         </SheetHeader>
+
         <div>
           <div className="flex flex-column gap-2 mt-3">
             {props.sidebarItems.links.map((link, idx) => (

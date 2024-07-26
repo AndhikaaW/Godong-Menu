@@ -38,7 +38,7 @@ export default function TransactionPage() {
   useEffect(() => {
     async function fetchTransaksi() {
       try {
-        const response = await axios.get("http://godongbackend.test/api/alltransaksi");
+        const response = await axios.get("http://192.168.200.100:8000/api/alltransaksi");
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching transaksi:", error);

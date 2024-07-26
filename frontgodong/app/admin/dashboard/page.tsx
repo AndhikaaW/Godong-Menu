@@ -58,7 +58,7 @@ const [dateRange, setDateRange] = useState<DateRange | undefined>({ from: new Da
       setIsLoading(true);
       try {
         const response = await axios.get(
-          "http://godongbackend.test/api/contact",
+          "http://192.168.200.100:8000/api/contact",
           {
             headers: {
               "Content-Type": "application/json",
@@ -78,7 +78,7 @@ const [dateRange, setDateRange] = useState<DateRange | undefined>({ from: new Da
     async function fetchStatistics() {
       try {
         const response = await axios.get(
-          "http://godongbackend.test/api/transaksi/statistics",
+          "http://192.168.200.100:8000/api/transaksi/statistics",
           {
             headers: {
               "Content-Type": "application/json",
@@ -100,7 +100,7 @@ const [dateRange, setDateRange] = useState<DateRange | undefined>({ from: new Da
       if (!dateRange || !dateRange.from || !dateRange.to) return;
   
       try {
-        const response = await axios.post("http://godongbackend.test/api/transaksi/date-range", {
+        const response = await axios.post("http://192.168.200.100:8000/api/transaksi/date-range", {
           from: dateRange.from.toISOString().split('T')[0],
           to: dateRange.to.toISOString().split('T')[0],
         }, {

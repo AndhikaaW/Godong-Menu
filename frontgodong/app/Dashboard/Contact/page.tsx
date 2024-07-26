@@ -1,11 +1,11 @@
-"use client"
-import React, { useState } from 'react'
-import { CiInstagram } from 'react-icons/ci'
-import { FaMapMarkerAlt } from 'react-icons/fa'
-import { FaCircle, FaPhoneVolume } from 'react-icons/fa6'
-import { MdOutlineMail } from 'react-icons/md'
+"use client";
+import React, { useState } from 'react';
+import { CiInstagram } from 'react-icons/ci';
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import { FaPhoneVolume } from 'react-icons/fa6';
+import { MdOutlineMail } from 'react-icons/md';
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogClose,
@@ -15,8 +15,8 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog"
-import axios from 'axios'
+} from "@/components/ui/dialog";
+import axios from 'axios';
 import { Input } from "@/components/ui/input";
 
 function Contactpage() {
@@ -27,7 +27,7 @@ function Contactpage() {
         let item = { email, message };
         try {
             let response = await axios.post(
-                "http://godongbackend.test/api/contact",
+                "http://192.168.200.100:8000/api/contact",
                 item,
                 {
                     headers: {
@@ -36,11 +36,12 @@ function Contactpage() {
                     },
                 }
             );
-            // console.error(response.data)
+            console.log(response.data);
         } catch (error) {
             console.error("There was an error!", error);
         }
     }
+
     const isFormValid = () => {
         return message;
     };
@@ -51,8 +52,8 @@ function Contactpage() {
 
     return (
         <div className='container'>
-            <div className=" flex h-screen sm:flex-row flex-col">
-                <div className=" h-70 p-5" style={{ background: '#C4C4C4' }}>
+            <div className="flex h-screen sm:flex-row flex-col">
+                <div className="h-70 p-5" style={{ background: '#C4C4C4' }}>
                     <div className='mt-4 ms-4'>
                         <h3 className='text-white'>Contact Information</h3>
                     </div>
@@ -69,27 +70,25 @@ function Contactpage() {
                         <div className='mt-5'>
                             <label htmlFor="instagram" className='flex align-items-center gap-2'><CiInstagram />Instagram</label>
                         </div>
-
                     </div>
-
                 </div>
                 <div className="col-8 p-6">
                     <div className='flex justify-content-text-center align-items-center h-full'>
                         <div className='w-full flex-row'>
                             <label htmlFor="messages" className='mb-2' style={{ color: '#8D8D8D' }}>Messages</label>
                             <Input
-                                className="w-fullbg- mb-3 border-b"
+                                className="w-full bg- mb-3 border-b"
                                 id="message"
                                 placeholder="Write Your Messages"
                                 required
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                             />
-                            <div className='flex justify-content-end '>
+                            <div className='flex justify-content-end'>
                                 <Dialog>
                                     <DialogTrigger asChild>
                                         <Button
-                                            className=" bg-black text-white border-dark-subtle" style={{ borderRadius: '10px', padding: '10px' }}
+                                            className="bg-black text-white border-dark-subtle" style={{ borderRadius: '10px', padding: '10px' }}
                                             type="submit"
                                             onClick={isFormValid() ? messageuser : () => { }}
                                             disabled={!isFormValid()}
@@ -117,11 +116,7 @@ function Contactpage() {
                 </div>
             </div>
         </div>
-
-    )
+    );
 }
 
-export default Contactpage
-
-
-
+export default Contactpage;

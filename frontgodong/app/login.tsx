@@ -1,5 +1,5 @@
 "use client";
-import '../styles/globals.css'
+import '../styles/globals.css';
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -26,7 +26,7 @@ import {
   AlertDialogTitle,
   AlertDialogOverlay,
   AlertDialogCancel
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 import { Eye, EyeOff, Frown } from 'lucide-react';
 
 export default function Login() {
@@ -47,7 +47,7 @@ export default function Login() {
     setIsLoading(true);
     try {
       let response = await axios.post(
-        "http://godongbackend.test/api/login",
+        "http://192.168.200.100:8000/api/login",
         item,
         {
           headers: {
@@ -82,11 +82,17 @@ export default function Login() {
     return email && password;
   };
 
-
-
-
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">
+      <div className='flex justify-center items-center lg:hidden bg-white'>
+        <div className="h-[300px] w-[300px] flex items-end">
+          <Image
+            src={bg}
+            alt="Image"
+            priority
+          />
+        </div>
+      </div>
       <div className="flex items-center justify-center h-full w-full lg:w-1/2">
         <Card className="max-w-sm w-full bg-white text-black">
           <CardHeader>
@@ -98,7 +104,6 @@ export default function Login() {
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
-                  id="email"
                   type="email"
                   placeholder="m@example.com"
                   required
@@ -114,17 +119,16 @@ export default function Login() {
 
                 <div className="relative flex items-center">
                   <Input
-                    id="password"
                     type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pr-10 w-full border rounded px-3 py-2 focus:outline-none"/>
+                    className="pr-10 w-full border rounded px-3 py-2 focus:outline-none" />
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
                     className="absolute right-2 bg-transparent border-none cursor-pointer text-gray-600 focus:outline-none">
-                    {showPassword ? <EyeOff size={'17px'}/> :  <Eye size={'17px'}/>}
+                    {showPassword ? <EyeOff size={'17px'} /> : <Eye size={'17px'} />}
                   </button>
                 </div>
 
@@ -152,7 +156,8 @@ export default function Login() {
         <Image
           src={bg}
           alt="Image"
-          className="h-full w-full object-cover"
+          priority
+          className="h-auto w-auto"
         />
       </div>
 
@@ -161,13 +166,14 @@ export default function Login() {
         <AlertDialogOverlay className="bg-red-300/70">
           <AlertDialogContent className="bg-red-300 flex justify-center w-1/4 border-none">
             <AlertDialogHeader className="gap-2">
-              {/* <AlertDialogTitle><TfiFaceSad size="100px" className="text-red-500 fw-bold"/></AlertDialogTitle> */}
               <AlertDialogTitle className="flex justify-center"><Frown size={'100px'} className="text-red-600" /></AlertDialogTitle>
               <AlertDialogDescription className="text-center">
                 <p>Oh Sorry!</p>
                 <p>Try again for your login</p>
               </AlertDialogDescription>
-              <AlertDialogCancel className="bg-red-400 border-none">Try Again</AlertDialogCancel>
+              <AlertDialogFooter className="sm:justify-center">
+                <AlertDialogCancel className="bg-red-400 border-none">Try Again</AlertDialogCancel>
+              </AlertDialogFooter>
             </AlertDialogHeader>
           </AlertDialogContent>
         </AlertDialogOverlay>

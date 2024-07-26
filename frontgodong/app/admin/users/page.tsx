@@ -44,7 +44,7 @@ export default function Component() {
     async function fetchUsers() {
       setIsLoading(true);
       try {
-        const response = await axios.get("http://godongbackend.test/api/getUser", {
+        const response = await axios.get("http://192.168.200.100:8000/api/getUser", {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -65,7 +65,7 @@ export default function Component() {
   const handleDelete = async (id: string) => {
     setIsLoading(true);
     try {
-      const response = await axios.delete(`http://godongbackend.test/api/deleteuser/${id}`, {
+      const response = await axios.delete(`http://192.168.200.100:8000/api/deleteuser/${id}`, {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",

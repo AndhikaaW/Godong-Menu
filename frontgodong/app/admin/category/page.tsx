@@ -24,12 +24,12 @@ interface Category {
 }
 
 const fetchCategories = async (): Promise<Category[]> => {
-  const response = await axios.get("http://godongbackend.test/api/categories");
+  const response = await axios.get("http://192.168.200.100:8000/api/categories");
   return response.data;
 };
 
 const deleteCategory = async (id: string): Promise<void> => {
-  await axios.delete(`http://godongbackend.test/api/categories/${id}`);
+  await axios.delete(`http://192.168.200.100:8000/api/categories/${id}`);
 };
 
 export default function CategoryPage() {

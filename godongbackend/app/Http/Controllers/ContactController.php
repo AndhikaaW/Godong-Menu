@@ -16,10 +16,8 @@ class ContactController extends Controller
     }
     public function index()
     {
-        // Fetch all users from the database
         $users = Contact::all();
 
-        // Return users as JSON response
         return response()->json($users);
     }   
     public function destroy($id)

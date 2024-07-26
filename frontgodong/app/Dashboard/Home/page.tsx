@@ -18,7 +18,7 @@ function Homepage() {
             }
 
             try {
-                const response = await axios.get(`http://godongbackend.test/api/user/${email}`);
+                const response = await axios.get(`http://192.168.200.100:8000/api/user/${email}`);
                 setUserData(response.data);
             } catch (err) {
                 setError('Gagal mengambil data user');
@@ -45,7 +45,7 @@ function Homepage() {
                     <div className="col-6 m-lg-2 ">
                         <div className="flex">
                             <img src="/img-1.jpg" alt="gambar" width="250px" id='img-1' className="p-2 mb-5" style={{ borderRadius: '30px', marginTop: '-20px' }} />
-                            <div className='flex-col'>
+                            <div className='flex-col '>
                                 <img src="/img-6.png" alt="gambar" width="210px" className="p-2" style={{ borderRadius: '30px' }} />
                                 <img src="/img-2.png" alt="gambar" width="210px" className="p-2" style={{ borderRadius: '30px' }} />
                             </div>

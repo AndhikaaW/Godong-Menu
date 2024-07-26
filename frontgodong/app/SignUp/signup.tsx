@@ -8,7 +8,6 @@ import Link from "next/link";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -39,7 +38,7 @@ export default function SignUp() {
     setIsLoading(true);
     try {
       let response = await axios.post(
-        "http://godongbackend.test/api/register",
+        "http://192.168.200.100:8000/api/register",
         item,
         {
           headers: {
@@ -63,6 +62,15 @@ export default function SignUp() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">
+      <div className='flex justify-center items-center lg:hidden bg-white'>
+        <div className="h-[300px] w-[300px] flex items-end">
+          <Image
+            src={bg}
+            alt="Image"
+            priority
+          />
+        </div>
+      </div>
       <div className="flex items-center justify-center h-full w-full lg:w-1/2">
         <Card className="w-full max-w-sm">
           <CardHeader>
@@ -155,7 +163,12 @@ export default function SignUp() {
         </Card>
       </div>
       <div className="hidden lg:flex h-full w-full lg:w-1/2 items-center justify-center bg-muted">
-        <Image src={bg} alt="Image" className="h-full w-full object-cover" />
+        <Image
+          src={bg}
+          alt="Image"
+          className="h-auto w-auto"
+          priority
+        />
       </div>
     </div>
   );
