@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CiInstagram } from 'react-icons/ci'
 import { FaMapMarkerAlt } from 'react-icons/fa'
 import { FaCircle, FaPhoneVolume } from 'react-icons/fa6'
@@ -20,9 +20,12 @@ import axios from 'axios'
 import { Input } from "@/components/ui/input";
 
 function Contactpage() {
-    const email = localStorage.getItem('user-info');
     const [message, setMessage] = useState("");
-
+    const [email,setEmail] = useState("")
+    useEffect(()=> {
+        const email = localStorage.getItem('user-info');
+        setEmail(email!!)
+    },[])
     async function messageuser() {
         let item = { email, message };
         try {

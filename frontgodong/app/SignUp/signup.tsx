@@ -49,7 +49,7 @@ export default function SignUp() {
         }
       );
       localStorage.setItem("user-info", JSON.stringify(response.data));
-      navigate.push("/");
+      navigate.push("/login");
     } catch (error) {
       console.error("There was an error!", error);
     } finally {

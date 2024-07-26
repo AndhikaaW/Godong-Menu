@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { SidebarItems } from "@/types/sidebartypes";
 import {
   Sheet,
@@ -11,12 +11,13 @@ import {
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { LogOut, Menu, MoreHorizontal, X } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { SideBarButtonSheet as SideBarButton } from "./SideBarButton";
 import { Separator } from "./ui/separator";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import axios from "axios";
+import { useAuth } from "../components/Auth/useAuth";
 
 interface SidebarMobileProps {
   sidebarItems: SidebarItems;
@@ -24,14 +25,15 @@ interface SidebarMobileProps {
 
 export default function SidebarMobile(props: SidebarMobileProps) {
   const pathname = usePathname();
-
+  const router = useRouter();
+  const { logout } = useAuth();
   const [userData, setUserData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       const userinfo = localStorage.getItem('user-info');
-      let email = userinfo!.replace(/["]/g, '')
+      let email = userinfo ? userinfo.replace(/["]/g, '') : null;
       if (!email) {
         setError('Email tidak ditemukan di localStorage');
         return;
@@ -49,12 +51,24 @@ export default function SidebarMobile(props: SidebarMobileProps) {
     fetchUserData();
   }, []);
 
+  const handleLogout = useCallback(async () => {
+    try {
+      // Jalankan navigasi dan logout secara bersamaan
+      await Promise.all([
+        router.push('/login'),
+        logout()
+      ]);
+    } catch (error) {
+      console.error('Terjadi kesalahan saat logout:', error);
+      // Opsional: Tambahkan notifikasi error untuk pengguna
+    }
+  }, [router, logout]);
+
   if (error) {
     return <div>{error}</div>;
   }
 
   if (!userData) {
-    // return <div>{localStorage.getItem("user-info")}</div>;
     return <div></div>;
   }
 
@@ -91,8 +105,8 @@ export default function SidebarMobile(props: SidebarMobileProps) {
                   <div className="flex justify-between items-center w-full">
                     <div className="flex gap-2">
                       <Avatar className="h-5 w-5">
-                        <AvatarImage src="https://img.freepik.com/free-photo/curly-man-with-broad-smile-shows-perfect-teeth-being-amused-by-interesting-talk-has-bushy-curly-dark-hair-stands-indoor-against-white-blank-wall_273609-17092.jpg" />
-                        <AvatarFallback>Max Programming</AvatarFallback>
+                        <AvatarImage src={userData.pictures} />
+                        <AvatarFallback>User</AvatarFallback>
                       </Avatar>
                       <span className="align-self-center">{userData.nama}</span>
                     </div>
@@ -102,11 +116,9 @@ export default function SidebarMobile(props: SidebarMobileProps) {
               </Button>
               <DrawerContent className="mb-2 p-2">
                 <div className="flex flex-col -space-y-2 mt-2">
-                  <Link href="/">
-                    <SideBarButton size="sm" icon={LogOut} className="w-full">
-                      Log Out
-                    </SideBarButton>
-                  </Link>
+                  <SideBarButton onClick={handleLogout} size="sm" icon={LogOut} className="w-full">
+                    Log Out
+                  </SideBarButton>
                 </div>
               </DrawerContent>
             </Drawer>

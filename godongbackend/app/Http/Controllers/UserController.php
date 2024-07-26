@@ -46,27 +46,28 @@ class UserController extends Controller
         ]);
     }
 
+   
     public function login(Request $req)
     {
-        // Validate the request data
         $req->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        // Find the user by email
         $user = User::where('email', $req->email)->first();
 
-        // Check if the user exists and the password is correct
         if (!$user || !Hash::check($req->password, $user->password)) {
             return response()->json(["Error" => "Sorry, email or password doesn't match"], 401);
         }
 
-        // Return success response with user status
+        // Generate token
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'success' => true,
             'status' => $user->status,
-
+            'token' => $token,
+            'user' => $user
         ], 200);
     }
 

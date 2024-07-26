@@ -98,6 +98,14 @@ export default function Menu() {
     const [searchTerm, setSearchTerm] = useState("");
 
     const [notification, setNotification] = useState<string | null>(null);
+    function formatCurrency(value : number) {
+    return value.toLocaleString('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).replace('Rp', 'Rp.').trim();
+  }
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -230,15 +238,6 @@ export default function Menu() {
         }
         return null;
     };
-
-    function formatCurrency(value: number) {
-        return value.toLocaleString('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).replace('Rp', 'Rp.').trim();
-    }
     return (
         <div className="container ">
             <div className='flex justify-content-end flex-col sm:flex-row me-4 sticky top-0 py-2 px-3 w-full bg-white z-10 '>
