@@ -132,7 +132,7 @@ export default function EditButton({ menu, onMenuEdited }: EditButtonProps) {
 
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://godongbackend.test/api/categories");
+        const response = await axios.get("http://192.168.200.100:8000/api/categories");
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -155,7 +155,7 @@ export default function EditButton({ menu, onMenuEdited }: EditButtonProps) {
       
       try {
         const response = await axios.post(
-          "http://godongbackend.test/api/editmenu",
+          "http://192.168.200.100:8000/api/editmenu",
           formData,
           {
             headers: {

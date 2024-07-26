@@ -70,7 +70,7 @@ export default function ButtonAdd({ onCategoryAdded }: ButtonAddProps) {
     // }
 
     try {
-      const response = await axios.post('http://godongbackend.test/api/categoriesAdd',formData, {
+      const response = await axios.post('http://192.168.200.100:8000/api/categoriesAdd',formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

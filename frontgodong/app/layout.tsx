@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import { AuthProvider } from '../components/Auth/AuthProvider';
 export const metadata = {
   title: 'Godong',
   description: 'Godong Menu',
@@ -18,7 +19,9 @@ export default function RootLayout({
       </head>
       <body>
         <div>
+          <AuthProvider>
             {children}
+          </AuthProvider>
         </div>  
         </body>
     </html>

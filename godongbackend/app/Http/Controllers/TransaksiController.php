@@ -6,6 +6,7 @@ use App\Models\detail_penjualan;
 use App\Models\total_penjualan;
 use Illuminate\Http\Request;
 use App\Models\transaksi;
+use Carbon\Carbon;
 
 class TransaksiController extends Controller
 { 
@@ -88,5 +89,40 @@ public function getTransactionsByDateRange(Request $request)
     $transactions = total_penjualan::whereBetween('tanggal', [$request->from, $request->to])->get();
 
     return response()->json($transactions);
+}
+public function getTransactionByUser($id){
+    $transaction = total_penjualan::where('id_user',$id)->get();
+    return response()->json($transaction);
+}
+public function getTransactionByUserWithDetails($id, Request $request)
+{
+    $query = total_penjualan::where('id_user', $id);
+
+    if ($request->has('start_date')) {
+        $start_date = Carbon::parse($request->start_date)->startOfDay();
+        $query->where('tanggal', '>=', $start_date);
+    }
+
+    if ($request->has('end_date')) {
+        $end_date = Carbon::parse($request->end_date)->endOfDay();
+        $query->where('tanggal', '<=', $end_date);
+    }
+
+    $transactions = $query->get();
+
+    $transactionsWithDetails = $transactions->map(function ($transaction) {
+        $details = detail_penjualan::where('faktur', $transaction->faktur)
+            ->join('menu_items', 'detail_penjualan.kode_menu', '=', 'menu_items.kode_menu')
+            ->select('detail_penjualan.*', 'menu_items.name as menu_name', 'menu_items.image')
+            ->get();
+
+        $transaction->details = $details;
+        $transaction->main_item = $details->first();
+        $transaction->other_items_count = $details->count() - 1;
+
+        return $transaction;
+    });
+
+    return response()->json($transactionsWithDetails);
 }
 }

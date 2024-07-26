@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import SideBarButton from "./SideBarButton";
 import { SidebarItems } from "@/types/sidebartypes";
 import Link from "next/link";
@@ -9,8 +9,9 @@ import { Popover, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { PopoverContent } from "@radix-ui/react-popover";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import axios from "axios";
+import { useAuth } from "../components/Auth/useAuth";
 
 interface SidebarDekstopProps {
   sidebarItems: SidebarItems;
@@ -18,14 +19,15 @@ interface SidebarDekstopProps {
 
 export default function SidebarDekstop(props: SidebarDekstopProps) {
   const pathname = usePathname();
-
+  const router = useRouter();
+  const { logout } = useAuth();
   const [userData, setUserData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       const userinfo = localStorage.getItem('user-info');
-      let email = userinfo!.replace(/["]/g, '')
+      let email = userinfo ? userinfo.replace(/["]/g, '') : null;
       if (!email) {
         setError('Email tidak ditemukan di localStorage');
         return;
@@ -43,12 +45,24 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
     fetchUserData();
   }, []);
 
+  const handleLogout = useCallback(async () => {
+    try {
+      // Jalankan navigasi dan logout secara bersamaan
+      await Promise.all([
+        router.push('/login'),
+        logout()
+      ]);
+    } catch (error) {
+      console.error('Terjadi kesalahan saat logout:', error);
+      // Opsional: Tambahkan notifikasi error untuk pengguna
+    }
+  }, [router, logout]);
+
   if (error) {
     return <div>{error}</div>;
   }
 
   if (!userData) {
-    // return <div>{localStorage.getItem("user-info")}</div>;
     return <div></div>;
   }
 
@@ -90,14 +104,15 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
                 </div>
               </PopoverTrigger>
             </Button>
-            <PopoverContent className="mb-2 w-56 p-3 rounded-[1rem]">
-              <div className="space-y-1">
-                <Link href='/'>
-                  <SideBarButton size="sm" icon={LogOut} className="w-full">
-                    Log Out
-                  </SideBarButton>
-                </Link>
-              </div>
+            <PopoverContent className="mb-2 w-auto h-auto p-3 rounded-[1rem]">
+              <SideBarButton 
+                size="sm" 
+                icon={LogOut} 
+                onClick={handleLogout} 
+                className="w-[200px] h-[35px] animate-none border-[1px] bg-[#61AB5B] text-white"
+              >
+                Log Out
+              </SideBarButton>
             </PopoverContent>
           </Popover>
         </div>
