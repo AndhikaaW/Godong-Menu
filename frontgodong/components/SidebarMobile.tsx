@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { SidebarItems } from "@/types/sidebartypes";
 import {
   Sheet,
@@ -17,7 +17,8 @@ import { Separator } from "./ui/separator";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import axios from "axios";
-import { useAuth } from "../components/Auth/useAuth";
+import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
+import { useAuth } from "./Auth/useAuth";
 
 interface SidebarMobileProps {
   sidebarItems: SidebarItems;
@@ -33,12 +34,11 @@ export default function SidebarMobile(props: SidebarMobileProps) {
   useEffect(() => {
     const fetchUserData = async () => {
       const userinfo = localStorage.getItem('user-info');
-      let email = userinfo ? userinfo.replace(/["]/g, '') : null;
+      let email = userinfo!.replace(/["]/g, '')
       if (!email) {
         setError('Email tidak ditemukan di localStorage');
         return;
       }
-
       try {
         const response = await axios.get(`http://192.168.200.100:8000/api/user/${email}`);
         setUserData(response.data);
@@ -63,28 +63,35 @@ export default function SidebarMobile(props: SidebarMobileProps) {
       // Opsional: Tambahkan notifikasi error untuk pengguna
     }
   }, [router, logout]);
-
   if (error) {
     return <div>{error}</div>;
   }
 
   if (!userData) {
+    // return <div>{localStorage.getItem("user-info")}</div>;
     return <div></div>;
   }
 
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" className="p-0 fixed top-3 left-3">
+        <Button variant="ghost" className="p-0 fixed top-3 left-3 ">
           <Menu size={20} />
         </Button>
       </SheetTrigger>
-      <SheetContent className="px-3 py-4 " side="left" aria-describedby="">
+      <SheetContent className="px-3 py-4" side="left">
         <SheetHeader className="flex flex-row justify-between items-center space-y-0">
-          <span className="text-lg font-semibold text-foreground mx-3">
+          <DialogTitle className="text-lg font-semibold text-foreground mx-3">
             Godong Menu
-          </span>
+          </DialogTitle>
+          <DialogDescription></DialogDescription>
+          <SheetClose asChild>
+            {/* <Button className="h-5 w-5 p-0" variant="ghost">
+              <X size={15} className="m-0" />
+            </Button> */}
+          </SheetClose>
         </SheetHeader>
+
         <div>
           <div className="flex flex-column gap-2 mt-3">
             {props.sidebarItems.links.map((link, idx) => (
@@ -106,7 +113,7 @@ export default function SidebarMobile(props: SidebarMobileProps) {
                     <div className="flex gap-2">
                       <Avatar className="h-5 w-5">
                         <AvatarImage src={userData.pictures} />
-                        <AvatarFallback>User</AvatarFallback>
+                        <AvatarFallback>Max Programming</AvatarFallback>
                       </Avatar>
                       <span className="align-self-center">{userData.nama}</span>
                     </div>
@@ -115,11 +122,9 @@ export default function SidebarMobile(props: SidebarMobileProps) {
                 </DrawerTrigger>
               </Button>
               <DrawerContent className="mb-2 p-2">
-                <div className="flex flex-col -space-y-2 mt-2">
-                  <SideBarButton onClick={handleLogout} size="sm" icon={LogOut} className="w-full">
-                    Log Out
-                  </SideBarButton>
-                </div>
+              <SideBarButton size="sm" onClick={handleLogout} icon={LogOut} className="w-full">
+                      Log Out
+              </SideBarButton>
               </DrawerContent>
             </Drawer>
           </div>

@@ -12,6 +12,8 @@ import { PopoverContent } from "@radix-ui/react-popover";
 import { usePathname, useRouter } from "next/navigation";
 import axios from "axios";
 import { useAuth } from "../components/Auth/useAuth";
+import HomepageSkeleton from "@/app/skeleton/skeletonSidebarDesktop";
+
 
 interface SidebarDekstopProps {
   sidebarItems: SidebarItems;
@@ -23,6 +25,7 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
   const { logout } = useAuth();
   const [userData, setUserData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -30,6 +33,7 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
       let email = userinfo ? userinfo.replace(/["]/g, '') : null;
       if (!email) {
         setError('Email tidak ditemukan di localStorage');
+        setLoading(false);
         return;
       }
 
@@ -39,6 +43,8 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
       } catch (err) {
         setError('Gagal mengambil data user');
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -51,6 +57,10 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
       logout();
     }, 100);
   }, [router, logout]);
+
+  if (loading) {
+    return <HomepageSkeleton />;
+  }
 
   if (error) {
     return <div>{error}</div>;
@@ -99,10 +109,10 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
               </PopoverTrigger>
             </Button>
             <PopoverContent className="mb-2 w-auto h-auto p-3 rounded-[1rem]">
-              <SideBarButton 
-                size="sm" 
-                icon={LogOut} 
-                onClick={handleLogout} 
+              <SideBarButton
+                size="sm"
+                icon={LogOut}
+                onClick={handleLogout}
                 className="w-[200px] h-[35px] animate-none border-[1px] bg-[#61AB5B] text-white"
               >
                 Log Out

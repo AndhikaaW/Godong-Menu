@@ -81,7 +81,7 @@ export default function Menu() {
   const onGetExportProduct = async (title?: string, worksheetname?: string) => {
     try {
       setLoading(true);
-      // const response = await axios.get("http://godongbackend.test/api/contactcol");
+      // const response = await axios.get("http://192.168.200.100:8000/api/contactcol");
       // Check if the action result contains data and if it's an array
       if (menu && Array.isArray(menu)) {
         const dataToExport = menu.map((pro: any) => ({

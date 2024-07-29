@@ -27,13 +27,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('register',[UserController::class,'register']);
-Route::post('login', [UserController::class, 'login']);
-Route::get('getUser', [UserController::class, 'index']);
+Route::post('/register',[UserController::class,'register']);
+Route::post('/login', [UserController::class, 'login']);
+Route::get('/getUser', [UserController::class, 'index']);
 Route::get('/user/{email}', [UserController::class, 'getoneuser']);
 
-Route::get('categories', [CategoryController::class, 'index']);
-Route::post('categoriesAdd', [CategoryController::class, 'store']);
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::post('/categoriesAdd', [CategoryController::class, 'store']);
 // Route::post('categories', [CategoryController::class, 'store']);
 Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 Route::post('/editcategories', [CategoryController::class, 'update']);
@@ -42,8 +42,8 @@ Route::post('/editcategories', [CategoryController::class, 'update']);
 Route::get('/categories/{id}/menu-items', [CategoryController::class, 'getMenuItemsByCategory']);
 
 // Route::get('getCategory', [UserController::class, 'getCategory']);
-Route::post('contact',[ContactController::class, 'contact']);
-Route::get('contact', [ContactController::class, 'index']);
+Route::post('/contact',[ContactController::class, 'contact']);
+Route::get('/contact', [ContactController::class, 'index']);
 // Route::get('contactcol', [ContactController::class, 'getColumns']);
 Route::delete('/contact/{id}', [ContactController::class, 'destroy']);
 

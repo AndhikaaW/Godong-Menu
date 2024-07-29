@@ -31,15 +31,19 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     setUser(userData);
     if (userData.status == 2){
       localStorage.setItem('user-info', JSON.stringify(userData.email));
+      Cookies.set('user-status', '2');
     }else{
       localStorage.setItem('admin-info', JSON.stringify(userData.email));
+      Cookies.set('user-status', '1');
     }
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user-info');
+    localStorage.removeItem('admin-info');
     Cookies.remove('auth_token');  // Remove the auth_token cookie
+    Cookies.remove('user-status');  // Remove the auth_token cookie
   };
 
   return (

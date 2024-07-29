@@ -2,7 +2,7 @@
 
 import { useContext, useEffect } from 'react';
 import { AuthContext } from './AuthProvider';
-import { usePathname, useRouter } from 'next/navigation';
+import {useRouter } from 'next/navigation';
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -15,17 +15,17 @@ export const useAuth = () => {
 
   const { user, login, logout } = context;
 
-  const isAuthenticated = !!user;
+  // const isAuthenticated = !!user;
 
-  const requireAuth = () => {
-    if (typeof window !== 'undefined' && !isAuthenticated) {
-      router.push('/login');
-    }
-  };
+  // const requireAuth = () => {
+  //   if (typeof window !== 'undefined' && !isAuthenticated) {
+  //     router.push('/login');
+  //   }
+  // };
 
-  useEffect(() => {
-    requireAuth();
-  }, [isAuthenticated]);
+  // useEffect(() => {
+  //   requireAuth();
+  // }, [isAuthenticated]);
 
-  return { user, login, logout, isAuthenticated };
+  return { user, login, logout};
 };

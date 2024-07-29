@@ -30,7 +30,7 @@ function Profilepage() {
 
             try {
                 const response = await axios.get(
-                    `http://godongbackend.test/api/user/${email}`
+                    `http://192.168.200.100:8000/api/user/${email}`
                 );
                 setUserData(response.data);
             } catch (err) {
