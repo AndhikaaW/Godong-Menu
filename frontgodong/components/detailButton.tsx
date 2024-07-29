@@ -137,7 +137,7 @@ export default function ButtonDetail({ product }: ButtonDetailProps) {
             Detail
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[900px] sm:max-w-[500px] bg-[#F4F7FE]">
+        <DialogContent className=" sm:max-w-[500px] bg-[#F4F7FE]">
           <Content />
         </DialogContent>
       </Dialog>

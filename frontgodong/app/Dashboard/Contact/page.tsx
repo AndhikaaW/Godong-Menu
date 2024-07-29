@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CiInstagram } from 'react-icons/ci';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { FaPhoneVolume } from 'react-icons/fa6';
@@ -20,9 +20,13 @@ import axios from 'axios';
 import { Input } from "@/components/ui/input";
 
 function Contactpage() {
-    const email = localStorage.getItem('user-info');
+    // const email = localStorage.getItem('user-info');
     const [message, setMessage] = useState("");
-
+    const [email, setEmail] = useState("")
+    useEffect(() => {
+        const email = localStorage.getItem('user-info');
+        setEmail(email!!)
+    }, [])
     async function messageuser() {
         let item = { email, message };
         try {
@@ -52,7 +56,7 @@ function Contactpage() {
 
     return (
         <div className='container'>
-            <div className="flex h-screen sm:flex-row flex-col">
+            <div className="flex h-screen sm:flex-row flex-col sm:ms-[-25px]">
                 <div className="h-70 p-5" style={{ background: '#C4C4C4' }}>
                     <div className='mt-4 ms-4'>
                         <h3 className='text-white'>Contact Information</h3>

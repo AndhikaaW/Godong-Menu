@@ -15,7 +15,6 @@ import { Badge } from 'primereact/badge';
 import Link from "next/link";
 import ProductCard from "../menu/ProductCard";
 import { useReactToPrint } from 'react-to-print';
-import { jsPDF } from "jspdf";
 interface Menu {
     kode_menu: string;
     category_id: string;
@@ -231,9 +230,15 @@ export default function Menu() {
         `,
     });
 
+    const [isTruncated, setIsTruncated] = useState(true);
+
+    const toggleTruncate = () => {
+        setIsTruncated(!isTruncated);
+    };
+
     return (
         <div className="container ">
-            <div className='flex justify-content-end flex-col sm:flex-row me-4 sticky top-0 py-2 px-3 w-full bg-white z-10 shadow-sm rounded'>
+            <div className='flex justify-content-end flex-col-reverse sm:flex-row me-4 sticky top-0 py-2 px-3 w-full bg-white z-10 shadow-sm rounded'>
                 <div className='text-start mt-2'>
                     <h1>Menu<div className="underline" style={{ width: '100px', height: '4px', background: '#61AB5B', margin: '2px' }}></div></h1>
                     <div className="flex justify-start pt-3 mb-2 gap-4 w-full" style={{ overflow: 'auto', scrollbarWidth: 'none' }}>
@@ -259,7 +264,7 @@ export default function Menu() {
                     <Input
                         type="search"
                         placeholder="Search"
-                        className=' w-1/2 ms-3 me-2 mt-2 sm:w-1/3'
+                        className=' w-1/2 ms-3 me-2 mt-2 sm:w-1/2'
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -267,7 +272,7 @@ export default function Menu() {
                         <SheetTrigger asChild>
                             <div className="flex align-items-center pt-2">
                                 <i className="pi pi-shopping-cart p-text-secondary p-overlay-badge" style={{ fontSize: '2rem' }}>
-                                    <Badge value={cart.length} className="bg-[#61AB5B]"></Badge>
+                                    <Badge hidden={cart.length === 0} value={cart.length} className="bg-[#61AB5B]"></Badge>
                                 </i>
                             </div>
                         </SheetTrigger>
@@ -330,7 +335,7 @@ export default function Menu() {
                                 ))}
                             </SheetHeader>
                             <SheetFooter className='flex row gap-4 mt-4'>
-                                <Card>
+                                <Card className="pb-3" hidden={cart.length === 0}>
                                     <div className='flex justify-content-between pe-0 py-2'>
                                         <div className='flex justify-center align-items-center gap-2 me-3'>
                                             <label htmlFor="total">SubTotal </label>
@@ -347,10 +352,10 @@ export default function Menu() {
                                             <label htmlFor="price">{formatCurrency(cart.reduce((total, item) => total + item.discount, 0))}</label>
                                         </div>
                                     </div>
+                                    <SheetClose asChild disabled={cart.length === 0} className="mt-2">
+                                        <Button type="submit" className='text-white bg-[#61AB5B] w-full' onClick={handleSubmit}>Order</Button>
+                                    </SheetClose>
                                 </Card>
-                                <SheetClose asChild disabled={cart.length === 0}>
-                                    <Button type="submit" className='text-white bg-[#61AB5B]' onClick={handleSubmit}>Order</Button>
-                                </SheetClose>
                                 <div>
                                     {notification && (
                                         <h4 className="notification text-center">
@@ -500,13 +505,19 @@ export default function Menu() {
                                 </div>
                             </div>
                         </CardHeader>
-                        <div className="mx-3 mb-2">
-                            <div className="text-center h-[40px] mb-auto overflow-auto" style={{ scrollbarWidth: 'none' }}>
-                                <h5>{product.name}</h5>
+                        <div className="mx-3 mb-2 ">
+                            <div className="text-center h-[40px] mb-auto">
+                                <h5 className="text-truncate" style={{ maxWidth: '100%', whiteSpace: 'nowrap' }}>
+                                    {product.name}
+                                </h5>
                             </div>
                             <div className="text-sm">
-                                <div className="w-auto h-[40px] overflow-auto" style={{ scrollbarWidth: 'none' }}>
-                                    {product.description}
+                                <div className="w-auto h-[40px] overflow-auto text-text-truncate ">
+                                    <label htmlFor="" className={`d-inline-block ${isTruncated ? 'text-truncate' : ''}`}
+                                        style={{ maxWidth: isTruncated ? '100%' : 'none', cursor: 'pointer', whiteSpace: isTruncated ? 'nowrap' : 'normal' }}
+                                        onClick={toggleTruncate}
+                                        title={isTruncated ? 'Click to expand' : 'Click to collapse'}
+                                    >{product.description}</label>
                                 </div>
                             </div>
                         </div>
@@ -525,7 +536,6 @@ export default function Menu() {
                                         </div>
                                     </DialogTrigger>
                                     <DialogContent className="sm:max-w-[425px]">
-
                                         <DialogHeader>
                                             <DialogTitle>Add to Cart</DialogTitle>
                                             <div className="flex justify-content-center mb-0">

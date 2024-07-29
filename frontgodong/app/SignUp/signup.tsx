@@ -28,9 +28,36 @@ export default function SignUp() {
   const navigate = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const validateEmail = (email : any) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
+  const handleEmailChange = (e : any) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    if (!validateEmail(newEmail)) {
+      setEmailError("Please enter a valid email address");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  const handlePasswordChange = (e : any) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    if (newPassword.length < 8) {
+      setPasswordError("Password must be at least 8 characters long");
+    } else {
+      setPasswordError("");
+    }
   };
 
   async function usersignup() {
@@ -57,7 +84,7 @@ export default function SignUp() {
   }
 
   const isFormValid = () => {
-    return nama && email && password && address && phone;
+    return nama && validateEmail(email) && password.length >= 8 && address && phone;
   };
 
   return (
@@ -99,8 +126,9 @@ export default function SignUp() {
                   autoComplete='off'
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleEmailChange}
                 />
+                {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
@@ -110,7 +138,7 @@ export default function SignUp() {
                     type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePasswordChange}
                     className="pr-10 w-full border rounded px-3 py-2 focus:outline-none"/>
                   <button
                     type="button"
@@ -119,6 +147,7 @@ export default function SignUp() {
                     {showPassword ? <EyeOff size={'17px'}/> :  <Eye size={'17px'}/>}
                   </button>
                 </div>
+                {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="address">Address</Label>

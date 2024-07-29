@@ -1,12 +1,14 @@
 import { DialogClose } from "@radix-ui/react-dialog";
 import { useEffect, useState } from "react";
 import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
+import { useToast } from "@/components/ui/use-toast"
 
 const ProductCard: React.FC<{ product: any, onAddToCart: (product: any, quantity: number, discount: number, totalPrice: number,) => void }> = ({ product, onAddToCart }) => {
     const [count, setCount] = useState(0);
     const [totalPriceAll, setTotalPriceAll] = useState(0);
     const [totalPriceDiscount, setTotalPriceDiscount] = useState(0);
     const [discountedPrice, setDiscountedPrice] = useState(product.price);
+    const { toast } = useToast()
 
     useEffect(() => {
         calculateDiscountedPrice();
@@ -87,14 +89,24 @@ const ProductCard: React.FC<{ product: any, onAddToCart: (product: any, quantity
                 <div className="flex items-center text-black">
                     <CiSquareMinus size={'40px'} onClick={handleDecrement} className="cursor-pointer" />
                     <input
-                        type="text"
+                        type="number"
                         value={count}
                         onChange={handleInputChange}
                         className="mx-2 w-12 text-center"
                     />
                     <CiSquarePlus size={'40px'} onClick={handleIncrement} className="cursor-pointer" />
                 </div>
-                <DialogClose disabled={count === 0} className={'bg-[#6CC765] text-white flex-grow ms-4 rounded'} onClick={handleAddToCart}>
+                <DialogClose
+                    disabled={count === 0}
+                    className={'bg-[#6CC765] text-white flex-grow ms-4 rounded'}
+                    onClick={(e) => {
+                        handleAddToCart();
+                        toast({
+                            title: "Added to Cart!",
+                            description: "Product successfully added to your cart",
+                        });
+                    }}
+                >
                     Add to Cart
                 </DialogClose>
             </div>

@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { SidebarItems } from "@/types/sidebartypes";
 import {
   Sheet,
@@ -11,13 +11,14 @@ import {
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { LogOut, Menu, MoreHorizontal, X } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { SideBarButtonSheet as SideBarButton } from "./SideBarButton";
 import { Separator } from "./ui/separator";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import axios from "axios";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
+import { useAuth } from "./Auth/useAuth";
 
 interface SidebarMobileProps {
   sidebarItems: SidebarItems;
@@ -25,7 +26,8 @@ interface SidebarMobileProps {
 
 export default function SidebarMobile(props: SidebarMobileProps) {
   const pathname = usePathname();
-
+  const router = useRouter();
+  const { logout } = useAuth();
   const [userData, setUserData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,6 +51,18 @@ export default function SidebarMobile(props: SidebarMobileProps) {
     fetchUserData();
   }, []);
 
+  const handleLogout = useCallback(async () => {
+    try {
+      // Jalankan navigasi dan logout secara bersamaan
+      await Promise.all([
+        router.push('/login'),
+        logout()
+      ]);
+    } catch (error) {
+      console.error('Terjadi kesalahan saat logout:', error);
+      // Opsional: Tambahkan notifikasi error untuk pengguna
+    }
+  }, [router, logout]);
   if (error) {
     return <div>{error}</div>;
   }
@@ -65,18 +79,16 @@ export default function SidebarMobile(props: SidebarMobileProps) {
           <Menu size={20} />
         </Button>
       </SheetTrigger>
-      <SheetContent hideClose className="px-3 py-4" side="left">
+      <SheetContent className="px-3 py-4" side="left">
         <SheetHeader className="flex flex-row justify-between items-center space-y-0">
           <DialogTitle className="text-lg font-semibold text-foreground mx-3">
             Godong Menu
           </DialogTitle>
-          <DialogDescription>
-
-          </DialogDescription>
+          <DialogDescription></DialogDescription>
           <SheetClose asChild>
-            <Button className="h-5 w-5 p-0" variant="ghost">
+            {/* <Button className="h-5 w-5 p-0" variant="ghost">
               <X size={15} className="m-0" />
-            </Button>
+            </Button> */}
           </SheetClose>
         </SheetHeader>
 
@@ -110,13 +122,9 @@ export default function SidebarMobile(props: SidebarMobileProps) {
                 </DrawerTrigger>
               </Button>
               <DrawerContent className="mb-2 p-2">
-                <div className="flex flex-col -space-y-2 mt-2">
-                  <Link href="/">
-                    <SideBarButton size="sm" icon={LogOut} className="w-full">
+              <SideBarButton size="sm" onClick={handleLogout} icon={LogOut} className="w-full">
                       Log Out
-                    </SideBarButton>
-                  </Link>
-                </div>
+              </SideBarButton>
               </DrawerContent>
             </Drawer>
           </div>
