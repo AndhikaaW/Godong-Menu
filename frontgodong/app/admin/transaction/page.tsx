@@ -22,6 +22,8 @@ interface Product {
   item: string; // JSON string
   tanggal: string;
   total: number;
+  diskon_persen : number;
+  diskon_rupiah : number;
 }
 
 export default function TransactionPage() {
@@ -105,14 +107,17 @@ export default function TransactionPage() {
               <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
                 No Telepon
               </TableHead>
-              <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 sm:table-cell">
+              <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
+                Diskon Persen
+              </TableHead>
+              <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
+                Diskon Rupiah
+              </TableHead>
+              <TableHead className="text-[13px] w-[150px] p-0 text-black text-center bg-gray-300 sm:table-cell">
                 Total
               </TableHead>
               <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 sm:table-cell">
                 Tanggal
-              </TableHead>
-              <TableHead className="text-[13px] w-[100px] p-0 text-black text-center hidden sm:table-cell bg-gray-300">
-                Status Terima
               </TableHead>
               <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300">
                 Detail
@@ -135,15 +140,16 @@ export default function TransactionPage() {
                   {product.no_telepon}
                 </TableCell>
                 <TableCell className="text-center hidden text-[12px] md:table-cell">
+                  {product.diskon_persen}
+                </TableCell>
+                <TableCell className="text-center hidden text-[12px] md:table-cell">
+                  {product.diskon_rupiah}
+                </TableCell>
+                <TableCell className="text-center hidden text-[12px] md:table-cell">
                   Rp. {product.total.toFixed(2)}
                 </TableCell>
                 <TableCell className="text-center text-[12px] hidden md:table-cell">
                   {new Date(product.tanggal).toLocaleDateString()}
-                </TableCell>
-                <TableCell className="text-center hidden md:table-cell">
-                  <div className="bg-green-400 w-[70px] text-white cursor-pointer rounded-full h-[20px] text-[12px]">
-                    Completed
-                  </div>
                 </TableCell>
                 <TableCell className="text-center hidden md:table-cell">
                   <ButtonDetail product={product} />

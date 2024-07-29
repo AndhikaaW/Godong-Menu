@@ -44,18 +44,12 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
 
     fetchUserData();
   }, []);
-
-  const handleLogout = useCallback(async () => {
-    try {
-      // Jalankan navigasi dan logout secara bersamaan
-      await Promise.all([
-        router.push('/login'),
-        logout()
-      ]);
-    } catch (error) {
-      console.error('Terjadi kesalahan saat logout:', error);
-      // Opsional: Tambahkan notifikasi error untuk pengguna
-    }
+  const handleLogout = useCallback(() => {
+    router.push('/login');
+    router.refresh()
+    setTimeout(() => {
+      logout();
+    }, 100);
   }, [router, logout]);
 
   if (error) {
