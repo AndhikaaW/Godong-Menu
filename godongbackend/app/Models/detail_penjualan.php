@@ -13,4 +13,8 @@ class detail_penjualan extends Model
         'faktur','kode_menu','name','jumlah','total','sub_total','diskon_persen','diskon_persen'
     ];
     use HasFactory;
+    public function menu()
+    {
+        return $this->belongsTo(MenuItem::class, 'kode_menu', 'kode_menu');
+    }
 }

@@ -18,6 +18,7 @@ import formatCurrency from "./formatCurrency";
 import ProductGridSkeleton from "@/app/skeleton/skeletonMenu";
 import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
 import usePrintInvoice from "./ExportPdf";
+import MenuSkeleton from "./MenuSkeleton";
 interface Menu {
     kode_menu: string;
     category_id: string;
@@ -75,6 +76,7 @@ const fetchMenuByCategory = async (categoryId: string): Promise<Menu[]> => {
 export default function Menu() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [menu, setMenu] = useState<Menu[]>([]);
+    const [loading, setLoading] = useState(true);
     const [cart, setCart] = useState<Cart[]>([]);
     const [userData, setUserData] = useState<any>(null);
 
@@ -297,7 +299,19 @@ export default function Menu() {
         discount: discount,
         total: totalAmount
     });
-
+    useEffect(() => {
+        const fetchData = async () => {
+          setLoading(true);
+          await refreshCategories();
+          await refreshAllMenu();
+          setLoading(false);
+        };
+        fetchData();
+      }, [refreshCategories, refreshAllMenu]);
+    
+      if (loading) {
+        return <MenuSkeleton />;
+      }
     return (
         <div className="container ">
             <div className='flex justify-content-end flex-col-reverse sm:flex-row me-4 sticky top-0 py-2 px-3 w-full bg-white z-10 shadow-sm rounded'>
@@ -345,12 +359,12 @@ export default function Menu() {
                                 {cart.map((item, index) => (
                                     <Card key={index} className='my-3 p-2'>
                                         <div className='flex justify-content-between'>
-                                            <div className="hidden lg:flex align-items-center ">
+                                            <div className="hidden sm:flex align-items-center ">
                                                 {item.image ? (
                                                     <img
                                                         src={`data: image / jpeg;base64,${item.image}`}
                                                         alt={item.name}
-                                                        style={{ width: '70px', height: '60px', objectFit: 'cover', borderRadius: '10px' }}
+                                                        style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '10px' }}
                                                     />
                                                 ) : (
                                                     <div className="avatar-fallback">img</div>

@@ -4,6 +4,7 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
 import { Check } from 'lucide-react';
+import formatCurrency from "../menu/formatCurrency";
 import axios from 'axios';
 import { AspectRatio } from '@radix-ui/react-aspect-ratio';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -18,6 +19,7 @@ interface DetailItem {
   total: number;
   menu_name: string;
   image: string;
+  subtotal:number;
 }
 
 interface Transaction {
@@ -27,6 +29,8 @@ interface Transaction {
   alamat: string;
   tanggal: string;
   total: number;
+  sub_total:number;
+  diskon_rupiah:number;
   details: DetailItem[];
   main_item: DetailItem;
   other_items_count: number;
@@ -200,7 +204,7 @@ const HistoryPage = () => {
                         Detail
                       </Button>
                     </DialogTrigger>
-                    <DialogContent ref={documentRef} hideClose>
+                    <DialogContent ref={documentRef}>
                       <DialogHeader>
                         <DialogTitle>Invoice</DialogTitle>
                         <DialogDescription />
@@ -223,25 +227,26 @@ const HistoryPage = () => {
                           </div>
                           <div className="mt-3 p-3 outline bg-light shadow-lg rounded-lg bg-gray-100">
                             <div className="flex flex-row align-items-start justify-content-between">
+
                               <div className="flex flex-col align-items-start w-auto">
                                 <h5>Bill To</h5>
-                                <label>Id User : </label>
-                                <label>Number : </label>
-                                <label>Address : </label>
+                                <label>Id User : {item.id_user} </label>
+                                <label>Number : {item.no_telepon}</label>
+                                <label>Address : {item.alamat}</label>
                               </div>
                               <div className="flex flex-col align-items-end">
                                 <h6>Invoice of IDR</h6>
-                                <h6></h6>
+                                <h6>{formatCurrency(item.total)}</h6>
                               </div>
                             </div>
                             <div className="flex flex-row align-items-center justify-content-between mt-3">
                               <div className="flex flex-col align-items-start w-auto">
                                 <h5>Invoice Date</h5>
-                                <label></label>
+                                <label>{item.tanggal}</label>
                               </div>
                               <div className="flex flex-col align-items-end">
                                 <h5>Invoice Number</h5>
-                                <label></label>
+                                <label>{item.faktur}</label>
                               </div>
                             </div>
                             <hr />
@@ -261,22 +266,24 @@ const HistoryPage = () => {
                             </div>
                             <hr />
                             <div className="h-[100px] overflow-auto invoice-data">
-                              {/* {invoiceData.items.map((item: any, index: any) => (
+                              {item.details.map((item, index) => (
                                 <div className="flex flex-row align-items-center mt-3" key={index}>
                                   <div className="flex flex-col align-items-center w-1/4">
-                                    <label>{item.name}</label>
+                                    <label>{item.menu_name}</label>
                                   </div>
                                   <div className="flex flex-col align-items-center w-1/4">
-                                    <label>{item.count}</label>
+                                    <label>{item.jumlah}</label>
                                   </div>
                                   <div className="flex flex-col align-items-center w-1/4">
-                                    <label>{formatCurrency(item.sub_total_item / item.count)}</label>
+                                    <label>{formatCurrency(item.subtotal / item.jumlah)}</label>
+                                    {/* <label>{item.subtotal / item.jumlah}</label> */}
                                   </div>
                                   <div className="flex flex-col align-items-center w-1/4">
-                                    <label>{formatCurrency(item.sub_total_item)}</label>
+                                    <label>{formatCurrency(item.subtotal)}</label>
+                                    {/* <label>{item.total}</label> */}
                                   </div>
                                 </div>
-                              ))} */}
+                              ))}
                             </div>
                             <hr />
                             <div className="flex">
@@ -289,7 +296,7 @@ const HistoryPage = () => {
                                     <label>Subtotal</label>
                                   </div>
                                   <div className="flex flex-col align-items-end w-1/2">
-                                    {/* <label>{formatCurrency(invoiceData.sub_total)}</label> */}
+                                    <label>{formatCurrency(item.sub_total)}</label>
                                   </div>
                                 </div>
                                 <div className="flex flex-row align-items-center justify-content-between">
@@ -297,7 +304,7 @@ const HistoryPage = () => {
                                     <label>Discount</label>
                                   </div>
                                   <div className="flex flex-col align-items-end w-1/2">
-                                    {/* <label>{formatCurrency(invoiceData.diskon_rupiah)}</label> */}
+                                    <label>{formatCurrency(item.diskon_rupiah)}</label>
                                   </div>
                                 </div>
                                 <div className="flex flex-row justify-end">
@@ -308,7 +315,7 @@ const HistoryPage = () => {
                                     <b>Total</b>
                                   </div>
                                   <div className="flex flex-col align-items-end w-1/2">
-                                    {/* <label><b>{formatCurrency(invoiceData.total)}</b></label> */}
+                                    <label><b>{formatCurrency(item.total)}</b></label>
                                   </div>
                                 </div>
                               </div>
