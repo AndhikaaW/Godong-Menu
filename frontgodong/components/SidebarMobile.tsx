@@ -10,7 +10,7 @@ import {
 } from "./ui/sheet";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { LogOut, Menu, MoreHorizontal, X } from "lucide-react";
+import { LogOut, Menu, MoreHorizontal, UserRound, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { SideBarButtonSheet as SideBarButton } from "./SideBarButton";
 import { Separator } from "./ui/separator";
@@ -113,7 +113,7 @@ export default function SidebarMobile(props: SidebarMobileProps) {
                     <div className="flex gap-2">
                       <Avatar className="h-5 w-5">
                         <AvatarImage src={userData.pictures} />
-                        <AvatarFallback>Max Programming</AvatarFallback>
+                        <AvatarFallback><UserRound /></AvatarFallback>
                       </Avatar>
                       <span className="align-self-center">{userData.nama}</span>
                     </div>

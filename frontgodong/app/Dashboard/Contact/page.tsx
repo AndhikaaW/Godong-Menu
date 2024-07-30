@@ -22,13 +22,13 @@ import { Input } from "@/components/ui/input";
 function Contactpage() {
     // const email = localStorage.getItem('user-info');
     const [message, setMessage] = useState("");
-    const [email, setEmail] = useState("")
+    const [email, setEmail] = useState("");
     useEffect(() => {
         const email = localStorage.getItem('user-info');
         setEmail(email!!)
     }, [])
     async function messageuser() {
-        let item = { email, message };
+        let item = { email, message};
         try {
             let response = await axios.post(
                 "http://192.168.200.100:8000/api/contact",

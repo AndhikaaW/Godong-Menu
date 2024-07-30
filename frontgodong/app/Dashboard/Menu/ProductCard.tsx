@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
 import { useToast } from "@/components/ui/use-toast"
 
-const ProductCard: React.FC<{ product: any, onAddToCart: (product: any, quantity: number, discount: number, totalPrice: number,) => void }> = ({ product, onAddToCart }) => {
+const ProductCard: React.FC<{ product: any, onAddToCart: (product: any, quantity: number, discount: number, totalPrice: number,totalDiscount:number) => void }> = ({ product, onAddToCart }) => {
     const [count, setCount] = useState(0);
     const [totalPriceAll, setTotalPriceAll] = useState(0);
     const [totalPriceDiscount, setTotalPriceDiscount] = useState(0);
@@ -39,7 +39,7 @@ const ProductCard: React.FC<{ product: any, onAddToCart: (product: any, quantity
         }
     };
     const handleAddToCart = () => {
-        onAddToCart(product, count, totalPriceDiscount, totalPriceAll);
+        onAddToCart(product, count, discountedPrice, totalPriceAll, totalPriceDiscount);
     };
 
     const hasDiscount = product.diskon_persen > 0 || product.diskon_rupiah > 0;

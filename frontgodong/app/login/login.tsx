@@ -127,7 +127,7 @@ export default function Login() {
           />
         </div>
       </div>
-      <div className="flex items-center justify-center h-full w-full lg:w-1/2">
+      <div className="flex items-center justify-center h-full w-full lg:w-1/2 ">
         <Card className="max-w-sm w-full bg-white text-black">
           <CardHeader>
             <CardTitle className="text-lg">Welcome To</CardTitle>
@@ -210,7 +210,7 @@ export default function Login() {
         </Card>
       </div>
       {/* ... (rest of the JSX remains the same) */}
-      <div className="hidden lg:flex h-full w-full lg:w-1/2 items-center justify-center bg-muted">
+      <div className="hidden lg:flex h-full w-full lg:w-1/2 items-center justify-center ">
         <Image
           src={bg}
           alt="Image"

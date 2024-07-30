@@ -4,17 +4,20 @@ import axios from "axios";
 import 'primeicons/primeicons.css';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
-import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
-import { CircleCheck, CirclePlus, Delete, Plus, TicketPercent, Trash } from "lucide-react";
+import { CircleCheck, CirclePlus, Delete, Plus, TicketPercent, Trash, X } from "lucide-react";
 import { Badge } from 'primereact/badge';
-import Link from "next/link";
 import ProductCard from "../menu/ProductCard";
 import { useReactToPrint } from 'react-to-print';
+import QRCode from 'qrcode.react';
+import formatCurrency from "./formatCurrency";
+import ProductGridSkeleton from "@/app/skeleton/skeletonMenu";
+import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
+import usePrintInvoice from "./ExportPdf";
 interface Menu {
     kode_menu: string;
     category_id: string;
@@ -38,23 +41,24 @@ interface Cart {
     count: number;
     price: number;
     discount: number;
+    totalDiscount: number;
     totalPrice: number;
 }
-interface TransactionItem {
-    kode_menu: string;
-    count: number;
-    price: number;
-}
-
-interface TransactionData {
-    id_user: string;
-    no_telepon: string;
-    alamat: string;
-    sub_total: number;
-    total: number;
-    items: TransactionItem[];
-}
-
+// interface TransactionItem {
+//     kode_menu: string;
+//     count: number;
+//     sub_total: number;
+// }
+// interface TransactionData {
+//     id_user: string;
+//     no_telepon: string;
+//     alamat: string;
+//     sub_total: number;
+//     total: number;
+//     diskon_rupiah: number;
+//     diskon_persen: number;
+//     items: TransactionItem[];
+// }
 const fetchCategories = async (): Promise<Category[]> => {
     const response = await axios.get("http://192.168.200.100:8000/api/categories");
     return response.data;
@@ -79,16 +83,24 @@ export default function Menu() {
     const [searchTerm, setSearchTerm] = useState("");
 
     const [notification, setNotification] = useState<string | null>(null);
-    const [invoiceData, setInvoiceData] = useState<TransactionData | null>(null);
+    const [invoiceData, setInvoiceData] = useState<any>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const currentDate = getCurrentDate();
 
-    useEffect(() => {
+    const { documentRef, handlePrint } = usePrintInvoice();
+
+    // const [loading, setLoading] = useState(true);
+    // if (loading) {
+    //     return <ProductGridSkeleton />;
+    // }
+
+    useEffect(() => { //fetch userdata
         const fetchUserData = async () => {
             const userinfo = localStorage.getItem("user-info");
             let email = userinfo ? userinfo.replace(/["]/g, "") : "";
             if (!email) {
                 // setError("Email tidak ditemukan di localStorage");
+                // setLoading(false);
                 return;
             }
             try {
@@ -140,16 +152,16 @@ export default function Menu() {
         setSelectedProduct(product);
     };
 
-    const handleAddToCart = (product: any, quantity: number, discount: number, totalPrice: number) => {
+    const handleAddToCart = (product: any, quantity: number, discount: number, totalPrice: number, totalDiscount: number) => {
         setCart((prevCart) => {
             const existingProduct = prevCart.find((item) => item.kode_menu === product.kode_menu);
             if (existingProduct) {
                 return prevCart.map((item) =>
-                    item.kode_menu === product.kode_menu ? { ...item, count: item.count + quantity, discount: item.discount + discount, totalPrice: item.totalPrice + totalPrice } : item
+                    item.kode_menu === product.kode_menu ? { ...item, count: item.count + quantity, discount: item.discount, totalPrice: item.totalPrice + totalPrice, totalDiscount: item.totalDiscount + discount } : item
                 );
 
             } else {
-                return [...prevCart, { ...product, count: quantity, discount: discount, totalPrice: totalPrice }];
+                return [...prevCart, { ...product, count: quantity, discount: discount, totalPrice: totalPrice, totalDiscount: totalDiscount }];
             }
         });
     };
@@ -161,8 +173,9 @@ export default function Menu() {
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         const subTotal = cart.reduce((total, item) => total + item.price * item.count, 0);
-        const total = cart.reduce((total, item) => total + item.discount, 0);
-
+        const total = cart.reduce((total, item) => total + item.totalDiscount, 0);
+        const diskonRupiah = subTotal - total
+        const diskonPersen = (diskonRupiah / subTotal) * 100;
         try {
             const transactionData = {
                 id_user: userData.id,
@@ -170,12 +183,19 @@ export default function Menu() {
                 alamat: userData.address,
                 sub_total: subTotal,
                 total: total,
+                diskon_persen: diskonPersen,
+                diskon_rupiah: diskonRupiah,
                 items: cart.map(item => ({
                     kode_menu: item.kode_menu,
+                    name: item.name,
+                    diskon_rupiah_item: item.totalPrice - item.totalDiscount,
+                    diskon_persen_item: ((item.totalPrice - item.totalDiscount) / item.totalPrice) * 100.00,
                     count: item.count,
-                    price: item.price
+                    sub_total_item: item.totalPrice,
+                    total_item: item.totalDiscount
                 }))
             };
+
             const response = await axios.post('http://192.168.200.100:8000/api/transaksi', transactionData);
             console.log(response.data);
             setNotification('Pesanan berhasil dibuat!');
@@ -191,8 +211,39 @@ export default function Menu() {
         }
     };
 
-    const handleDelete = (productId: string) => {
-        setCart((prevCart) => prevCart.filter((item) => item.kode_menu !== productId));
+    const handleIncrement = (index: any) => {
+        const newCart = [...cart];
+        newCart[index].count += 1;
+        newCart[index].totalPrice = newCart[index].count * newCart[index].price;
+        newCart[index].totalDiscount = newCart[index].count * newCart[index].discount;
+        setCart(newCart);
+    };
+
+    const handleDecrement = (index: any) => {
+        const newCart = [...cart];
+        if (newCart[index].count > 1) {
+            newCart[index].count -= 1;
+            newCart[index].totalPrice = newCart[index].count * newCart[index].price;
+            newCart[index].totalDiscount = newCart[index].count * newCart[index].discount;
+            setCart(newCart);
+        }
+    };
+
+
+    const handleInputChange = (event: any, index: any) => {
+        const newCount = event.target.value;
+        const newCart = [...cart];
+        if (newCount > 0) {
+            newCart[index].count = newCount;
+            newCart[index].totalPrice = newCount * newCart[index].price;
+            newCart[index].totalDiscount = newCart[index].count * newCart[index].discount;
+            setCart(newCart);
+        }
+    };
+
+    const handleDelete = (kode_menu: any) => {
+        const newCart = cart.filter(item => item.kode_menu !== kode_menu);
+        setCart(newCart);
     };
     const getDiscountBadge = (product: any) => {
         if (product.diskon_persen && product.diskon_persen > 0) {
@@ -203,38 +254,49 @@ export default function Menu() {
         return null;
     };
 
-    function formatCurrency(value: number) {
-        return value.toLocaleString('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).replace('Rp', 'Rp.').trim();
-    }
     function getCurrentDate() {
         return new Date().toLocaleDateString();
     }
 
-    const documentRef = useRef(null);
-    const handlePrint = useReactToPrint({
-        content: () => documentRef.current,
-        documentTitle: `Invoice-${invoiceData?.id_user}`,
-        bodyClass: 'p-16',
-        pageStyle: `
-            @media print {
-            .invoice-data {
-                overflow: visible !important;
-                height: auto !important;
-            }
-            }
-        `,
-    });
+    // const documentRef = useRef(null);
+    // const handlePrint = useReactToPrint({
+    //     content: () => documentRef.current,
+    //     documentTitle: `Invoice-${invoiceData?.id_user}`,
+    //     bodyClass: 'p-16',
+    //     pageStyle: `
+    //         @media print {
+    //         .invoice-data {
+    //             overflow: visible !important;
+    //             height: auto !important;
+    //         }
+    //         }
+    //     `,
+    // });
 
     const [isTruncated, setIsTruncated] = useState(true);
-
     const toggleTruncate = () => {
         setIsTruncated(!isTruncated);
     };
+
+    const userName = userData?.nama || 'N/A';
+    const userPhone = invoiceData?.no_telepon || 'N/A';
+    const userAddress = invoiceData?.alamat || 'N/A';
+    const invoiceId = invoiceData?.id_user || 'N/A';
+    const totalAmount = formatCurrency(invoiceData?.total || 0);
+    const invoiceItems = invoiceData?.items || [];
+    const subTotal = formatCurrency(invoiceData?.sub_total || 0);
+    const discount = formatCurrency(invoiceData?.diskon_rupiah || 0);
+
+    const qrCodeData = JSON.stringify({
+        user: userName,
+        phone: userPhone,
+        address: userAddress,
+        invoiceId: invoiceId,
+        invoiceItems: invoiceItems,
+        subTotal: subTotal,
+        discount: discount,
+        total: totalAmount
+    });
 
     return (
         <div className="container ">
@@ -282,51 +344,56 @@ export default function Menu() {
                                 <SheetDescription ></SheetDescription>
                                 {cart.map((item, index) => (
                                     <Card key={index} className='my-3 p-2'>
-                                        <div className='flex justify-content-between '>
-                                            <div className="hidden lg:flex align-items-center">
+                                        <div className='flex justify-content-between'>
+                                            <div className="hidden lg:flex align-items-center ">
                                                 {item.image ? (
                                                     <img
-                                                        src={`data:image/jpeg;base64,${item.image}`}
+                                                        src={`data: image / jpeg;base64,${item.image}`}
                                                         alt={item.name}
-                                                        style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '10px' }}
+                                                        style={{ width: '70px', height: '60px', objectFit: 'cover', borderRadius: '10px' }}
                                                     />
                                                 ) : (
                                                     <div className="avatar-fallback">img</div>
                                                 )}
                                             </div>
-
                                             <div className="flex flex-col w-full ms-2">
                                                 <div className="flex justify-content-start ">
                                                     <label htmlFor={`cart-item-${index}`} className=" text-start">{item.name}</label>
                                                 </div>
                                                 <div className="flex w-full align-items-center">
                                                     <div className="flex w-full">
-                                                        <div className="flex w-1/2 text-start gap-2">
+                                                        <div className="flex flex-col w-1/2 text-start gap-1 ">
                                                             <label htmlFor={`cart-item-price-${index}`}>{formatCurrency(item.price)}</label>
-                                                            <b>x</b>
-                                                            <label htmlFor={`cart-item-price-${index}`}><b>{item.count} </b></label>
+                                                            <div className="flex items-center text-black">
+                                                                <CiSquareMinus size={'40px'} onClick={() => handleDecrement(index)} className="cursor-pointer" />
+                                                                <input
+                                                                    type="number"
+                                                                    value={item.count}
+                                                                    onChange={(event) => handleInputChange(event, index)}
+                                                                    className="mx-2 w-12 text-center"
+                                                                />
+                                                                <CiSquarePlus size={'40px'} onClick={() => handleIncrement(index)} className="cursor-pointer" />
+                                                            </div>
                                                         </div>
-                                                        <div className="flex flex-col justify-content-end w-1/2 text-end">
-                                                            {item.totalPrice - item.discount > 0 ? (
+                                                        <div className="flex flex-col justify-content-center w-1/2 text-end ">
+                                                            {item.totalPrice - item.totalDiscount > 0 ? (
                                                                 <>
                                                                     <label htmlFor={`cart-item-price-${index}`} style={{ textDecoration: 'line-through' }}>
                                                                         {formatCurrency(item.totalPrice)}
                                                                     </label>
                                                                     <label htmlFor={`cart-item-price-${index}`}>
-                                                                        {formatCurrency(item.discount)}
+                                                                        {formatCurrency(item.totalDiscount)}
                                                                     </label>
                                                                 </>
                                                             ) : (
-                                                                <>
-                                                                    <label htmlFor={`cart-item-price-${index}`}>
-                                                                        {formatCurrency(item.totalPrice)}
-                                                                    </label>
-                                                                </>
+                                                                <label htmlFor={`cart-item-price-${index}`}>
+                                                                    {formatCurrency(item.totalPrice)}
+                                                                </label>
                                                             )}
                                                         </div>
                                                     </div>
-                                                    <div className="flex align-items-center w-1/1 ms-2">
-                                                        <Trash size={'20px'} onClick={() => handleDelete(item.kode_menu)} className="cursor-pointer" />
+                                                    <div className="flex align-items-center w-1/1 ms-2 p-2 rounded-lg hover:bg-[#61AB5B] cursor-pointer">
+                                                        <Trash size={'20px'} onClick={() => handleDelete(item.kode_menu)}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -349,7 +416,7 @@ export default function Menu() {
                                             <label htmlFor="total">Total pesanan anda</label>
                                         </div>
                                         <div className='flex justify-center align-items-center gap-2'>
-                                            <label htmlFor="price">{formatCurrency(cart.reduce((total, item) => total + item.discount, 0))}</label>
+                                            <label htmlFor="price">{formatCurrency(cart.reduce((total, item) => total + item.discount * item.count, 0))}</label>
                                         </div>
                                     </div>
                                     <SheetClose asChild disabled={cart.length === 0} className="mt-2">
@@ -368,10 +435,15 @@ export default function Menu() {
                     </Sheet>
                     {isDialogOpen && invoiceData && (
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                            <DialogContent ref={documentRef}>
+                            <DialogContent ref={documentRef} hideClose>
+                                <DialogClose asChild className="d-print-none">
+                                    <div className="flex justify-content-end">
+                                        <X className="h-4 w-4" />
+                                    </div>
+                                </DialogClose>
                                 <DialogHeader>
                                     <DialogTitle>Invoice</DialogTitle>
-                                    <DialogDescription></DialogDescription>
+                                    <DialogDescription />
                                     <div className="p-1 sm:w-full">
                                         <div className='flex'>
                                             <div className='flex flex-col w-1/2 gap-2 text-start'>
@@ -390,10 +462,10 @@ export default function Menu() {
                                             </div>
                                         </div>
                                         <div className="mt-3 p-3 outline bg-light shadow-lg rounded-lg bg-gray-100">
-                                            <div className="flex flex-row align-items-start justify-content-between ">
+                                            <div className="flex flex-row align-items-start justify-content-between">
                                                 <div className="flex flex-col align-items-start w-auto">
                                                     <h5>Bill To</h5>
-                                                    <label>Id User : {invoiceData.id_user}</label>
+                                                    <label>Id User : {userData.nama}</label>
                                                     <label>Number : {invoiceData.no_telepon}</label>
                                                     <label>Address : {invoiceData.alamat}</label>
                                                 </div>
@@ -428,57 +500,63 @@ export default function Menu() {
                                                 </div>
                                             </div>
                                             <hr />
-                                            <div className="h-[100px] overflow-auto invoice-data" ref={documentRef}>
-                                                {invoiceData.items.map((item, index) => (
+                                            <div className="h-[100px] overflow-auto invoice-data">
+                                                {invoiceData.items.map((item: any, index: any) => (
                                                     <div className="flex flex-row align-items-center mt-3" key={index}>
                                                         <div className="flex flex-col align-items-center w-1/4">
-                                                            <label>{item.kode_menu}</label>
+                                                            <label>{item.name}</label>
                                                         </div>
                                                         <div className="flex flex-col align-items-center w-1/4">
                                                             <label>{item.count}</label>
                                                         </div>
                                                         <div className="flex flex-col align-items-center w-1/4">
-                                                            <label>{formatCurrency(item.price)}</label>
+                                                            <label>{formatCurrency(item.sub_total_item / item.count)}</label>
                                                         </div>
                                                         <div className="flex flex-col align-items-center w-1/4">
-                                                            <label>{formatCurrency(item.price * item.count)}</label>
+                                                            <label>{formatCurrency(item.sub_total_item)}</label>
                                                         </div>
                                                     </div>
                                                 ))}
                                             </div>
                                             <hr />
-                                            <div className="flex flex-row align-items-center justify-content-between mt-1">
-                                                <div className="flex flex-col align-items-end w-full">
-                                                    <label>Subtotal</label>
+                                            <div className="flex">
+                                                <div className="flex w-1/2">
+                                                    <QRCode value={qrCodeData} />
                                                 </div>
-                                                <div className="flex flex-col align-items-end w-1/2">
-                                                    <label>{formatCurrency(invoiceData.sub_total)}</label>
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-row align-items-center justify-content-between">
-                                                <div className="flex flex-col align-items-end w-full">
-                                                    <label>Discount</label>
-                                                </div>
-                                                <div className="flex flex-col align-items-end w-1/2">
-                                                    <label>{formatCurrency(invoiceData.sub_total - invoiceData.total)}</label>
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-row justify-end">
-                                                <hr className="w-1/2" />
-                                            </div>
-                                            <div className="flex flex-row align-items-center justify-content-between">
-                                                <div className="flex flex-col align-items-end w-full">
-                                                    <b>Total</b>
-                                                </div>
-                                                <div className="flex flex-col align-items-end w-1/2">
-                                                    <label><b>{formatCurrency(invoiceData.total)}</b></label>
+                                                <div className="flex flex-col w-1/2">
+                                                    <div className="flex align-items-center justify-content-between">
+                                                        <div className="flex flex-col align-items-end w-1/2">
+                                                            <label>Subtotal</label>
+                                                        </div>
+                                                        <div className="flex flex-col align-items-end w-1/2">
+                                                            <label>{formatCurrency(invoiceData.sub_total)}</label>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-row align-items-center justify-content-between">
+                                                        <div className="flex flex-col align-items-end w-1/2">
+                                                            <label>Discount</label>
+                                                        </div>
+                                                        <div className="flex flex-col align-items-end w-1/2">
+                                                            <label>{formatCurrency(invoiceData.diskon_rupiah)}</label>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-row justify-end">
+                                                        <hr className="w-3/4" />
+                                                    </div>
+                                                    <div className="flex flex-row align-items-center justify-content-between">
+                                                        <div className="flex flex-col align-items-end w-1/2">
+                                                            <b>Total</b>
+                                                        </div>
+                                                        <div className="flex flex-col align-items-end w-1/2">
+                                                            <label><b>{formatCurrency(invoiceData.total)}</b></label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </DialogHeader>
-                                <DialogFooter id="react-no-print" className="d-print-none">
-                                    {/* <Button onClick={() => setIsDialogOpen(false)}>Close</Button> */}
+                                <DialogFooter className="d-print-none">
                                     <Button onClick={handlePrint} className="bg-[#61AB5B] text-white"><b>Export PDF</b></Button>
                                 </DialogFooter>
                             </DialogContent>
