@@ -39,6 +39,8 @@ public function store(Request $request)
     $transaksi->no_telepon = $request->no_telepon;
     $transaksi->alamat = $request->alamat;
     $transaksi->sub_total = $request->sub_total;
+    $transaksi->diskon_persen = $request->diskon_persen;
+    $transaksi->diskon_rupiah = $request->diskon_rupiah;
     $transaksi->total = $request->total;
     $transaksi->save();
 
@@ -46,19 +48,24 @@ public function store(Request $request)
     foreach ($request->items as $item) {
         $detail = new detail_penjualan();
         $detail->faktur = $faktur;
+        $detail ->name = $item['name'];
         $detail->kode_menu = $item['kode_menu'];
         $detail->jumlah = $item['count'];
-        $detail->total = $item['price'] * $item['count'];
+        $detail->subtotal = $item['sub_total_item'];
+        $detail->total = $item['total_item'];
+        $detail->diskon_rupiah = $item['diskon_rupiah_item'];
+        $detail->diskon_persen = $item['diskon_persen_item'];
         $detail->save();
     }
     return response()->json(['message' => 'Transaksi berhasil disimpan', 'faktur' => $faktur], 201);
 }
 public function index()
 {
-    $transaksi = total_penjualan::all();
+    $transaksi = total_penjualan::with(['user', 'detailPenjualan'])
+                    ->get();
+    
     return response()->json($transaksi);
 }
-
 public function destroy($id)
 {
     $transaksi = total_penjualan::findOrFail($id);
@@ -125,4 +132,17 @@ public function getTransactionByUserWithDetails($id, Request $request)
 
     return response()->json($transactionsWithDetails);
 }
+public function getTransaksiByFaktur($faktur)
+{
+    $transaksi = total_penjualan::with('detailPenjualan')
+                    ->where('faktur', $faktur)
+                    ->first();
+
+    if (!$transaksi) {
+        return response()->json(['message' => 'Transaksi not found'], 404);
+    }
+
+    return response()->json($transaksi);
 }
+}
+

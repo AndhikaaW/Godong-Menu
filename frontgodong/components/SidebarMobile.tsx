@@ -26,6 +26,7 @@ interface SidebarMobileProps {
 
 export default function SidebarMobile(props: SidebarMobileProps) {
   const pathname = usePathname();
+  const [email,setEmail] = useState("")
   const router = useRouter();
   const { logout } = useAuth();
   const [userData, setUserData] = useState<any>(null);
@@ -34,7 +35,12 @@ export default function SidebarMobile(props: SidebarMobileProps) {
   useEffect(() => {
     const fetchUserData = async () => {
       const userinfo = localStorage.getItem('user-info');
-      let email = userinfo!.replace(/["]/g, '')
+      const admininfo = localStorage.getItem('admin-info');
+      if (userinfo == null){
+        setEmail(admininfo!.replace(/["]/g, ''))
+      }else{
+        setEmail(userinfo!.replace(/["]/g, ''))
+      }
       if (!email) {
         setError('Email tidak ditemukan di localStorage');
         return;
