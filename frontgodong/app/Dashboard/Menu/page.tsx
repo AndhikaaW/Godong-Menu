@@ -15,7 +15,6 @@ import ProductCard from "../menu/ProductCard";
 import { useReactToPrint } from 'react-to-print';
 import QRCode from 'qrcode.react';
 import formatCurrency from "./formatCurrency";
-import ProductGridSkeleton from "@/app/skeleton/skeletonMenu";
 import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
 import usePrintInvoice from "./ExportPdf";
 interface Menu {
@@ -89,18 +88,12 @@ export default function Menu() {
 
     const { documentRef, handlePrint } = usePrintInvoice();
 
-    // const [loading, setLoading] = useState(true);
-    // if (loading) {
-    //     return <ProductGridSkeleton />;
-    // }
-
     useEffect(() => { //fetch userdata
         const fetchUserData = async () => {
             const userinfo = localStorage.getItem("user-info");
             let email = userinfo ? userinfo.replace(/["]/g, "") : "";
             if (!email) {
                 // setError("Email tidak ditemukan di localStorage");
-                // setLoading(false);
                 return;
             }
             try {

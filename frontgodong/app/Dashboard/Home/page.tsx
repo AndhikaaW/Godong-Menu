@@ -110,7 +110,7 @@ function Homepage() {
             <div className="text-900 font-bold text-6xl mb-5 text-center pt-5">Welcome, {userData.nama}</div>
             <div className="container">
                 <div className="flex sm:flex-row flex-col">
-                    <div className="col-6 m-lg-2">
+                    <div className="col-5 m-lg-2">
                         <div className="flex">
                             <img src="/img-1.jpg" alt="gambar" width="250px" id='img-1' className="p-2 mb-5" style={{ borderRadius: '30px', marginTop: '-20px' }} />
                             <div className='flex-col'>
@@ -122,9 +122,7 @@ function Homepage() {
                     <div className="w-full m-lg-2 text-xl">
                         <h1 className="text-4xl font-bold mb-4">Godong Menu</h1>
                         <p className="text-gray-700 w-full mb-4">
-                            Selamat datang di Godong, restoran yang menyajikan cita rasa autentik Indonesia dalam suasana yang nyaman dan ramah.
-                            Godong menghadirkan beragam hidangan khas Nusantara, mulai dari makanan utama yang mengenyangkan hingga camilan ringan dan minuman tradisional yang menyegarkan.
-                            Kunjungi Godong dan rasakan sendiri kelezatan masakan Indonesia dalam setiap suapan!
+                            Welcome to Godong, a restaurant that serves authentic Indonesian flavors in a comfortable and friendly atmosphere. Godong presents a variety of typical Indonesian dishes, from main dishes to light snacks and refreshing traditional drinks. Visit Godong and experience the deliciousness of Indonesian cuisine in every bite!
                         </p>
                         <b><p className='mb-2'><FaRegClock className='mr-2 inline-flex items-center' />Delivery within 30 minutes</p></b>
                         <b><p className='mb-2'><TbRosetteDiscount className='mr-2 inline-flex items-center' />Best Offer & Prices</p></b>
@@ -168,7 +166,7 @@ function Homepage() {
             <div className="text-3xl mb-5 text-center pt-20 fw-bold"><label>Special Discount</label></div>
             <div className='flex flex-col  sm:flex-row justify-center'>
                 <div className='flex w-full sm:w-1/2  justify-center '>
-                    <div className="rounded-lg shadow-2xl bg-[#5F7554] p-4 w-1/2">
+                    <div className="rounded-lg shadow-2xl bg-[#5F7554] p-4">
                         <img src="/logo2.png" alt="" className='w-[200px] h-[200px]' />
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Link from 'next/link'
 import axios from "axios";
 import { Card, CardHeader } from "@/components/ui/card";
+import { CategorySkeleton } from "@/app/skeleton/skeletonCategory";
 
 interface Category {
     name: string;
@@ -11,6 +12,7 @@ interface Category {
 }
 function Categorypage() {
     const [categories, setCategories] = useState<Category[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -19,10 +21,15 @@ function Categorypage() {
                 setCategories(response.data);
             } catch (error) {
                 console.error('There was an error fetching the users!', error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchUsers();
     }, []);
+    if (loading) {
+        return <CategorySkeleton />;
+    }
     return (
         <div className="container">
             <div className='text-center mt-3'>
@@ -30,10 +37,10 @@ function Categorypage() {
                 <div className="underline" style={{ width: '150px', height: '4px', background: '#61AB5B', margin: 'auto auto 50px' }}></div>
             </div>
             <div className="container mx-auto">
-                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 sm:flex-row justify-content-center align-items-center '>
+                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 sm:flex-row justify-content-center align-items-center'>
                     {categories.map((category,index) => (
                         <Link href={'/dashboard/menu/'} className='no-underline p-5' key={index}>
-                            <div className="card justify-content-center align-items-center w-auto h-[400px]">
+                            <div className="card justify-content-center align-items-center w-auto h-[400px] shadow-lg">
                                 <div style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid #ccc', marginTop: '20px', background: '#ccc' }}>
                                     {category.icon ? (
                                         <img
