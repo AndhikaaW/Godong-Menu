@@ -51,11 +51,16 @@ export default function Menu() {
   const [selectedMenu, setSelectedMenu] = useState<Menu | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [currentPage, setCurrentPage] = useState(1);
+ const [itemsPerPage, setItemsPerPage] = useState(10);
+ const [totalPages, setTotalPages] = useState(0);
+ 
+ 
   const refreshMenu = useCallback(async () => {
     const menuItems = await fetchMenu();
     setMenu(menuItems);
-  }, []);
+    setTotalPages(Math.ceil(menuItems.length / itemsPerPage));
+  }, [itemsPerPage]);
 
   useEffect(() => {
     refreshMenu();
@@ -115,6 +120,9 @@ export default function Menu() {
   const filteredMenu = menu.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredMenu.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="p-6 space-y-6">

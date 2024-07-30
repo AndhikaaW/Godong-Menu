@@ -31,6 +31,7 @@ Route::post('/register',[UserController::class,'register']);
 Route::post('/login', [UserController::class, 'login']);
 Route::get('/getUser', [UserController::class, 'index']);
 Route::get('/user/{email}', [UserController::class, 'getoneuser']);
+Route::get('/picture/{email}',[UserController::class, 'getpicturebyemail']);
 
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::post('/categoriesAdd', [CategoryController::class, 'store']);
@@ -65,6 +66,8 @@ Route::delete('/transaksi/{id}', [TransaksiController::class, 'destroy']);
 Route::get('/transaksi/statistics', [TransaksiController::class, 'statistics']); 
 Route::post('/transaksi/date-range', [TransaksiController::class, 'getTransactionsByDateRange']);
 Route::get('/transaksi/{id}/with-details', [TransaksiController::class, 'getTransactionByUserWithDetails']);
+Route::get('transaksiget/{faktur}', [TransaksiController::class, 'getTransaksiByFaktur']);
+
 
 Route::get('/detail-transaksi', [DetailTransaksiController::class, 'index']);
 Route::get('/detail-transaksi/{faktur}', [DetailTransaksiController::class, 'showByFaktur']);

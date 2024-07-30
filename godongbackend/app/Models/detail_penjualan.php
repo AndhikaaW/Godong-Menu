@@ -10,7 +10,7 @@ class detail_penjualan extends Model
     protected $table = 'detail_penjualan';
     public $timestamps=false;
     protected $fillable =[
-        'faktur','kode_menu','jumlah','total'	
+        'faktur','kode_menu','name','jumlah','total','sub_total','diskon_persen','diskon_persen'
     ];
     use HasFactory;
 }

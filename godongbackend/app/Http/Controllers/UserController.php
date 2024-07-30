@@ -105,4 +105,15 @@ class UserController extends Controller
 
         return response()->json($user);
     }
+    public function getpicturebyemail($email)
+{
+    $user = User::where('email', $email)->first();
+
+    if (!$user) {
+        return response()->json(["Error" => "User not found"], 404);
+    }
+    return response()->json([
+        'picture' => $user->pictures
+    ]);
+}
 }

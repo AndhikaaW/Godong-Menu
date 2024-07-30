@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-    Drawer,
-    DrawerClose,
-    DrawerContent,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Label } from "@/components/ui/label";
 import { Button } from "./ui/button";
@@ -20,101 +20,132 @@ import { useMediaQuery } from "usehooks-ts";
 import { cn } from "@/lib/utils";
 import axios from "axios";
 
-interface Product {
-  faktur: string;
-  id_user: number;
-  no_telepon: string;
-  alamat: string;
-  tanggal: string;
-  total: number;
+interface User {
+  id: string;
+  nama: string;
+  pictures: string;
+  email: string;
+  address: string;
+  phone: string;
 }
-
-interface Items {
+interface Item {
   id: number;
+  name: string;
   faktur: string;
   kode_menu: string;
   jumlah: number;
+  subtotal: number;
   total: number;
+  diskon_persen: string;
+  diskon_rupiah: string;
+}
+interface Transaksi {
+  faktur: string;
+  user: User;
+  no_telepon: string;
+  alamat: string;
+  item: string;
+  sub_total:number; // JSON string
+  tanggal: string;
+  total: number;
+  diskon_persen: number;
+  diskon_rupiah: number;
+  detail_penjualan: Item[];
 }
 
 interface ButtonDetailProps {
-  product: Product;
+  itemmu: Transaksi;
 }
 
-export default function ButtonDetail({ product }: ButtonDetailProps) {
+export default function ButtonDetail({ itemmu }: ButtonDetailProps) {
   const [open, setOpen] = useState(false);
-  const [item, setItems] = useState<Items[]>([]);
+  const [item, setItems] = useState<Transaksi[]>([]);
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  function formatCurrency(value : number) {
-    return value.toLocaleString('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).replace('Rp', 'Rp.').trim();
-  }  
+
+  // Set items from itemmu when the component mounts or itemmu changes
   useEffect(() => {
-    async function fetchDetailTransaksi(faktur: string) {
-      try {
-        const response = await axios.get(`http://192.168.200.100:8000/api/detail-transaksi/${faktur}`);
-        setItems(response.data);
-      } catch (error) {
-        console.error("Error fetching transaksi:", error);
-      }
-    }
-    if (open) {
-      fetchDetailTransaksi(product.faktur);
-    }
-  }, [open, product.faktur]);
+    setItems([itemmu]);
+  }, [itemmu]);
+
+  function formatCurrency(value: number) {
+    return value
+      .toLocaleString("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      })
+      .replace("Rp", "Rp.")
+      .trim();
+  }
 
   const AddDetailForm = ({ className }: React.ComponentProps<"form">) => {
     return (
       <div className={cn("grid items-start gap-4 w-full", className)}>
         <div className="flex flex-row w-full gap-2">
           <div className="flex flex-col w-1/2 ">
-            <div className="mb-3">
-              <Label htmlFor="id">Faktur</Label>
-              <p className="border p-2 rounded">{product.faktur}</p>
+            <div>
+              <Label htmlFor="id">Order Id</Label>
+              <p className="border p-2 rounded">{itemmu.faktur}</p>
             </div>
             <div>
-              <Label htmlFor="">Id Pemesan</Label>
-              <p className="border p-2 rounded">{product.id_user}</p>
+              <Label htmlFor="">Orderer's Name</Label>
+              <p className="border p-2 rounded">{itemmu.user.nama}</p>
             </div>
             <div className="h-full">
               <Label htmlFor="">Items</Label>
               <div className="border h-[100px] p-2 rounded overflow-auto">
-              <p>Pesanan : </p>
-                {item.map((items) => (
+                <p>Pesanan : </p>
+                {itemmu.detail_penjualan.map((items) => (
                   <div key={items.id} className="mb-2 p-2 border-b-4">
-                    <p>{items.kode_menu}  x  {items.jumlah} = {formatCurrency(items.total)}</p>
-                    {/* <p>Jumlah: {items.jumlah}</p>
-                    <p>Total: {formatCurrency(items.total)}</p> */}
+                    <p>
+                      {items.name} x {items.jumlah} ={" "}
+                      {formatCurrency(items.total)}
+                    </p>
                   </div>
                 ))}
               </div>
             </div>
+            <div>
+            <Label htmlFor="">Sub Total</Label>
+              <p className="border p-2 rounded">Rp. {itemmu.total}</p>
+            </div>
           </div>
           <div className="flex flex-col w-1/2">
-            <div>
-              <Label htmlFor="">Harga Total</Label>
-              <p className="border p-2 rounded">Rp. {product.total.toFixed(2)}</p>
+          <div>
+              <Label htmlFor="">Discount</Label>
+              <p className="border p-2 rounded">
+                Rp. {itemmu.sub_total.toFixed(2)}
+              </p>
             </div>
             <div>
-              <Label htmlFor="">Alamat</Label>
-              <p className="border p-2 rounded">{product.alamat}</p>
+              <Label htmlFor="">Total</Label>
+              <p className="border p-2 rounded">
+                Rp. {itemmu.total.toFixed(2)}
+              </p>
             </div>
             <div>
-              <Label htmlFor="">No Telepon</Label>
-              <p className="border p-2 rounded">{product.no_telepon}</p>
+              <Label htmlFor="">Address</Label>
+              <p className="border p-2 rounded">{itemmu.user.address}</p>
             </div>
             <div>
-              <Label htmlFor="">Tanggal</Label>
-              <p className="border p-2 rounded">{new Date(product.tanggal).toLocaleDateString()}</p>
+              <Label htmlFor="">Phone Number</Label>
+              <p className="border p-2 rounded">{itemmu.user.phone}</p>
+            </div>
+            <div>
+              <Label htmlFor="">Date</Label>
+              <p className="border p-2 rounded">
+                {new Date(itemmu.tanggal).toLocaleDateString()}
+              </p>
             </div>
           </div>
         </div>
         <div className="flex justify-end gap-2 border-t pt-4 mt-4">
-          <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => setOpen(false)}
+          >
             Close
           </Button>
         </div>
@@ -124,7 +155,7 @@ export default function ButtonDetail({ product }: ButtonDetailProps) {
 
   const Content = () => (
     <div className="grid gap-4 py-4">
-      <DialogTitle>Detail Transaction</DialogTitle>
+      <DialogTitle className="text-2xl">Detail Transaction</DialogTitle>
       <AddDetailForm />
     </div>
   );
@@ -137,7 +168,7 @@ export default function ButtonDetail({ product }: ButtonDetailProps) {
             Detail
           </Button>
         </DialogTrigger>
-        <DialogContent className=" sm:max-w-[500px] bg-[#F4F7FE]">
+        <DialogContent className=" sm:max-w-[919px] sm:max-h-[704px] bg-[#F4F7FE]">
           <Content />
         </DialogContent>
       </Dialog>
