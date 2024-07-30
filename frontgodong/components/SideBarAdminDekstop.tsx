@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import SideBarButton from "./SideBarButton";
 import { SidebarItems } from "@/types/sidebartypes";
 import Link from "next/link";
-import { LogOut, MoreHorizontal } from "lucide-react";
+import { LogOut, MoreHorizontal, UserRound } from "lucide-react";
 import { Popover, PopoverTrigger } from "./ui/popover";
 import lg from '../public/profil.png';
 import { Button } from "./ui/button";
@@ -99,7 +99,7 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
                   <div className="flex gap-2 items-center">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src="https://img.freepik.com/free-photo/curly-man-with-broad-smile-shows-perfect-teeth-being-amused-by-interesting-talk-has-bushy-curly-dark-hair-stands-indoor-against-white-blank-wall_273609-17092.jpg" />
-                      <AvatarFallback>MP</AvatarFallback>
+                      <AvatarFallback><UserRound /></AvatarFallback>
                     </Avatar>
                     <span>{userData.nama}</span>
                   </div>

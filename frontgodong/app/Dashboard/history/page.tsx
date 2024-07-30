@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
@@ -8,6 +8,9 @@ import axios from 'axios';
 import { AspectRatio } from '@radix-ui/react-aspect-ratio';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { DialogTrigger } from '@radix-ui/react-dialog';
+import usePrintInvoice from '../menu/ExportPdf';
 
 interface DetailItem {
   kode_menu: string;
@@ -62,6 +65,9 @@ const HistoryPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
+  
+  const { documentRef, handlePrint } = usePrintInvoice();
+
 
   const fetchData = async (start?: string, end?: string) => {
     setIsLoading(true);
@@ -79,12 +85,12 @@ const HistoryPage = () => {
         `http://192.168.200.100:8000/api/user/${email}`
       );
       setUserData(userResponse.data);
-      
+
       if (userResponse.data && userResponse.data.id) {
         let url = `http://192.168.200.100:8000/api/transaksi/${userResponse.data.id}/with-details`;
         if (start) url += `?start_date=${start}`;
         if (end) url += `${start ? '&' : '?'}end_date=${end}`;
-        
+
         const transactionResponse = await axios.get(url);
         setHistoryData(transactionResponse.data);
       }
@@ -151,9 +157,9 @@ const HistoryPage = () => {
           onChange={(e) => setEndDate(e.target.value)}
           placeholder="End Date"
         />
-        <Button 
-          variant={'outline'} 
-          className='bg-[#61AB5B] rounded-3xl' 
+        <Button
+          variant={'outline'}
+          className='bg-[#61AB5B] rounded-3xl'
           onClick={handleFilter}
           disabled={isFilterDisabled}
         >
@@ -166,14 +172,14 @@ const HistoryPage = () => {
             <Card key={item.faktur} className='w-full flex bg-slate-400' >
               <CardContent className="w-full flex p-4 bg-gray-50 hover:bg-gray-100 rounded-lg items-center border-[1px] border-[#54844F]">
                 <div className='w-[75px] h-[75px] mr-2 mb-2'>
-                <AspectRatio ratio={1/1} className='bg-muted'>
-                <Image
-                  src={`data:image/jpeg;base64,${item.main_item.image}`}
-                  alt={item.main_item.menu_name}
-                  fill
-                  className="rounded-md mr-4"
-                />
-                </AspectRatio>
+                  <AspectRatio ratio={1 / 1} className='bg-muted'>
+                    <Image
+                      src={`data:image/jpeg;base64,${item.main_item.image}`}
+                      alt={item.main_item.menu_name}
+                      fill
+                      className="rounded-md mr-4"
+                    />
+                  </AspectRatio>
                 </div>
                 <div className="flex-grow">
                   <CardTitle className="text-lg font-semibold">
@@ -182,15 +188,139 @@ const HistoryPage = () => {
                   </CardTitle>
                   <p className="text-sm text-gray-500">{item.tanggal}</p>
                   <div className='flex flex-row '>
-                    <Check className='p-1 h-5 w-5 mr-1 flex-wrap bg-[#369A2E] text-white rounded-full '/>
+                    <Check className='p-1 h-5 w-5 mr-1 flex-wrap bg-[#369A2E] text-white rounded-full ' />
                     <p>Order Completed</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="font-semibold">Rp {item.total.toLocaleString()}</p>
-                  <Button variant="outline" className="mt-2 rounded-3xl bg-[#369A2E] border-[2px] border-[#369A2E] hover:bg-white text-gray-50 hover:text-[#369A2E]">
-                    Detail
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger>
+                      <Button variant="outline" className="mt-2 rounded-3xl bg-[#369A2E] border-[2px] border-[#369A2E] hover:bg-white text-gray-50 hover:text-[#369A2E]">
+                        Detail
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent ref={documentRef} hideClose>
+                      <DialogHeader>
+                        <DialogTitle>Invoice</DialogTitle>
+                        <DialogDescription />
+                        <div className="p-1 sm:w-full">
+                          <div className='flex'>
+                            <div className='flex flex-col w-1/2 gap-2 text-start'>
+                              <label>www.godong.id</label>
+                              <label>godong@gmail.com</label>
+                              <label>082391838391</label>
+                            </div>
+                            <div className='flex w-1/2'>
+                              <div className='flex flex-row align-items-end justify-end w-full'>
+                                <div className='flex flex-col text-end'>
+                                  <h4 className='text-[#61AB5B]'>Godong Menu</h4>
+                                  <label>Godong Resto Address</label>
+                                  <label>TAX 1982323272832280</label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mt-3 p-3 outline bg-light shadow-lg rounded-lg bg-gray-100">
+                            <div className="flex flex-row align-items-start justify-content-between">
+                              <div className="flex flex-col align-items-start w-auto">
+                                <h5>Bill To</h5>
+                                <label>Id User : </label>
+                                <label>Number : </label>
+                                <label>Address : </label>
+                              </div>
+                              <div className="flex flex-col align-items-end">
+                                <h6>Invoice of IDR</h6>
+                                <h6></h6>
+                              </div>
+                            </div>
+                            <div className="flex flex-row align-items-center justify-content-between mt-3">
+                              <div className="flex flex-col align-items-start w-auto">
+                                <h5>Invoice Date</h5>
+                                <label></label>
+                              </div>
+                              <div className="flex flex-col align-items-end">
+                                <h5>Invoice Number</h5>
+                                <label></label>
+                              </div>
+                            </div>
+                            <hr />
+                            <div className="flex flex-row align-items-center justify-content-between mt-3">
+                              <div className="flex flex-col align-items-center w-1/4">
+                                <b>Item Detail</b>
+                              </div>
+                              <div className="flex flex-col align-items-center w-1/4">
+                                <b>Qty</b>
+                              </div>
+                              <div className="flex flex-col align-items-center w-1/4">
+                                <b>Unit Price</b>
+                              </div>
+                              <div className="flex flex-col align-items-center w-1/4">
+                                <b>Amount</b>
+                              </div>
+                            </div>
+                            <hr />
+                            <div className="h-[100px] overflow-auto invoice-data">
+                              {/* {invoiceData.items.map((item: any, index: any) => (
+                                <div className="flex flex-row align-items-center mt-3" key={index}>
+                                  <div className="flex flex-col align-items-center w-1/4">
+                                    <label>{item.name}</label>
+                                  </div>
+                                  <div className="flex flex-col align-items-center w-1/4">
+                                    <label>{item.count}</label>
+                                  </div>
+                                  <div className="flex flex-col align-items-center w-1/4">
+                                    <label>{formatCurrency(item.sub_total_item / item.count)}</label>
+                                  </div>
+                                  <div className="flex flex-col align-items-center w-1/4">
+                                    <label>{formatCurrency(item.sub_total_item)}</label>
+                                  </div>
+                                </div>
+                              ))} */}
+                            </div>
+                            <hr />
+                            <div className="flex">
+                              <div className="flex w-1/2">
+                                {/* <QRCode value={qrCodeData} /> */}
+                              </div>
+                              <div className="flex flex-col w-1/2">
+                                <div className="flex align-items-center justify-content-between">
+                                  <div className="flex flex-col align-items-end w-1/2">
+                                    <label>Subtotal</label>
+                                  </div>
+                                  <div className="flex flex-col align-items-end w-1/2">
+                                    {/* <label>{formatCurrency(invoiceData.sub_total)}</label> */}
+                                  </div>
+                                </div>
+                                <div className="flex flex-row align-items-center justify-content-between">
+                                  <div className="flex flex-col align-items-end w-1/2">
+                                    <label>Discount</label>
+                                  </div>
+                                  <div className="flex flex-col align-items-end w-1/2">
+                                    {/* <label>{formatCurrency(invoiceData.diskon_rupiah)}</label> */}
+                                  </div>
+                                </div>
+                                <div className="flex flex-row justify-end">
+                                  <hr className="w-3/4" />
+                                </div>
+                                <div className="flex flex-row align-items-center justify-content-between">
+                                  <div className="flex flex-col align-items-end w-1/2">
+                                    <b>Total</b>
+                                  </div>
+                                  <div className="flex flex-col align-items-end w-1/2">
+                                    {/* <label><b>{formatCurrency(invoiceData.total)}</b></label> */}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </DialogHeader>
+                      <DialogFooter className="d-print-none">
+                        <Button onClick={handlePrint} className="bg-[#61AB5B] text-white"><b>Export PDF</b></Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </CardContent>
             </Card>

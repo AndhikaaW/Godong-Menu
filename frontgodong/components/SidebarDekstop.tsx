@@ -3,7 +3,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import SideBarButton from "./SideBarButton";
 import { SidebarItems } from "@/types/sidebartypes";
 import Link from "next/link";
-import { CircleUser, LogOut, MoreHorizontal } from "lucide-react";
+import { CircleUser, LogOut, MoreHorizontal, UserRound } from "lucide-react";
 import { Separator } from "./ui/separator";
 import { Popover, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
@@ -100,7 +100,7 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
                   <div className="flex gap-2">
                     <Avatar className="h-5 w-5">
                       <AvatarImage src={userData.pictures} />
-                      <AvatarFallback>Max Programming</AvatarFallback>
+                      <AvatarFallback><UserRound/></AvatarFallback>
                     </Avatar>
                     <span className="align-self-center">{userData.nama}</span>
                   </div>
