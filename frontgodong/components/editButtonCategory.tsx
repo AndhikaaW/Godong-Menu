@@ -17,6 +17,7 @@ import { Pen} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AspectRatio } from '@radix-ui/react-aspect-ratio';
 import Image from 'next/image';
+import { API_ENDPOINTS } from '@/app/api/godongbackend/api';
 
 interface EditButtonProps {
   category: {
@@ -75,7 +76,7 @@ export default function EditButton({ category, onCategoryEdited }: EditButtonPro
         form.append("icon", base64Image);
       }
       try {
-        const response = await axios.post('http://192.168.200.100:8000/api/editcategories', form);
+        const response = await axios.post(API_ENDPOINTS.EDIT_CATEGORY, form);
         console.log('Category edited successfully:', response.data);
         setOpen(false);
         onCategoryEdited(); // Call the function to refresh the category list

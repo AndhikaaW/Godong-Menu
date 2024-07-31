@@ -1,5 +1,57 @@
-import React from 'react'
+import forge from 'node-forge';
 
-export default function api() {
+const keyWord = 'marstech';
 
+const generateKeyPair = (keyword: string) => {
+  const seed = forge.md.sha256.create().update(keyword).digest().getBytes();
+  const prng = forge.random.createInstance();
+  prng.seedFileSync = () => seed;
+
+  return forge.pki.rsa.generateKeyPair({
+    bits: 2048,
+    e: 0x10001,
+    prng: prng,
+  });
+};
+
+export function decryptText(encryptedText: string): string {
+  try {
+    const keyPair = generateKeyPair(keyWord!);
+    const decoded = forge.util.decode64(encryptedText);
+    return keyPair.privateKey.decrypt(decoded, 'RSA-OAEP');
+  } catch (error) {
+    console.error('Dekripsi gagal:', error);
+    return 'Gagal mendekripsi. Pastikan teks terenkripsi dan kata kunci benar.';
+  }
 }
+
+const api_base_url = "TuREO6K/UoJol0wYN9XfV7DcR8Cd7vOX8HGb8MX3sH62ABDCEco51Wh01BiWl5iq53AuMG1B+H6t75OHtc/s2oEZ+98mxy4PnoVDpFPCJrZpIp3/qgyEZbFRTNKcYPdlheHUdLqzphgBIj4Qodz8BX2gpHUps7kYUhVglmc8M3sqvQ1prMk9AmxIFx5Ok0NsIg0dZqvra62rlsDvjanlNWlwAwrwmcBXCeW1xjHVW87sEigGYvwDymp427qVNiSsAWlhpL2M0rMLEV5zFPuQdBbFxAZiglL85PH/tzBFr5Z5I30eKZz4yHsdz7S5KZcskeY5r8Hyfdi8+UmD4s7usg==";
+export const api_url = decryptText(api_base_url);
+
+export const API_ENDPOINTS = {
+  CATEGORIES: `${api_url}/categories`,
+  DELETE_CATEGORY: (id: string) => `${api_url}/categories/${id}`,
+  CONTACT: `${api_url}/contact`,
+  STATISTICS: `${api_url}/statistics`,
+  TRANSAKSI_DATE_RANGE: `${api_url}/transaksi-date-range`,
+  MENU_ITEMS: `${api_url}/menu-items`,
+  DELETE_MENU_ITEM: (kode_menu: string) =>
+    `${api_url}/menu-items/${kode_menu}`,
+  CATEGORY_MENU_ITEMS: (categoryId: string) => `${api_url}/categories/${categoryId}/menu-items`,
+  DELETE_CONTACT: (id: string) => `${api_url}/contact/${id}`,
+  ALL_TRANSAKSI: `${api_url}/alltransaksi`,
+  GET_USER: `${api_url}/getUser`,
+  DELETE_USER: (id: string) => `${api_url}/deleteuser/${id}`,
+  USER: (email: string) => `${api_url}/user/${email}`,
+  TRANSAKSI_WITH_DETAILS: (userId: string, start?: string) =>
+    `${api_url}/transaksi/${userId}/with-details${
+      start ? `?start_date=${start}` : ""
+    }`,
+  TRANSAKSI: `${api_url}/transaksi`,
+  UPLOAD_PROFILE_PICTURE: `${api_url}/upload-profile-picture`,
+  LOGIN: `${api_url}/login`,
+  REGISTER: `${api_url}/register`,
+  ADD_CATEGORY: `${api_url}/categoriesAdd`,
+  EDIT_CATEGORY: `${api_url}/editcategories`,
+  EDIT_MENU: `${api_url}/editmenu`,
+};

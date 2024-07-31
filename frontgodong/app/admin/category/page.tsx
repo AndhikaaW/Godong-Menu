@@ -15,6 +15,7 @@ import EditButton from "@/components/editButtonCategory";
 import { Button } from "@/components/ui/button";
 import { Pen, Search, Trash2 } from "lucide-react";
 import axios from "axios";
+import { API_ENDPOINTS } from "@/app/api/godongbackend/api";
 
 interface Category {
   id: string;
@@ -24,12 +25,12 @@ interface Category {
 }
 
 const fetchCategories = async (): Promise<Category[]> => {
-  const response = await axios.get("http://192.168.200.100:8000/api/categories");
+  const response = await axios.get(API_ENDPOINTS.CATEGORIES);
   return response.data;
 };
 
 const deleteCategory = async (id: string): Promise<void> => {
-  await axios.delete(`http://192.168.200.100:8000/api/categories/${id}`);
+  await axios.delete(API_ENDPOINTS.DELETE_CATEGORY(id));
 };
 
 export default function CategoryPage() {

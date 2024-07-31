@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/register',[UserController::class,'register']);
 Route::post('/login', [UserController::class, 'login']);
 Route::get('/getUser', [UserController::class, 'index']);
+Route::delete('/deleteuser/{id}', [UserController::class, 'deleteuser']);
 Route::get('/user/{email}', [UserController::class, 'getoneuser']);
 Route::get('/picture/{email}',[UserController::class, 'getpicturebyemail']);
 
@@ -63,11 +64,9 @@ Route::post('/transaksi', [TransaksiController::class, 'store']);
 Route::get('/transaksi/{id}', [TransaksiController::class, 'getTransactionByUser']);
 Route::get('/alltransaksi', [TransaksiController::class, 'index']);
 Route::delete('/transaksi/{id}', [TransaksiController::class, 'destroy']);
-Route::get('/transaksi/statistics', [TransaksiController::class, 'statistics']); 
-Route::post('/transaksi/date-range', [TransaksiController::class, 'getTransactionsByDateRange']);
+Route::get('/statistics', [TransaksiController::class, 'statistics']); 
+Route::post('/transaksi-date-range', [TransaksiController::class, 'getTransactionsByDateRange']);
 Route::get('/transaksi/{id}/with-details', [TransaksiController::class, 'getTransactionByUserWithDetails']);
 Route::get('transaksiget/{faktur}', [TransaksiController::class, 'getTransaksiByFaktur']);
-
-
 Route::get('/detail-transaksi', [DetailTransaksiController::class, 'index']);
 Route::get('/detail-transaksi/{faktur}', [DetailTransaksiController::class, 'showByFaktur']);

@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import ButtonDetail from "@/components/detailButton";
 import axios from "axios";
 import { BreadcrumbSkeleton, SearchSkeleton, ActionButtonSkeleton, TableSkeleton } from "@/components/Skeletons";
+import { API_ENDPOINTS } from "@/app/api/godongbackend/api";
 
 interface User {
   id: string;
@@ -63,7 +64,7 @@ export default function TransactionPage() {
   useEffect(() => {
     async function fetchTransaksi() {
       try {
-        const response = await axios.get("http://192.168.200.100:8000/api/alltransaksi");
+        const response = await axios.get(API_ENDPOINTS.ALL_TRANSAKSI);
         setProducts(response.data);
         setFilteredProducts(response.data);
         setTotalPages(Math.ceil(response.data.length / itemsPerPage));
@@ -236,19 +237,19 @@ export default function TransactionPage() {
                     Name
                   </TableHead>
                   <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
-                    Diskon Persen
+                    Discount %
                   </TableHead>
                   <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
-                    Diskon Rupiah
+                    Discount
                   </TableHead>
                   <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
                     Sub Total
                   </TableHead>
-                  <TableHead className="text-[13px] w-[150px] p-0 text-black text-center bg-gray-300 sm:table-cell">
+                  <TableHead className="text-[13px] w-[150px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
                     Total
                   </TableHead>
-                  <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 sm:table-cell">
-                    Tanggal
+                  <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300 hidden sm:table-cell">
+                    Date
                   </TableHead>
                   <TableHead className="text-[13px] w-[100px] p-0 text-black text-center bg-gray-300">
                     Detail
@@ -279,7 +280,7 @@ export default function TransactionPage() {
                     <TableCell className="text-center text-[12px] hidden md:table-cell">
                       {new Date(product.tanggal).toLocaleDateString()}
                     </TableCell>
-                    <TableCell className="text-center hidden md:table-cell">
+                    <TableCell className="text-center">
                       <ButtonDetail itemmu={product}/>
                     </TableCell>
                   </TableRow>

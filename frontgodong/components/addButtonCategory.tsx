@@ -25,6 +25,7 @@ import { Textarea } from "./ui/textarea";
 import { log } from "console";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import Image from "next/image";
+import { API_ENDPOINTS } from "@/app/api/godongbackend/api";
 
 interface ButtonAddProps {
   onCategoryAdded: () => void;
@@ -70,7 +71,7 @@ export default function ButtonAdd({ onCategoryAdded }: ButtonAddProps) {
     // }
 
     try {
-      const response = await axios.post('http://192.168.200.100:8000/api/categoriesAdd',formData, {
+      const response = await axios.post(API_ENDPOINTS.ADD_CATEGORY,formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Search, Trash2, Upload } from "lucide-react";
 import axios from "axios";
+import { API_ENDPOINTS } from "@/app/api/godongbackend/api";
 
 interface Review {
   id: string;
@@ -39,7 +40,7 @@ export default function Component() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await axios.get("http://192.168.200.100:8000/api/contact", {
+        const response = await axios.get(API_ENDPOINTS.CONTACT, {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -59,7 +60,6 @@ export default function Component() {
   const onGetExporProduct = async (title?: string, worksheetname?: string) => {
     try {
       setLoading(true);
-      // const response = await axios.get("http://192.168.200.100:8000/api/contactcol");
       // Check if the action result contains data and if it's an array
       if (products && Array.isArray(products)) {
         const dataToExport = products.map((pro: any) => ({
@@ -91,7 +91,7 @@ export default function Component() {
   // const onGetExportProduct = async (title = 'ExportedData', worksheetname = 'Sheet1') => {
   //   try {
   //     setLoading(true);
-  //     const response = await axios.get('http://192.168.200.100:8000/api/contactcol');
+
 
   //     if (response.data && response.data.data && Array.isArray(response.data.data)) {
   //       const { columns, data } = response.data;
@@ -121,7 +121,7 @@ export default function Component() {
 
   // delete
   const deleteReview = async (id: string): Promise<void> => {
-    await axios.delete(`http://192.168.200.100:8000/api/contact/${id}`);
+    await axios.delete(API_ENDPOINTS.DELETE_CONTACT(id));
   };
 
   const handleDelete = async (id: string) => {

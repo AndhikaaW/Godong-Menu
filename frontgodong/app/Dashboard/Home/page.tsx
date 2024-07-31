@@ -21,6 +21,7 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel"
 import Link from 'next/link';
+import { API_ENDPOINTS } from '@/app/api/godongbackend/api';
 
 interface review {
     email: string,
@@ -54,7 +55,7 @@ function Homepage() {
     useEffect(() => {
         async function fetchUsers() {
             try {
-                const response = await axios.get("http://192.168.200.100:8000/api/contact", {
+                const response = await axios.get(API_ENDPOINTS.CONTACT, {
                     headers: {
                         "Content-Type": "application/json",
                         Accept: "application/json",
@@ -80,7 +81,7 @@ function Homepage() {
             }
 
             try {
-                const response = await axios.get(`http://192.168.200.100:8000/api/user/${email}`);
+                const response = await axios.get(API_ENDPOINTS.USER(email));
                 setUserData(response.data);
             } catch (err) {
                 setError('Gagal mengambil data user');
