@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import usePrintInvoice from '../menu/ExportPdf';
+import QRCode from 'qrcode.react';
 
 interface DetailItem {
   kode_menu: string;
@@ -63,13 +64,14 @@ const SkeletonLoader = () => (
 );
 
 const HistoryPage = () => {
-  const [historyData, setHistoryData] = useState<Transaction[]>([]);
+  const [historyData, setHistoryData] = useState<Transaction []>([]);
   const [userData, setUserData] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   
+  // const [selectedHistory, setSelectedProduct] = useState<Transaction | null>(null);
   const { documentRef, handlePrint } = usePrintInvoice();
 
 
@@ -141,6 +143,18 @@ const HistoryPage = () => {
   if (error) {
     return <div className="container mx-auto p-4">Error: {error}</div>;
   }
+
+  
+  const qrCodeData = JSON.stringify({
+    user: userData?.nama,
+    phone: historyData?.[0]?.no_telepon,
+    address: historyData?.[0]?.alamat,
+    invoiceId: historyData?.[0]?.faktur,
+    // invoiceItems: historyData?.[0]?.details || [],
+    subTotal: historyData?.[0]?.sub_total,
+    discount: historyData?.[0]?.diskon_rupiah,
+    total: historyData?.[0]?.total
+  });
 
   return (
     <div className="container mx-auto p-4">
@@ -230,7 +244,7 @@ const HistoryPage = () => {
 
                               <div className="flex flex-col align-items-start w-auto">
                                 <h5>Bill To</h5>
-                                <label>Id User : {item.id_user} </label>
+                                <label>Id User : {userData?.nama} </label>
                                 <label>Number : {item.no_telepon}</label>
                                 <label>Address : {item.alamat}</label>
                               </div>
@@ -288,7 +302,7 @@ const HistoryPage = () => {
                             <hr />
                             <div className="flex">
                               <div className="flex w-1/2">
-                                {/* <QRCode value={qrCodeData} /> */}
+                                <QRCode value={qrCodeData} />
                               </div>
                               <div className="flex flex-col w-1/2">
                                 <div className="flex align-items-center justify-content-between">

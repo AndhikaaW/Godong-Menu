@@ -26,7 +26,7 @@ interface SidebarMobileProps {
 
 export default function SidebarMobile(props: SidebarMobileProps) {
   const pathname = usePathname();
-  const [email,setEmail] = useState("")
+  const [email, setEmail] = useState("")
   const router = useRouter();
   const { logout } = useAuth();
   const [userData, setUserData] = useState<any>(null);
@@ -36,10 +36,15 @@ export default function SidebarMobile(props: SidebarMobileProps) {
     const fetchUserData = async () => {
       const userinfo = localStorage.getItem('user-info');
       const admininfo = localStorage.getItem('admin-info');
-      if (userinfo == null){
-        setEmail(admininfo!.replace(/["]/g, ''))
-      }else{
-        setEmail(userinfo!.replace(/["]/g, ''))
+
+      let email = null;
+
+      if (userinfo && admininfo) {
+        email = `${userinfo.replace(/["]/g, '')} ${admininfo.replace(/["]/g, '')}`;
+      } else if (userinfo) {
+        email = userinfo.replace(/["]/g, '');
+      } else if (admininfo) {
+        email = admininfo.replace(/["]/g, '');
       }
       if (!email) {
         setError('Email tidak ditemukan di localStorage');
@@ -128,9 +133,9 @@ export default function SidebarMobile(props: SidebarMobileProps) {
                 </DrawerTrigger>
               </Button>
               <DrawerContent className="mb-2 p-2">
-              <SideBarButton size="sm" onClick={handleLogout} icon={LogOut} className="w-full">
-                      Log Out
-              </SideBarButton>
+                <SideBarButton size="sm" onClick={handleLogout} icon={LogOut} className="w-full">
+                  Log Out
+                </SideBarButton>
               </DrawerContent>
             </Drawer>
           </div>

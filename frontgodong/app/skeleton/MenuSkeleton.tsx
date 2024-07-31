@@ -23,7 +23,7 @@ const MenuSkeleton: React.FC = () => {
         {[...Array(8)].map((_, index) => (
           <Card key={index} className="rounded text-sm">
             <CardHeader>
-              <Skeleton className="h-[150px] w-[200px] rounded-lg" />
+              <Skeleton className="h-[150px] w-[120px] sm:w-[170px] rounded-lg" />
             </CardHeader>
             <CardContent>
               <Skeleton className="h-5 w-3/4 mb-2" />

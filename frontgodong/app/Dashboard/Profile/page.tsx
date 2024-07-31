@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { ProfileSkeleton } from "@/app/skeleton/skeletonProfile";
 
 function Profilepage() {
     const [userData, setUserData] = useState<any>(null);
@@ -96,7 +97,7 @@ function Profilepage() {
     }
 
     if (!userData) {
-        return <div>Loading...</div>;
+        return <ProfileSkeleton/>;
     }
 
     return (

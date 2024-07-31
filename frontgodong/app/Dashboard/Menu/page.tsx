@@ -17,7 +17,7 @@ import QRCode from 'qrcode.react';
 import formatCurrency from "./formatCurrency";
 import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
 import usePrintInvoice from "./ExportPdf";
-import MenuSkeleton from "./MenuSkeleton";
+import MenuSkeleton from "../../skeleton/MenuSkeleton";
 interface Menu {
     kode_menu: string;
     category_id: string;
@@ -294,22 +294,21 @@ export default function Menu() {
     });
     useEffect(() => {
         const fetchData = async () => {
-          setLoading(true);
-          await refreshCategories();
-          await refreshAllMenu();
-          setLoading(false);
+            setLoading(true);
+            await refreshCategories();
+            await refreshAllMenu();
+            setLoading(false);
         };
         fetchData();
-      }, [refreshCategories, refreshAllMenu]);
-    
-      if (loading) {
+    }, [refreshCategories, refreshAllMenu]);
+
+    if (loading) {
         return <MenuSkeleton />;
-      }
+    }
     return (
         <div className="container ">
             <div className='flex justify-content-end flex-col-reverse sm:flex-row me-4 sticky top-0 py-2 px-3 w-full bg-white z-10 shadow-sm rounded'>
                 <div className='text-start mt-2'>
-                    <h1>Menu<div className="underline" style={{ width: '100px', height: '4px', background: '#61AB5B', margin: '2px' }}></div></h1>
                     <div className="flex justify-start pt-3 mb-2 gap-4 w-full" style={{ overflow: 'auto', scrollbarWidth: 'none' }}>
                         <a href="#all">
                             <Button
@@ -330,13 +329,18 @@ export default function Menu() {
                     </div>
                 </div>
                 <div className="flex align-items-center justify-content-end sm:flex-row w-full ">
-                    <Input
-                        type="search"
-                        placeholder="Search"
-                        className=' w-1/2 ms-3 me-2 mt-2 sm:w-1/2'
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                    <div className="flex align-items-center justify-content-start sm:w-1/2 ">
+                        <h1>Menu<div className="underline" style={{ width: '100px', height: '4px', background: '#61AB5B', margin: '2px' }}></div></h1>
+                    </div>
+                    <div className="flex align-items-center justify-content-start sm:w-1/2 ">
+                        <Input
+                            type="search"
+                            placeholder="Search"
+                            className=' w-1/2 ms-3 me-2 mt-2 sm:w-1/2'
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
                     <Sheet>
                         <SheetTrigger asChild>
                             <div className="flex align-items-center pt-2">
@@ -368,7 +372,7 @@ export default function Menu() {
                                                     <label htmlFor={`cart-item-${index}`} className=" text-start">{item.name}</label>
                                                 </div>
                                                 <div className="flex w-full align-items-center">
-                                                    <div className="flex w-full">
+                                                    <div className="flex w-full ">
                                                         <div className="flex flex-col w-1/2 text-start gap-1 ">
                                                             <label htmlFor={`cart-item-price-${index}`}>{formatCurrency(item.price)}</label>
                                                             <div className="flex items-center text-black">
@@ -398,9 +402,9 @@ export default function Menu() {
                                                                 </label>
                                                             )}
                                                         </div>
-                                                    </div>
-                                                    <div className="flex align-items-center w-1/1 ms-2 p-2 rounded-lg hover:bg-[#61AB5B] cursor-pointer">
-                                                        <Trash size={'20px'} onClick={() => handleDelete(item.kode_menu)}/>
+                                                        <div className="flex align-items-center w-1/1 ms-2 p-2 rounded-lg hover:bg-[#61AB5B] cursor-pointer">
+                                                            <Trash size={'20px'} onClick={() => handleDelete(item.kode_menu)} />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -485,10 +489,6 @@ export default function Menu() {
                                                 <div className="flex flex-col align-items-start w-auto">
                                                     <h5>Invoice Date</h5>
                                                     <label>{currentDate}</label>
-                                                </div>
-                                                <div className="flex flex-col align-items-end">
-                                                    <h5>Invoice Number</h5>
-                                                    <label>{invoiceData.id_user}</label>
                                                 </div>
                                             </div>
                                             <hr />
