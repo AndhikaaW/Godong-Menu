@@ -302,275 +302,274 @@ export default function Menu() {
         fetchData();
     }, [refreshCategories, refreshAllMenu]);
 
-    if (loading) {
-        return <MenuSkeleton />;
-    }
+    // if (loading) {
+    //     return <MenuSkeleton />;
+    // }
     return (
         <div className="container ">
-            <div className='flex justify-content-end flex-col-reverse sm:flex-row me-4 sticky top-0 py-2 px-3 w-full bg-white z-10 shadow-sm rounded'>
-                <div className='text-start mt-2'>
-                    <div className="flex justify-start pt-3 mb-2 gap-4 w-full" style={{ overflow: 'auto', scrollbarWidth: 'none' }}>
-                        <a href="#all">
-                            <Button
-                                onClick={() => handleCategoryChange(null)}
-                                className={`text-black hover:bg-[#61AB5B] hover:font-bold ${selectedCategory === null ? 'bg-[#61AB5B]' : 'bg-[#333'}`}>
-                                All
-                            </Button>
-                        </a>
-                        {categories.map((category) => (
-                            <a key={category.id} href={`#${category.name.replace(/\s+/g, '-').toLowerCase()}`}>
-                                <Button
-                                    onClick={() => handleCategoryChange(category.id)}
-                                    className={`text-black hover:bg-[#61AB5B] hover:font-bold ${selectedCategory === category.id ? 'bg-[#61AB5B]' : 'bg-[#D5FFD4]'}`}>
-                                    {category.name}
-                                </Button>
-                            </a>
-                        ))}
-                    </div>
-                </div>
-                <div className="flex align-items-center justify-content-end sm:flex-row w-full ">
-                    <div className="flex align-items-center justify-content-start sm:w-1/2 ">
+            <div className='me-2 sticky top-0 py-2 px-3 bg-white z-10 shadow-sm rounded w-full'>
+                <div className="flex w-full justify-content-end">
+                    <div className='text-start'>
                         <h1>Menu<div className="underline" style={{ width: '100px', height: '4px', background: '#61AB5B', margin: '2px' }}></div></h1>
                     </div>
-                    <div className="flex align-items-center justify-content-start sm:w-1/2 ">
+                    <div className="flex align-items-center justify-content-end w-full ">
                         <Input
                             type="search"
                             placeholder="Search"
-                            className=' w-1/2 ms-3 me-2 mt-2 sm:w-1/2'
+                            className=' w-1/2 ms-3 me-2 mt-2 sm:w-1/3'
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                    </div>
-                    <Sheet>
-                        <SheetTrigger asChild>
-                            <div className="flex align-items-center pt-2">
-                                <i className="pi pi-shopping-cart p-text-secondary p-overlay-badge" style={{ fontSize: '2rem' }}>
-                                    <Badge hidden={cart.length === 0} value={cart.length} className="bg-[#61AB5B]"></Badge>
-                                </i>
-                            </div>
-                        </SheetTrigger>
-                        <SheetContent className="overflow-auto" style={{ scrollbarWidth: 'none' }}>
-                            <SheetHeader >
-                                <SheetTitle className='text-black'>Keranjang</SheetTitle>
-                                <SheetDescription ></SheetDescription>
-                                {cart.map((item, index) => (
-                                    <Card key={index} className='my-3 p-2'>
-                                        <div className='flex justify-content-between'>
-                                            <div className="hidden sm:flex align-items-center ">
-                                                {item.image ? (
-                                                    <img
-                                                        src={`data: image / jpeg;base64,${item.image}`}
-                                                        alt={item.name}
-                                                        style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '10px' }}
-                                                    />
-                                                ) : (
-                                                    <div className="avatar-fallback">img</div>
-                                                )}
-                                            </div>
-                                            <div className="flex flex-col w-full ms-2">
-                                                <div className="flex justify-content-start ">
-                                                    <label htmlFor={`cart-item-${index}`} className=" text-start">{item.name}</label>
+                        <Sheet>
+                            <SheetTrigger asChild>
+                                <div className="flex align-items-center pt-2">
+                                    <i className="pi pi-shopping-cart p-text-secondary p-overlay-badge" style={{ fontSize: '2rem' }}>
+                                        <Badge hidden={cart.length === 0} value={cart.length} className="bg-[#61AB5B]"></Badge>
+                                    </i>
+                                </div>
+                            </SheetTrigger>
+                            <SheetContent className="overflow-auto" style={{ scrollbarWidth: 'none' }}>
+                                <SheetHeader >
+                                    <SheetTitle className='text-black'>Keranjang</SheetTitle>
+                                    <SheetDescription ></SheetDescription>
+                                    {cart.map((item, index) => (
+                                        <Card key={index} className='my-3 p-2'>
+                                            <div className='flex justify-content-between'>
+                                                <div className="hidden sm:flex align-items-center ">
+                                                    {item.image ? (
+                                                        <img
+                                                            src={`data: image / jpeg;base64,${item.image}`}
+                                                            alt={item.name}
+                                                            style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '10px' }}
+                                                        />
+                                                    ) : (
+                                                        <div className="avatar-fallback">img</div>
+                                                    )}
                                                 </div>
-                                                <div className="flex w-full align-items-center">
-                                                    <div className="flex w-full ">
-                                                        <div className="flex flex-col w-1/2 text-start gap-1 ">
-                                                            <label htmlFor={`cart-item-price-${index}`}>{formatCurrency(item.price)}</label>
-                                                            <div className="flex items-center text-black">
-                                                                <CiSquareMinus size={'40px'} onClick={() => handleDecrement(index)} className="cursor-pointer" />
-                                                                <input
-                                                                    type="number"
-                                                                    value={item.count}
-                                                                    onChange={(event) => handleInputChange(event, index)}
-                                                                    className="mx-2 w-12 text-center"
-                                                                />
-                                                                <CiSquarePlus size={'40px'} onClick={() => handleIncrement(index)} className="cursor-pointer" />
+                                                <div className="flex flex-col w-full ms-2">
+                                                    <div className="flex justify-content-start ">
+                                                        <label htmlFor={`cart-item-${index}`} className=" text-start">{item.name}</label>
+                                                    </div>
+                                                    <div className="flex w-full align-items-center">
+                                                        <div className="flex w-full ">
+                                                            <div className="flex flex-col w-1/2 text-start gap-1 ">
+                                                                <label htmlFor={`cart-item-price-${index}`}>{formatCurrency(item.price)}</label>
+                                                                <div className="flex items-center text-black">
+                                                                    <CiSquareMinus size={'40px'} onClick={() => handleDecrement(index)} className="cursor-pointer" />
+                                                                    <input
+                                                                        type="number"
+                                                                        value={item.count}
+                                                                        onChange={(event) => handleInputChange(event, index)}
+                                                                        className="mx-2 w-12 text-center"
+                                                                    />
+                                                                    <CiSquarePlus size={'40px'} onClick={() => handleIncrement(index)} className="cursor-pointer" />
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div className="flex flex-col justify-content-center w-1/2 text-end ">
-                                                            {item.totalPrice - item.totalDiscount > 0 ? (
-                                                                <>
-                                                                    <label htmlFor={`cart-item-price-${index}`} style={{ textDecoration: 'line-through' }}>
+                                                            <div className="flex flex-col justify-content-center w-1/2 text-end ">
+                                                                {item.totalPrice - item.totalDiscount > 0 ? (
+                                                                    <>
+                                                                        <label htmlFor={`cart-item-price-${index}`} style={{ textDecoration: 'line-through' }}>
+                                                                            {formatCurrency(item.totalPrice)}
+                                                                        </label>
+                                                                        <label htmlFor={`cart-item-price-${index}`}>
+                                                                            {formatCurrency(item.totalDiscount)}
+                                                                        </label>
+                                                                    </>
+                                                                ) : (
+                                                                    <label htmlFor={`cart-item-price-${index}`}>
                                                                         {formatCurrency(item.totalPrice)}
                                                                     </label>
-                                                                    <label htmlFor={`cart-item-price-${index}`}>
-                                                                        {formatCurrency(item.totalDiscount)}
-                                                                    </label>
-                                                                </>
-                                                            ) : (
-                                                                <label htmlFor={`cart-item-price-${index}`}>
-                                                                    {formatCurrency(item.totalPrice)}
-                                                                </label>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex align-items-center w-1/1 ms-2 p-2 rounded-lg hover:bg-[#61AB5B] cursor-pointer">
-                                                            <Trash size={'20px'} onClick={() => handleDelete(item.kode_menu)} />
+                                                                )}
+                                                            </div>
+                                                            <div className="flex align-items-center w-1/1 ms-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                                                <Trash size={'20px'} onClick={() => handleDelete(item.kode_menu)} />
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </Card>
+                                    ))}
+                                </SheetHeader>
+                                <SheetFooter className='flex row gap-4 mt-4'>
+                                    <Card className="pb-3" hidden={cart.length === 0}>
+                                        <div className='flex justify-content-between pe-0 py-2'>
+                                            <div className='flex justify-center align-items-center gap-2 me-3'>
+                                                <label htmlFor="total">SubTotal </label>
+                                            </div>
+                                            <div className='flex justify-center align-items-center gap-2'>
+                                                <label htmlFor="price">{formatCurrency(cart.reduce((total, item) => total + item.price * item.count, 0))}</label>
+                                            </div>
                                         </div>
+                                        <div className='flex justify-content-between pe-0 py-2'>
+                                            <div className='flex justify-center align-items-center gap-2 me-3'>
+                                                <label htmlFor="total">Total pesanan anda</label>
+                                            </div>
+                                            <div className='flex justify-center align-items-center gap-2'>
+                                                <label htmlFor="price">{formatCurrency(cart.reduce((total, item) => total + item.discount * item.count, 0))}</label>
+                                            </div>
+                                        </div>
+                                        <SheetClose asChild disabled={cart.length === 0} className="mt-2">
+                                            <Button type="submit" className='text-white bg-[#61AB5B] w-full' onClick={handleSubmit}>Order</Button>
+                                        </SheetClose>
                                     </Card>
-                                ))}
-                            </SheetHeader>
-                            <SheetFooter className='flex row gap-4 mt-4'>
-                                <Card className="pb-3" hidden={cart.length === 0}>
-                                    <div className='flex justify-content-between pe-0 py-2'>
-                                        <div className='flex justify-center align-items-center gap-2 me-3'>
-                                            <label htmlFor="total">SubTotal </label>
-                                        </div>
-                                        <div className='flex justify-center align-items-center gap-2'>
-                                            <label htmlFor="price">{formatCurrency(cart.reduce((total, item) => total + item.price * item.count, 0))}</label>
-                                        </div>
+                                    <div>
+                                        {notification && (
+                                            <h4 className="notification text-center">
+                                                {notification}
+                                            </h4>
+                                        )}
                                     </div>
-                                    <div className='flex justify-content-between pe-0 py-2'>
-                                        <div className='flex justify-center align-items-center gap-2 me-3'>
-                                            <label htmlFor="total">Total pesanan anda</label>
+                                </SheetFooter>
+                            </SheetContent>
+                        </Sheet>
+                        {isDialogOpen && invoiceData && (
+                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                <DialogContent ref={documentRef} hideClose>
+                                    <DialogClose asChild className="d-print-none">
+                                        <div className="flex justify-content-end">
+                                            <X className="h-4 w-4" />
                                         </div>
-                                        <div className='flex justify-center align-items-center gap-2'>
-                                            <label htmlFor="price">{formatCurrency(cart.reduce((total, item) => total + item.discount * item.count, 0))}</label>
-                                        </div>
-                                    </div>
-                                    <SheetClose asChild disabled={cart.length === 0} className="mt-2">
-                                        <Button type="submit" className='text-white bg-[#61AB5B] w-full' onClick={handleSubmit}>Order</Button>
-                                    </SheetClose>
-                                </Card>
-                                <div>
-                                    {notification && (
-                                        <h4 className="notification text-center">
-                                            {notification}
-                                        </h4>
-                                    )}
-                                </div>
-                            </SheetFooter>
-                        </SheetContent>
-                    </Sheet>
-                    {isDialogOpen && invoiceData && (
-                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                            <DialogContent ref={documentRef} hideClose>
-                                <DialogClose asChild className="d-print-none">
-                                    <div className="flex justify-content-end">
-                                        <X className="h-4 w-4" />
-                                    </div>
-                                </DialogClose>
-                                <DialogHeader>
-                                    <DialogTitle>Invoice</DialogTitle>
-                                    <DialogDescription />
-                                    <div className="p-1 sm:w-full">
-                                        <div className='flex'>
-                                            <div className='flex flex-col w-1/2 gap-2 text-start'>
-                                                <label>www.godong.id</label>
-                                                <label>godong@gmail.com</label>
-                                                <label>082391838391</label>
-                                            </div>
-                                            <div className='flex w-1/2'>
-                                                <div className='flex flex-row align-items-end justify-end w-full'>
-                                                    <div className='flex flex-col text-end'>
-                                                        <h4 className='text-[#61AB5B]'>Godong Menu</h4>
-                                                        <label>Godong Resto Address</label>
-                                                        <label>TAX 1982323272832280</label>
-                                                    </div>
+                                    </DialogClose>
+                                    <DialogHeader>
+                                        <DialogTitle>Invoice</DialogTitle>
+                                        <DialogDescription />
+                                        <div className="p-1 sm:w-full">
+                                            <div className='flex'>
+                                                <div className='flex flex-col w-1/2 gap-2 text-start'>
+                                                    <label>www.godong.id</label>
+                                                    <label>godong@gmail.com</label>
+                                                    <label>082391838391</label>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div className="mt-3 p-3 outline bg-light shadow-lg rounded-lg bg-gray-100">
-                                            <div className="flex flex-row align-items-start justify-content-between">
-                                                <div className="flex flex-col align-items-start w-auto">
-                                                    <h5>Bill To</h5>
-                                                    <label>Id User : {userData.nama}</label>
-                                                    <label>Number : {invoiceData.no_telepon}</label>
-                                                    <label>Address : {invoiceData.alamat}</label>
-                                                </div>
-                                                <div className="flex flex-col align-items-end">
-                                                    <h6>Invoice of IDR</h6>
-                                                    <h6>{formatCurrency(invoiceData.total)}</h6>
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-row align-items-center justify-content-between mt-3">
-                                                <div className="flex flex-col align-items-start w-auto">
-                                                    <h5>Invoice Date</h5>
-                                                    <label>{currentDate}</label>
-                                                </div>
-                                            </div>
-                                            <hr />
-                                            <div className="flex flex-row align-items-center justify-content-between mt-3">
-                                                <div className="flex flex-col align-items-center w-1/4">
-                                                    <b>Item Detail</b>
-                                                </div>
-                                                <div className="flex flex-col align-items-center w-1/4">
-                                                    <b>Qty</b>
-                                                </div>
-                                                <div className="flex flex-col align-items-center w-1/4">
-                                                    <b>Unit Price</b>
-                                                </div>
-                                                <div className="flex flex-col align-items-center w-1/4">
-                                                    <b>Amount</b>
-                                                </div>
-                                            </div>
-                                            <hr />
-                                            <div className="h-[100px] overflow-auto invoice-data">
-                                                {invoiceData.items.map((item: any, index: any) => (
-                                                    <div className="flex flex-row align-items-center mt-3" key={index}>
-                                                        <div className="flex flex-col align-items-center w-1/4">
-                                                            <label>{item.name}</label>
-                                                        </div>
-                                                        <div className="flex flex-col align-items-center w-1/4">
-                                                            <label>{item.count}</label>
-                                                        </div>
-                                                        <div className="flex flex-col align-items-center w-1/4">
-                                                            <label>{formatCurrency(item.sub_total_item / item.count)}</label>
-                                                        </div>
-                                                        <div className="flex flex-col align-items-center w-1/4">
-                                                            <label>{formatCurrency(item.sub_total_item)}</label>
+                                                <div className='flex w-1/2'>
+                                                    <div className='flex flex-row align-items-end justify-end w-full'>
+                                                        <div className='flex flex-col text-end'>
+                                                            <h4 className='text-[#61AB5B]'>Godong Menu</h4>
+                                                            <label>Godong Resto Address</label>
+                                                            <label>TAX 1982323272832280</label>
                                                         </div>
                                                     </div>
-                                                ))}
-                                            </div>
-                                            <hr />
-                                            <div className="flex">
-                                                <div className="flex w-1/2">
-                                                    <QRCode value={qrCodeData} />
                                                 </div>
-                                                <div className="flex flex-col w-1/2">
-                                                    <div className="flex align-items-center justify-content-between">
-                                                        <div className="flex flex-col align-items-end w-1/2">
-                                                            <label>Subtotal</label>
-                                                        </div>
-                                                        <div className="flex flex-col align-items-end w-1/2">
-                                                            <label>{formatCurrency(invoiceData.sub_total)}</label>
-                                                        </div>
+                                            </div>
+                                            <div className="mt-3 p-3 outline bg-light shadow-lg rounded-lg bg-gray-100">
+                                                <div className="flex flex-row align-items-start justify-content-between">
+                                                    <div className="flex flex-col align-items-start w-auto">
+                                                        <h5>Bill To</h5>
+                                                        <label>Id User : {userData.nama}</label>
+                                                        <label>Number : {invoiceData.no_telepon}</label>
+                                                        <label>Address : {invoiceData.alamat}</label>
                                                     </div>
-                                                    <div className="flex flex-row align-items-center justify-content-between">
-                                                        <div className="flex flex-col align-items-end w-1/2">
-                                                            <label>Discount</label>
-                                                        </div>
-                                                        <div className="flex flex-col align-items-end w-1/2">
-                                                            <label>{formatCurrency(invoiceData.diskon_rupiah)}</label>
-                                                        </div>
+                                                    <div className="flex flex-col align-items-end">
+                                                        <h6>Invoice of IDR</h6>
+                                                        <h6>{formatCurrency(invoiceData.total)}</h6>
                                                     </div>
-                                                    <div className="flex flex-row justify-end">
-                                                        <hr className="w-3/4" />
+                                                </div>
+                                                <div className="flex flex-row align-items-center justify-content-between mt-3">
+                                                    <div className="flex flex-col align-items-start w-auto">
+                                                        <h5>Invoice Date</h5>
+                                                        <label>{currentDate}</label>
                                                     </div>
-                                                    <div className="flex flex-row align-items-center justify-content-between">
-                                                        <div className="flex flex-col align-items-end w-1/2">
-                                                            <b>Total</b>
+                                                </div>
+                                                <hr />
+                                                <div className="flex flex-row align-items-center justify-content-between mt-3">
+                                                    <div className="flex flex-col align-items-center w-1/4">
+                                                        <b>Item Detail</b>
+                                                    </div>
+                                                    <div className="flex flex-col align-items-center w-1/4">
+                                                        <b>Qty</b>
+                                                    </div>
+                                                    <div className="flex flex-col align-items-center w-1/4">
+                                                        <b>Unit Price</b>
+                                                    </div>
+                                                    <div className="flex flex-col align-items-center w-1/4">
+                                                        <b>Amount</b>
+                                                    </div>
+                                                </div>
+                                                <hr />
+                                                <div className="h-[100px] overflow-auto invoice-data">
+                                                    {invoiceData.items.map((item: any, index: any) => (
+                                                        <div className="flex flex-row align-items-center mt-3" key={index}>
+                                                            <div className="flex flex-col align-items-center w-1/4">
+                                                                <label>{item.name}</label>
+                                                            </div>
+                                                            <div className="flex flex-col align-items-center w-1/4">
+                                                                <label>{item.count}</label>
+                                                            </div>
+                                                            <div className="flex flex-col align-items-center w-1/4">
+                                                                <label>{formatCurrency(item.sub_total_item / item.count)}</label>
+                                                            </div>
+                                                            <div className="flex flex-col align-items-center w-1/4">
+                                                                <label>{formatCurrency(item.sub_total_item)}</label>
+                                                            </div>
                                                         </div>
-                                                        <div className="flex flex-col align-items-end w-1/2">
-                                                            <label><b>{formatCurrency(invoiceData.total)}</b></label>
+                                                    ))}
+                                                </div>
+                                                <hr />
+                                                <div className="flex">
+                                                    <div className="flex w-1/2">
+                                                        <QRCode value={qrCodeData} />
+                                                    </div>
+                                                    <div className="flex flex-col w-1/2">
+                                                        <div className="flex align-items-center justify-content-between">
+                                                            <div className="flex flex-col align-items-end w-1/2">
+                                                                <label>Subtotal</label>
+                                                            </div>
+                                                            <div className="flex flex-col align-items-end w-1/2">
+                                                                <label>{formatCurrency(invoiceData.sub_total)}</label>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex flex-row align-items-center justify-content-between">
+                                                            <div className="flex flex-col align-items-end w-1/2">
+                                                                <label>Discount</label>
+                                                            </div>
+                                                            <div className="flex flex-col align-items-end w-1/2">
+                                                                <label>{formatCurrency(invoiceData.diskon_rupiah)}</label>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex flex-row justify-end">
+                                                            <hr className="w-3/4" />
+                                                        </div>
+                                                        <div className="flex flex-row align-items-center justify-content-between">
+                                                            <div className="flex flex-col align-items-end w-1/2">
+                                                                <b>Total</b>
+                                                            </div>
+                                                            <div className="flex flex-col align-items-end w-1/2">
+                                                                <label><b>{formatCurrency(invoiceData.total)}</b></label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </DialogHeader>
-                                <DialogFooter className="d-print-none">
-                                    <Button onClick={handlePrint} className="bg-[#61AB5B] text-white"><b>Export PDF</b></Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
-                    )}
+                                    </DialogHeader>
+                                    <DialogFooter className="d-print-none">
+                                        <Button onClick={handlePrint} className="bg-[#61AB5B] text-white"><b>Export PDF</b></Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        )}
+                    </div>
+                </div>
+                <div className="flex justify-start pt-1 mb-2 gap-4 w-full sm:w-1/2" style={{ overflow: 'auto', scrollbarWidth: 'none' }}>
+                    <a href="#all">
+                        <Button
+                            onClick={() => handleCategoryChange(null)}
+                            className={`text-black hover:bg-[#61AB5B] hover:font-bold ${selectedCategory === null ? 'bg-[#61AB5B]' : 'bg-[#333'}`}>
+                            All
+                        </Button>
+                    </a>
+                    {categories.map((category) => (
+                        <a key={category.id} href={`#${category.name.replace(/\s+/g, '-').toLowerCase()}`}>
+                            <Button
+                                onClick={() => handleCategoryChange(category.id)}
+                                className={`text-black hover:bg-[#61AB5B] hover:font-bold ${selectedCategory === category.id ? 'bg-[#61AB5B]' : 'bg-[#D5FFD4]'}`}>
+                                {category.name}
+                            </Button>
+                        </a>
+                    ))}
                 </div>
             </div>
+
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-3">
                 {filteredMenu.map((product) => (
                     <Card className="rounded text-sm" key={product.kode_menu}>
@@ -590,20 +589,22 @@ export default function Menu() {
                                 </div>
                             </div>
                         </CardHeader>
-                        <div className="mx-3 mb-2 ">
-                            <div className="text-center h-[40px] mb-auto">
+                        <div className="mx-3 mb-2">
+                            <div className="text-center ">
                                 <h5 className="text-truncate" style={{ maxWidth: '100%', whiteSpace: 'nowrap' }}>
                                     {product.name}
                                 </h5>
                             </div>
-                            <div className="text-sm">
-                                <div className="w-auto h-[40px] overflow-auto text-text-truncate ">
-                                    <label htmlFor="" className={`d-inline-block ${isTruncated ? 'text-truncate' : ''}`}
-                                        style={{ maxWidth: isTruncated ? '100%' : 'none', cursor: 'pointer', whiteSpace: isTruncated ? 'nowrap' : 'normal' }}
-                                        onClick={toggleTruncate}
-                                        title={isTruncated ? 'Click to expand' : 'Click to collapse'}
-                                    >{product.description}</label>
-                                </div>
+                            <div className={`w-auto ${isTruncated ? '' : 'h-[70px]'} overflow-auto text-text-truncate text-sm`}>
+                                <label
+                                    htmlFor=""
+                                    className={`d-inline-block ${isTruncated ? 'text-truncate' : ''}`}
+                                    style={{ maxWidth: isTruncated ? '100%' : 'none', cursor: 'pointer', whiteSpace: isTruncated ? 'nowrap' : 'normal' }}
+                                    onClick={toggleTruncate}
+                                    title={isTruncated ? 'Click to expand' : 'Click to collapse'}
+                                >
+                                    {product.description}
+                                </label>
                             </div>
                         </div>
                         <CardFooter className="flex sm:flex-row flex-col">

@@ -20,7 +20,7 @@ interface DetailItem {
   total: number;
   menu_name: string;
   image: string;
-  subtotal:number;
+  subtotal: number;
 }
 
 interface Transaction {
@@ -30,8 +30,8 @@ interface Transaction {
   alamat: string;
   tanggal: string;
   total: number;
-  sub_total:number;
-  diskon_rupiah:number;
+  sub_total: number;
+  diskon_rupiah: number;
   details: DetailItem[];
   main_item: DetailItem;
   other_items_count: number;
@@ -64,14 +64,14 @@ const SkeletonLoader = () => (
 );
 
 const HistoryPage = () => {
-  const [historyData, setHistoryData] = useState<Transaction []>([]);
+  const [historyData, setHistoryData] = useState<Transaction[]>([]);
   const [userData, setUserData] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-  
-  // const [selectedHistory, setSelectedProduct] = useState<Transaction | null>(null);
+
+  const [selectedHistory, setSelectedProduct] = useState<Transaction | null>(null);
   const { documentRef, handlePrint } = usePrintInvoice();
 
 
@@ -132,7 +132,7 @@ const HistoryPage = () => {
           <Skeleton className="h-1 w-24" />
         </div>
         <div className="space-y-4 w-full">
-          {[...Array(3)].map((_, index) => (
+          {[...Array(5)].map((_, index) => (
             <SkeletonLoader key={index} />
           ))}
         </div>
@@ -144,17 +144,30 @@ const HistoryPage = () => {
     return <div className="container mx-auto p-4">Error: {error}</div>;
   }
 
-  
-  const qrCodeData = JSON.stringify({
-    user: userData?.nama,
-    phone: historyData?.[0]?.no_telepon,
-    address: historyData?.[0]?.alamat,
-    invoiceId: historyData?.[0]?.faktur,
-    // invoiceItems: historyData?.[0]?.details || [],
-    subTotal: historyData?.[0]?.sub_total,
-    discount: historyData?.[0]?.diskon_rupiah,
-    total: historyData?.[0]?.total
-  });
+  const handleDetailClick = (product: Transaction) => {
+    setSelectedProduct(product);
+  };
+
+  const qrCodeData = selectedHistory
+    ? JSON.stringify({
+      user: userData?.nama,
+      phone: selectedHistory.no_telepon,
+      address: selectedHistory.alamat,
+      invoiceId: selectedHistory.faktur,
+      invoiceItems: selectedHistory.details.map(item => ({
+        kode_menu: item.kode_menu,
+        jumlah: item.jumlah,
+        total: item.total,
+        menu_name: item.menu_name,
+        subtotal: item.subtotal,
+      })) || [],
+      subTotal: selectedHistory.sub_total,
+      discount: selectedHistory.diskon_rupiah,
+      total: selectedHistory.total,
+    })
+    : '';
+
+
 
   return (
     <div className="container mx-auto p-4">
@@ -162,24 +175,26 @@ const HistoryPage = () => {
         <h1>History</h1>
         <div className="underline" style={{ width: '100px', height: '4px', background: '#61AB5B', margin: '2px' }}></div>
       </div>
-      <div className="mb-4 flex space-x-2">
-        <Input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          placeholder="Start Date"
-        />
-        <Input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          placeholder="End Date"
-        />
+      <div className='flex flex-col sm:flex-row gap-2'>
+        <div className='mb-2 flex gap-2 sm:w-full w-1/2'>
+          <Input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            placeholder="Start Date"
+          />
+          <Input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            placeholder="End Date"
+          />
+        </div>
         <Button
           variant={'outline'}
-          className='bg-[#61AB5B] rounded-3xl'
           onClick={handleFilter}
           disabled={isFilterDisabled}
+          className='bg-[#61AB5B] rounded-3xl w-1/4 flex-row mb-2'
         >
           Filter
         </Button>
@@ -214,7 +229,7 @@ const HistoryPage = () => {
                   <p className="font-semibold">Rp {item.total.toLocaleString()}</p>
                   <Dialog>
                     <DialogTrigger>
-                      <Button variant="outline" className="mt-2 rounded-3xl bg-[#369A2E] border-[2px] border-[#369A2E] hover:bg-white text-gray-50 hover:text-[#369A2E]">
+                      <Button variant="outline" className="mt-2 rounded-3xl bg-[#369A2E] border-[2px] border-[#369A2E] hover:bg-white text-gray-50 hover:text-[#369A2E]" onClick={() => handleDetailClick(item)}>
                         Detail
                       </Button>
                     </DialogTrigger>
@@ -245,22 +260,22 @@ const HistoryPage = () => {
                               <div className="flex flex-col align-items-start w-auto">
                                 <h5>Bill To</h5>
                                 <label>Id User : {userData?.nama} </label>
-                                <label>Number : {item.no_telepon}</label>
-                                <label>Address : {item.alamat}</label>
+                                <label>Number : {selectedHistory?.no_telepon}</label>
+                                <label>Address : {selectedHistory?.alamat}</label>
                               </div>
                               <div className="flex flex-col align-items-end">
                                 <h6>Invoice of IDR</h6>
-                                <h6>{formatCurrency(item.total)}</h6>
+                                <h6>{formatCurrency(selectedHistory?.total||0)}</h6>
                               </div>
                             </div>
                             <div className="flex flex-row align-items-center justify-content-between mt-3">
                               <div className="flex flex-col align-items-start w-auto">
                                 <h5>Invoice Date</h5>
-                                <label>{item.tanggal}</label>
+                                <label>{selectedHistory?.tanggal}</label>
                               </div>
                               <div className="flex flex-col align-items-end">
                                 <h5>Invoice Number</h5>
-                                <label>{item.faktur}</label>
+                                <label>{selectedHistory?.faktur}</label>
                               </div>
                             </div>
                             <hr />
@@ -280,7 +295,7 @@ const HistoryPage = () => {
                             </div>
                             <hr />
                             <div className="h-[100px] overflow-auto invoice-data">
-                              {item.details.map((item, index) => (
+                            {selectedHistory?.details.map((item, index) => (
                                 <div className="flex flex-row align-items-center mt-3" key={index}>
                                   <div className="flex flex-col align-items-center w-1/4">
                                     <label>{item.menu_name}</label>
@@ -310,7 +325,7 @@ const HistoryPage = () => {
                                     <label>Subtotal</label>
                                   </div>
                                   <div className="flex flex-col align-items-end w-1/2">
-                                    <label>{formatCurrency(item.sub_total)}</label>
+                                    <label>{formatCurrency(selectedHistory?.sub_total||0)}</label>
                                   </div>
                                 </div>
                                 <div className="flex flex-row align-items-center justify-content-between">
@@ -318,7 +333,7 @@ const HistoryPage = () => {
                                     <label>Discount</label>
                                   </div>
                                   <div className="flex flex-col align-items-end w-1/2">
-                                    <label>{formatCurrency(item.diskon_rupiah)}</label>
+                                    <label>{formatCurrency(selectedHistory?.diskon_rupiah||0)}</label>
                                   </div>
                                 </div>
                                 <div className="flex flex-row justify-end">
@@ -329,7 +344,7 @@ const HistoryPage = () => {
                                     <b>Total</b>
                                   </div>
                                   <div className="flex flex-col align-items-end w-1/2">
-                                    <label><b>{formatCurrency(item.total)}</b></label>
+                                    <label><b>{formatCurrency(selectedHistory?.total||0)}</b></label>
                                   </div>
                                 </div>
                               </div>
