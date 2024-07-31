@@ -19,6 +19,7 @@ import ProductGridSkeleton from "@/app/skeleton/skeletonMenu";
 import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
 import usePrintInvoice from "./ExportPdf";
 import MenuSkeleton from "./MenuSkeleton";
+import { API_ENDPOINTS } from "@/app/api/godongbackend/api";
 interface Menu {
     kode_menu: string;
     category_id: string;
@@ -61,15 +62,15 @@ interface Cart {
 //     items: TransactionItem[];
 // }
 const fetchCategories = async (): Promise<Category[]> => {
-    const response = await axios.get("http://192.168.200.100:8000/api/categories");
+    const response = await axios.get(API_ENDPOINTS.CATEGORIES);
     return response.data;
 };
 const fetchMenu = async (): Promise<Menu[]> => {
-    const response = await axios.get("http://192.168.200.100:8000/api/menu-items");
+    const response = await axios.get(API_ENDPOINTS.MENU_ITEMS);
     return response.data;
 };
 const fetchMenuByCategory = async (categoryId: string): Promise<Menu[]> => {
-    const response = await axios.get(`http://192.168.200.100:8000/api/categories/${categoryId}/menu-items`);
+    const response = await axios.get(API_ENDPOINTS.CATEGORY_MENU_ITEMS(categoryId));
     return response.data.menuItems;
 };
 
@@ -107,7 +108,7 @@ export default function Menu() {
             }
             try {
                 const response = await axios.get(
-                    `http://192.168.200.100:8000/api/user/${email}`
+                    API_ENDPOINTS.USER(email)
                 );
                 setUserData(response.data);
             } catch (err) {
@@ -198,7 +199,7 @@ export default function Menu() {
                 }))
             };
 
-            const response = await axios.post('http://192.168.200.100:8000/api/transaksi', transactionData);
+            const response = await axios.post(API_ENDPOINTS.TRANSAKSI, transactionData);
             console.log(response.data);
             setNotification('Pesanan berhasil dibuat!');
             setCart([]);

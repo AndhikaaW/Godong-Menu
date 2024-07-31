@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import usePrintInvoice from '../menu/ExportPdf';
+import { API_ENDPOINTS } from '@/app/api/godongbackend/api';
 
 interface DetailItem {
   kode_menu: string;
@@ -86,12 +87,12 @@ const HistoryPage = () => {
 
     try {
       const userResponse = await axios.get(
-        `http://192.168.200.100:8000/api/user/${email}`
+        API_ENDPOINTS.USER(email)
       );
       setUserData(userResponse.data);
 
       if (userResponse.data && userResponse.data.id) {
-        let url = `http://192.168.200.100:8000/api/transaksi/${userResponse.data.id}/with-details`;
+        let url = API_ENDPOINTS.TRANSAKSI_WITH_DETAILS(userResponse.data.id);
         if (start) url += `?start_date=${start}`;
         if (end) url += `${start ? '&' : '?'}end_date=${end}`;
 

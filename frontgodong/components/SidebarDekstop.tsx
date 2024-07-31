@@ -13,6 +13,7 @@ import { usePathname, useRouter } from "next/navigation";
 import axios from "axios";
 import { useAuth } from "../components/Auth/useAuth";
 import HomepageSkeleton from "@/app/skeleton/skeletonSidebarDesktop";
+import { API_ENDPOINTS } from "@/app/api/godongbackend/api";
 
 
 interface SidebarDekstopProps {
@@ -38,7 +39,7 @@ export default function SidebarDekstop(props: SidebarDekstopProps) {
       }
 
       try {
-        const response = await axios.get(`http://192.168.200.100:8000/api/user/${email}`);
+        const response = await axios.get(API_ENDPOINTS.USER(email));
         setUserData(response.data);
       } catch (err) {
         setError('Gagal mengambil data user');

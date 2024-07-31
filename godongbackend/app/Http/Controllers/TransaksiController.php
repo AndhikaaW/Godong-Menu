@@ -76,6 +76,7 @@ public function destroy($id)
 
 public function statistics()
 {
+
     $totalPenjualan = total_penjualan::sum('total');
     $jumlahOrder = total_penjualan::count();
     $jumlahClient = total_penjualan::distinct('id_user')->count('id_user');

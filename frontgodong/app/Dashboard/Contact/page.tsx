@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import axios from 'axios';
 import { Input } from "@/components/ui/input";
+import { API_ENDPOINTS } from '@/app/api/godongbackend/api';
 
 function Contactpage() {
     // const email = localStorage.getItem('user-info');
@@ -31,7 +32,7 @@ function Contactpage() {
         let item = { email, message};
         try {
             let response = await axios.post(
-                "http://192.168.200.100:8000/api/contact",
+                API_ENDPOINTS.CONTACT,
                 item,
                 {
                     headers: {

@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Eye, EyeOff } from 'lucide-react';
+import { API_ENDPOINTS } from '../api/godongbackend/api';
 
 export default function SignUp() {
   const [nama, setNama] = useState("");
@@ -65,7 +66,7 @@ export default function SignUp() {
     setIsLoading(true);
     try {
       let response = await axios.post(
-        "http://192.168.200.100:8000/api/register",
+        API_ENDPOINTS.REGISTER,
         item,
         {
           headers: {

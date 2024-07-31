@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { API_ENDPOINTS } from "@/app/api/godongbackend/api";
 
 function Profilepage() {
     const [userData, setUserData] = useState<any>(null);
@@ -30,7 +31,7 @@ function Profilepage() {
 
             try {
                 const response = await axios.get(
-                    `http://192.168.200.100:8000/api/user/${email}`
+                    API_ENDPOINTS.USER(email)
                 );
                 setUserData(response.data);
             } catch (err) {
@@ -64,7 +65,7 @@ function Profilepage() {
 
         try {
             const response = await axios.post(
-                "http://192.168.200.100:8000/api/upload-profile-picture",
+                API_ENDPOINTS.UPLOAD_PROFILE_PICTURE,
                 {
                     image: selectedImage,
                     email: userData.email

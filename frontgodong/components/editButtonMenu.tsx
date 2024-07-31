@@ -34,6 +34,7 @@ import {
 import Image from "next/image";
 import axios from "axios";
 import { AspectRatio } from "./ui/aspect-ratio";
+import { API_ENDPOINTS } from "@/app/api/godongbackend/api";
 
 interface EditButtonProps {
   menu: {
@@ -132,7 +133,7 @@ export default function EditButton({ menu, onMenuEdited }: EditButtonProps) {
 
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://192.168.200.100:8000/api/categories");
+        const response = await axios.get(API_ENDPOINTS.CATEGORIES);
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -155,7 +156,7 @@ export default function EditButton({ menu, onMenuEdited }: EditButtonProps) {
       
       try {
         const response = await axios.post(
-          "http://192.168.200.100:8000/api/editmenu",
+          API_ENDPOINTS.EDIT_MENU,
           formData,
           {
             headers: {

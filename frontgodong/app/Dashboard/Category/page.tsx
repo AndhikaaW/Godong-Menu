@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Link from 'next/link'
 import axios from "axios";
 import { Card, CardHeader } from "@/components/ui/card";
+import { API_ENDPOINTS } from "@/app/api/godongbackend/api";
 
 interface Category {
     name: string;
@@ -15,7 +16,7 @@ function Categorypage() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://192.168.200.100:8000/api/categories');
+                const response = await axios.get(API_ENDPOINTS.CATEGORIES);
                 setCategories(response.data);
             } catch (error) {
                 console.error('There was an error fetching the users!', error);

@@ -22,6 +22,7 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { Eye, EyeOff, Frown, Loader2 } from "lucide-react";
+import { API_ENDPOINTS } from "../api/godongbackend/api";
 
 export default function Login() {
   const router = useRouter();
@@ -70,7 +71,7 @@ export default function Login() {
     setIsLoading(true);
     try {
       let response = await axios.post(
-        "http://192.168.200.100:8000/api/login",
+        API_ENDPOINTS.LOGIN,
         item,
         {
           headers: {

@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/DateRangesPicker";
 import { Calendar } from "@/components/ui/calendar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { API_ENDPOINTS } from '../../api/godongbackend/api';
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -58,7 +59,7 @@ const [dateRange, setDateRange] = useState<DateRange | undefined>({ from: new Da
       setIsLoading(true);
       try {
         const response = await axios.get(
-          "http://192.168.200.100:8000/api/contact",
+          API_ENDPOINTS.CONTACT,
           {
             headers: {
               "Content-Type": "application/json",
@@ -78,7 +79,7 @@ const [dateRange, setDateRange] = useState<DateRange | undefined>({ from: new Da
     async function fetchStatistics() {
       try {
         const response = await axios.get(
-          "http://192.168.200.100:8000/api/transaksi/statistics",
+          API_ENDPOINTS.STATISTICS,
           {
             headers: {
               "Content-Type": "application/json",
@@ -100,7 +101,7 @@ const [dateRange, setDateRange] = useState<DateRange | undefined>({ from: new Da
       if (!dateRange || !dateRange.from || !dateRange.to) return;
   
       try {
-        const response = await axios.post("http://192.168.200.100:8000/api/transaksi/date-range", {
+        const response = await axios.post(API_ENDPOINTS.TRANSAKSI_DATE_RANGE, {
           from: dateRange.from.toISOString().split('T')[0],
           to: dateRange.to.toISOString().split('T')[0],
         }, {
