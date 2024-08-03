@@ -167,18 +167,18 @@ function Homepage() {
             <div className="text-3xl mb-5 text-center pt-20 fw-bold"><label>Special Discount</label></div>
             <div className='flex flex-col  sm:flex-row justify-center'>
                 <div className='flex w-full sm:w-1/2  justify-center '>
-                    <div className="rounded-lg shadow-2xl bg-[#5F7554] p-4">
+                    <div style={{ padding:'40px', background: '#5F7554', boxShadow: '36px 35px 4px  rgba(0, 0, 0, 0.25)'}}>
                         <img src="/logo2.png" alt="" className='w-[200px] h-[200px]' />
                     </div>
                 </div>
                 <div className='flex flex-col w-full sm:w-1/2 gap-3'>
                     <label htmlFor="" className=' text-3xl pt-20 fw-bold w-full'>Get 30% Special Promo</label>
                     <p>Enjoy our discount up to 30% for orders via Godong Menu</p>
-                    <Link href={'/dashboard/menu/'} className='no-underline p-5 text-black'>
-                        <div className='flex justify-start'>
-                            <Button className='w-1/4 bg-[#76C16F] '> Order now <ShoppingCart /></Button>
-                        </div>
-                    </Link>
+                    <div className='flex justify-start'>
+                        <Link href={'/dashboard/menu/'} className='no-underline p-5 text-black'>
+                            <Button className='w-auto bg-[#76C16F] '> Order now <ShoppingCart /></Button>
+                        </Link>
+                    </div>
                 </div>
             </div>
 

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import axios from "axios";
 import { Card, CardHeader } from "@/components/ui/card";
 import { CategorySkeleton } from "@/app/skeleton/skeletonCategory";
+import { API_ENDPOINTS } from "@/app/api/godongbackend/api";
 
 interface Category {
     name: string;
@@ -18,7 +19,7 @@ function Categorypage() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://192.168.200.100:8000/api/categories');
+                const response = await axios.get(API_ENDPOINTS.CATEGORIES);
                 setCategories(response.data);
             } catch (error) {
                 console.error('There was an error fetching the users!', error);
@@ -31,7 +32,7 @@ function Categorypage() {
     if (loading) {
         return <CategorySkeleton />;
     }
-    
+
     const toggleTruncate = () => {
         setIsTruncated(!isTruncated);
     };
@@ -42,29 +43,56 @@ function Categorypage() {
                 <div className="underline" style={{ width: '150px', height: '4px', background: '#61AB5B', margin: 'auto auto 50px' }}></div>
             </div>
             <div className="container mx-auto">
-                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 sm:flex-row justify-content-center align-items-center'>
+                <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:flex-row justify-content-center align-items-center'>
                     {categories.map((category, index) => (
                         <Link href={'/dashboard/menu/'} className='no-underline p-5' key={index}>
-                            <Card className="card justify-content-center align-items-center w-auto h-[400px] shadow-lg">
-                                <div style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid #ccc', marginTop: '20px', background: '#ccc' }}>
-                                    {category.icon ? (
-                                        <img
-                                            src={`data:image/jpeg;base64,${category.icon}`}
-                                            alt={category.name}
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                        />
-                                    ) : (
-                                        <div className="avatar-fallback">img</div>
-                                    )}
-                                </div>
+                            {/* <Card className="card justify-content-center align-items-center w-auto h-[400px] shadow-lg">
                                 <div className="card-body text-center">
                                     <h3 className="card-title">
                                         {category.name}
                                     </h3>
-                                    <div className={`w-[200px] h-[200px] hidden sm:flex overflow-auto text-sm `} style={{scrollbarWidth:'none',msOverflowStyle:'none'}}>
+                                    <div className={`w-auto ${isTruncated ? '' : 'h-[70px]'} overflow-auto text-text-truncate text-sm`}>
                                         <label
                                             htmlFor=""
-                                            className={`d-inline-block`}>
+                                            className={`d-inline-block ${isTruncated ? 'text-truncate' : ''}`}
+                                            style={{ maxWidth: isTruncated ? 'inherit' : 'none', cursor: 'pointer', whiteSpace: isTruncated ? 'nowrap' : 'normal' }}
+                                            onClick={toggleTruncate}
+                                            title={isTruncated ? 'Click to expand' : 'Click to collapse'}
+                                        >
+                                            {category.description}
+                                        </label>
+                                    </div>
+                                </div> */}
+                            {/* </Card> */}
+                            <Card className="rounded text-sm">
+                                <CardHeader className="justify-content-center align-items-center w-auto ">
+                                    <div style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid #ccc', marginTop: '20px', background: '#ccc' }}>
+                                        {category.icon ? (
+                                            <img
+                                                src={`data:image/jpeg;base64,${category.icon}`}
+                                                alt={category.name}
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                            />
+                                        ) : (
+                                            <div className="avatar-fallback">img</div>
+                                        )}
+                                    </div>
+                                </CardHeader>
+                                <div className="mx-3 mb-2 h-[200px]">
+                                    <div className="text-center ">
+                                        <h5 className="text-truncate" style={{ maxWidth: '100%', whiteSpace: 'nowrap' }}>
+                                            {category.name}
+                                        </h5>
+                                    </div>
+                                    <div className={`text-center w-auto h-[150px] text-sm overflow-auto`} style={{scrollbarWidth:"none"}}>
+                                        <label
+                                            htmlFor=""
+                                            className={'d-inline-block '}
+                                            // style={{whiteSpace:"normal"}}
+                                            // style={{ maxHeight: isTruncated ? '100%' : 'none', cursor: 'pointer', whiteSpace: isTruncated ? 'nowrap' : 'normal' }}
+                                            // onClick={toggleTruncate}
+                                            // title={isTruncated ? 'Click to expand' : 'Click to collapse'}
+                                        >
                                             {category.description}
                                         </label>
                                     </div>

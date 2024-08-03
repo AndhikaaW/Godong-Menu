@@ -9,15 +9,16 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
-import { CircleCheck, CirclePlus, Delete, Plus, TicketPercent, Trash, X } from "lucide-react";
+import {  Plus, Search, Trash, X } from "lucide-react";
 import { Badge } from 'primereact/badge';
 import ProductCard from "../menu/ProductCard";
-import { useReactToPrint } from 'react-to-print';
 import QRCode from 'qrcode.react';
 import formatCurrency from "./formatCurrency";
 import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
 import usePrintInvoice from "./ExportPdf";
 import MenuSkeleton from "../../skeleton/MenuSkeleton";
+import { API_ENDPOINTS } from "@/app/api/godongbackend/api";
+
 interface Menu {
     kode_menu: string;
     category_id: string;
@@ -44,38 +45,27 @@ interface Cart {
     totalDiscount: number;
     totalPrice: number;
 }
-// interface TransactionItem {
-//     kode_menu: string;
-//     count: number;
-//     sub_total: number;
-// }
-// interface TransactionData {
-//     id_user: string;
-//     no_telepon: string;
-//     alamat: string;
-//     sub_total: number;
-//     total: number;
-//     diskon_rupiah: number;
-//     diskon_persen: number;
-//     items: TransactionItem[];
-// }
-const fetchCategories = async (): Promise<Category[]> => {
-    const response = await axios.get("http://192.168.200.100:8000/api/categories");
-    return response.data;
-};
-const fetchMenu = async (): Promise<Menu[]> => {
-    const response = await axios.get("http://192.168.200.100:8000/api/menu-items");
-    return response.data;
-};
-const fetchMenuByCategory = async (categoryId: string): Promise<Menu[]> => {
-    const response = await axios.get(`http://192.168.200.100:8000/api/categories/${categoryId}/menu-items`);
-    return response.data.menuItems;
-};
+
+// const fetchCategories = async (): Promise<Category[]> => {
+//     const response = await axios.get(API_ENDPOINTS.CATEGORIES);
+//     return response.data;
+// };
+// const fetchMenu = async (): Promise<Menu[]> => {
+//     const response = await axios.get(API_ENDPOINTS.MENU_ITEMS);
+//     return response.data;
+// };
+
+// const fetchMenuByCategory = async (categoryId: string): Promise<Menu[]> => {
+//     const response = await axios.get(API_ENDPOINTS.CATEGORY_MENU_ITEMS(categoryId));
+//     return response.data.menuItems;
+// };
 
 export default function Menu() {
+    const [allMenu, setAllMenu] = useState<Menu[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [menu, setMenu] = useState<Menu[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [Isloading, setIsLoading] = useState(false);
     const [cart, setCart] = useState<Cart[]>([]);
     const [userData, setUserData] = useState<any>(null);
 
@@ -89,8 +79,20 @@ export default function Menu() {
     const currentDate = getCurrentDate();
 
     const { documentRef, handlePrint } = usePrintInvoice();
+    const [page, setPage] = useState<number>(1);
+    const [hasMore, setHasMore] = useState<boolean>(true);
 
-    useEffect(() => { //fetch userdata
+    const handleSearch = async () => {
+        if (searchTerm.trim() !== '') {
+            const searchedMenu = allMenu.filter((item) =>
+                item.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setMenu(searchedMenu);
+            setHasMore(false);
+        }
+    };
+
+    useEffect(() => {
         const fetchUserData = async () => {
             const userinfo = localStorage.getItem("user-info");
             let email = userinfo ? userinfo.replace(/["]/g, "") : "";
@@ -100,7 +102,7 @@ export default function Menu() {
             }
             try {
                 const response = await axios.get(
-                    `http://192.168.200.100:8000/api/user/${email}`
+                    API_ENDPOINTS.USER(email)
                 );
                 setUserData(response.data);
             } catch (err) {
@@ -118,17 +120,23 @@ export default function Menu() {
     }, []);
 
     const refreshMenu = useCallback(async (categoryId: string) => {
-        const menuItems = await fetchMenuByCategory(categoryId);
-        setMenu(menuItems);
+        const allMenuItems = await fetchMenuByCategory(categoryId);
+        setAllMenu(allMenuItems);
+        setMenu(allMenuItems.slice(0, 12));
+        setHasMore(allMenuItems.length > 12);
     }, []);
 
     const refreshAllMenu = useCallback(async () => {
-        const menuItems = await fetchMenu();
-        setMenu(menuItems);
+        const allMenuItems = await fetchAllMenu();
+        setAllMenu(allMenuItems);
+        setMenu(allMenuItems.slice(0, 12));
+        setHasMore(allMenuItems.length > 12);
     }, []);
+
     useEffect(() => {
         refreshCategories();
     }, [refreshCategories]);
+
     useEffect(() => {
         if (selectedCategory) {
             refreshMenu(selectedCategory);
@@ -136,9 +144,45 @@ export default function Menu() {
             refreshAllMenu();
         }
     }, [selectedCategory, refreshMenu, refreshAllMenu]);
+
+    const observer = useRef<IntersectionObserver>();
+
+    const lastMenuElementRef = useCallback(
+        (node: any) => {
+            if (loading) return;
+            if (observer.current) observer.current.disconnect();
+            observer.current = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && hasMore) {
+                    setPage((prevPage) => prevPage + 1);
+                }
+            });
+            if (node) observer.current.observe(node);
+        },
+        [loading, hasMore]
+    );
+
     useEffect(() => {
-        refreshAllMenu();
-    }, [refreshAllMenu]);
+        const loadAllMenu = async () => {
+            try {
+                if (selectedCategory) {
+                    const menuItems = await fetchMenuByCategory(selectedCategory);
+                    setAllMenu(menuItems);
+                    setMenu(menuItems.slice(0, 12));
+                    setHasMore(menuItems.length > 12);
+                } else {
+                    const allMenuItems = await fetchAllMenu();
+                    setAllMenu(allMenuItems);
+                    setMenu(allMenuItems.slice(0, 12));
+                    setHasMore(allMenuItems.length > 12);
+                }
+            } catch (error) {
+                console.error('Error fetching menu items:', error);
+            }
+            setLoading(false);
+        };
+        loadAllMenu();
+    }, [selectedCategory]);
+
 
     const handleCategoryChange = (categoryId: string | null) => {
         setSelectedCategory(categoryId);
@@ -167,6 +211,8 @@ export default function Menu() {
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
+        setIsLoading(true);
+        setTimeout(() => setNotification(null), 1000);
         const subTotal = cart.reduce((total, item) => total + item.price * item.count, 0);
         const total = cart.reduce((total, item) => total + item.totalDiscount, 0);
         const diskonRupiah = subTotal - total
@@ -191,18 +237,17 @@ export default function Menu() {
                 }))
             };
 
-            const response = await axios.post('http://192.168.200.100:8000/api/transaksi', transactionData);
+            const response = await axios.post(API_ENDPOINTS.TRANSAKSI, transactionData);
             console.log(response.data);
-            setNotification('Pesanan berhasil dibuat!');
             setCart([]);
-            setTimeout(() => setNotification(null), 3000);
             setInvoiceData(transactionData);
             setIsDialogOpen(true);
-
+            setIsLoading(false);
         } catch (error) {
             console.error(error);
             setNotification('Terjadi kesalahan saat membuat pesanan.');
             setTimeout(() => setNotification(null), 3000);
+            setIsLoading(false);
         }
     };
 
@@ -216,7 +261,7 @@ export default function Menu() {
 
     const handleDecrement = (index: any) => {
         const newCart = [...cart];
-        if (newCart[index].count > 1) {
+        if (newCart[index].count >= 0) {
             newCart[index].count -= 1;
             newCart[index].totalPrice = newCart[index].count * newCart[index].price;
             newCart[index].totalDiscount = newCart[index].count * newCart[index].discount;
@@ -226,9 +271,10 @@ export default function Menu() {
 
 
     const handleInputChange = (event: any, index: any) => {
-        const newCount = event.target.value;
+        const inputValue = event.target.value;
+        let newCount = inputValue === '' ? 0 : parseInt(inputValue, 10);
         const newCart = [...cart];
-        if (newCount > 0) {
+        if (newCount >= 0) {
             newCart[index].count = newCount;
             newCart[index].totalPrice = newCount * newCart[index].price;
             newCart[index].totalDiscount = newCart[index].count * newCart[index].discount;
@@ -236,8 +282,8 @@ export default function Menu() {
         }
     };
 
-    const handleDelete = (kode_menu: any) => {
-        const newCart = cart.filter(item => item.kode_menu !== kode_menu);
+    const handleDelete = (name: any) => {
+        const newCart = cart.filter(item => item.name !== name);
         setCart(newCart);
     };
     const getDiscountBadge = (product: any) => {
@@ -252,21 +298,6 @@ export default function Menu() {
     function getCurrentDate() {
         return new Date().toLocaleDateString();
     }
-
-    // const documentRef = useRef(null);
-    // const handlePrint = useReactToPrint({
-    //     content: () => documentRef.current,
-    //     documentTitle: `Invoice-${invoiceData?.id_user}`,
-    //     bodyClass: 'p-16',
-    //     pageStyle: `
-    //         @media print {
-    //         .invoice-data {
-    //             overflow: visible !important;
-    //             height: auto !important;
-    //         }
-    //         }
-    //     `,
-    // });
 
     const [isTruncated, setIsTruncated] = useState(true);
     const toggleTruncate = () => {
@@ -293,18 +324,19 @@ export default function Menu() {
         total: totalAmount
     });
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            await refreshCategories();
-            await refreshAllMenu();
-            setLoading(false);
-        };
-        fetchData();
-    }, [refreshCategories, refreshAllMenu]);
+        if (page > 1) {
+            const newMenuItems = selectedCategory
+                ? allMenu.filter(item => item.category_id === selectedCategory).slice((page - 1) * 20, page * 20)
+                : allMenu.slice((page - 1) * 20, page * 20);
+            setMenu(prevMenu => [...prevMenu, ...newMenuItems]);
+            setHasMore(newMenuItems.length > 0);
+        }
+    }, [page, selectedCategory, allMenu]);
 
-    // if (loading) {
-    //     return <MenuSkeleton />;
-    // }
+    if (loading) {
+        return <MenuSkeleton />;
+    }
+
     return (
         <div className="container ">
             <div className='me-2 sticky top-0 py-2 px-3 bg-white z-10 shadow-sm rounded w-full'>
@@ -313,11 +345,12 @@ export default function Menu() {
                         <h1>Menu<div className="underline" style={{ width: '100px', height: '4px', background: '#61AB5B', margin: '2px' }}></div></h1>
                     </div>
                     <div className="flex align-items-center justify-content-end w-full ">
+                        <Search onClick={handleSearch} className=" align-items-center flex h-full" />
                         <Input
                             type="search"
                             placeholder="Search"
-                            className=' w-1/2 ms-3 me-2 mt-2 sm:w-1/3'
                             value={searchTerm}
+                            className="w-1/2 ms-3 me-2 mt-2 sm:w-1/3"
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                         <Sheet>
@@ -355,13 +388,53 @@ export default function Menu() {
                                                             <div className="flex flex-col w-1/2 text-start gap-1 ">
                                                                 <label htmlFor={`cart-item-price-${index}`}>{formatCurrency(item.price)}</label>
                                                                 <div className="flex items-center text-black">
-                                                                    <CiSquareMinus size={'40px'} onClick={() => handleDecrement(index)} className="cursor-pointer" />
-                                                                    <input
-                                                                        type="number"
-                                                                        value={item.count}
-                                                                        onChange={(event) => handleInputChange(event, index)}
-                                                                        className="mx-2 w-12 text-center"
-                                                                    />
+                                                                    {item.count > 1 ? (
+                                                                        <CiSquareMinus size={'40px'} onClick={() => handleDecrement(index)} />
+                                                                    ) : (
+                                                                        <Dialog>
+                                                                            <DialogTrigger asChild>
+                                                                                <CiSquareMinus size={'40px'} />
+                                                                            </DialogTrigger>
+                                                                            <DialogContent className="sm:max-w-md" hideClose>
+                                                                                <DialogHeader>
+                                                                                    <label htmlFor="">Are you sure you want to delete {item.name}?</label>
+                                                                                </DialogHeader>
+                                                                                <DialogFooter className="sm:justify-end">
+                                                                                    <Button variant="secondary" onClick={() => handleDelete(item.name)}>Delete</Button>
+                                                                                    <DialogClose asChild>
+                                                                                        <Button type="button" variant="secondary">Cancel</Button>
+                                                                                    </DialogClose>
+                                                                                </DialogFooter>
+                                                                            </DialogContent>
+                                                                        </Dialog>
+                                                                    )}
+
+                                                                    {item.count >= 1 ? (
+                                                                        <input value={item.count} // onChange={(event) => handleInputChange(event, index)}
+                                                                            onChange={(event) => handleInputChange(event, index)}
+                                                                            className="mx-2 w-12 text-center"
+                                                                        />
+                                                                    ) : (
+                                                                        <Dialog>
+                                                                            <DialogTrigger asChild>
+                                                                                <input value={item.count}
+                                                                                    onChange={(event) => handleInputChange(event, index)}
+                                                                                    className="mx-2 w-12 text-center"
+                                                                                />
+                                                                            </DialogTrigger>
+                                                                            <DialogContent className="sm:max-w-md" hideClose>
+                                                                                <DialogHeader>
+                                                                                    <label htmlFor="">Are you sure you want to delete {item.name}?</label>
+                                                                                </DialogHeader>
+                                                                                <DialogFooter className="sm:justify-end">
+                                                                                    <Button variant="secondary" onClick={() => handleDelete(item.name)}>Delete</Button>
+                                                                                    <DialogClose asChild>
+                                                                                        <Button type="button" variant="secondary">Cancel</Button>
+                                                                                    </DialogClose>
+                                                                                </DialogFooter>
+                                                                            </DialogContent>
+                                                                        </Dialog>
+                                                                    )}
                                                                     <CiSquarePlus size={'40px'} onClick={() => handleIncrement(index)} className="cursor-pointer" />
                                                                 </div>
                                                             </div>
@@ -381,9 +454,20 @@ export default function Menu() {
                                                                     </label>
                                                                 )}
                                                             </div>
-                                                            <div className="flex align-items-center w-1/1 ms-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-                                                                <Trash size={'20px'} onClick={() => handleDelete(item.kode_menu)} />
-                                                            </div>
+                                                            <Dialog>
+                                                                <DialogTrigger asChild>
+                                                                    <div className="flex align-items-center w-1/1 ms-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><Trash size={'20px'} /></div>
+                                                                </DialogTrigger>
+                                                                <DialogContent className="sm:max-w-md" hideClose>
+                                                                    <DialogHeader><label htmlFor="">Are you sure you want to delete {item.name}?</label></DialogHeader>
+                                                                    <DialogFooter className="sm:justify-end">
+                                                                        <Button variant="secondary" onClick={() => handleDelete(item.name)}>Delete</Button>
+                                                                        <DialogClose asChild>
+                                                                            <Button type="button" variant="secondary">Cancel</Button>
+                                                                        </DialogClose>
+                                                                    </DialogFooter>
+                                                                </DialogContent>
+                                                            </Dialog>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -409,18 +493,25 @@ export default function Menu() {
                                                 <label htmlFor="price">{formatCurrency(cart.reduce((total, item) => total + item.discount * item.count, 0))}</label>
                                             </div>
                                         </div>
-                                        <SheetClose asChild disabled={cart.length === 0} className="mt-2">
-                                            <Button type="submit" className='text-white bg-[#61AB5B] w-full' onClick={handleSubmit}>Order</Button>
+
+                                        <SheetClose asChild disabled={cart.length === 0 || cart.reduce((total, item) => total + item.discount * item.count, 0) === 0} className="mt-2">
+                                            <Button type="submit" className='text-white bg-[#61AB5B] w-full' onClick={handleSubmit} disabled={Isloading}>
+                                                {Isloading ? (
+                                                    <div className="load-more flex w-full justify-content-center p-4">
+                                                        <img src="/loader.png" className="me-1 animate-spin"></img>
+                                                        <label>Loading...</label>
+                                                    </div>
+                                                ) : (
+                                                    'Order'
+                                                )}</Button>
                                         </SheetClose>
                                     </Card>
-                                    <div>
-                                        {notification && (
-                                            <h4 className="notification text-center">
-                                                {notification}
-                                            </h4>
-                                        )}
-                                    </div>
                                 </SheetFooter>
+                                {notification && (
+                                    <h4 className="notification text-center">
+                                        {notification}
+                                    </h4>
+                                )}
                             </SheetContent>
                         </Sheet>
                         {isDialogOpen && invoiceData && (
@@ -550,7 +641,7 @@ export default function Menu() {
                         )}
                     </div>
                 </div>
-                <div className="flex justify-start pt-1 mb-2 gap-4 w-full sm:w-1/2" style={{ overflow: 'auto', scrollbarWidth: 'none' }}>
+                <div className="flex justify-start pt-3 mb-2 gap-4 w-full " style={{ overflow: 'auto', scrollbarWidth: 'none' }}>
                     <a href="#all">
                         <Button
                             onClick={() => handleCategoryChange(null)}
@@ -570,13 +661,13 @@ export default function Menu() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-3">
-                {filteredMenu.map((product) => (
-                    <Card className="rounded text-sm" key={product.kode_menu}>
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 sm:gap-x-4 gap-x-2 gap-y-5 pt-3">
+                {filteredMenu.map((product, index) => (
+                    <Card className="rounded text-sm" ref={index === filteredMenu.length - 1 ? lastMenuElementRef : null} key={product.kode_menu}>
                         <CardHeader>
                             <div className="flex justify-content-center align-items-center p-overlay-badge ">
-                                <Badge value={getDiscountBadge(product)} className=" bg-transparent pb-5"></Badge>
-                                <div style={{ width: '200px', height: '150px', borderRadius: '20px', overflow: 'hidden', border: '3px solid #ccc', background: '#ccc' }}>
+                                <Badge value={getDiscountBadge(product)} className=" bg-transparent "></Badge>
+                                <div style={{ width: '210px', height: '150px', borderRadius: '20px', overflow: 'hidden', border: '3px solid #ccc', background: '#ccc', marginTop: '10px' }}>
                                     {product.image ? (
                                         <img
                                             src={`data:image/jpeg;base64,${product.image}`}
@@ -584,7 +675,11 @@ export default function Menu() {
                                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                         />
                                     ) : (
-                                        <div className="avatar-fallback">img</div>
+                                        <img
+                                            src="/image.png"
+                                            alt="Default Image"
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        />
                                     )}
                                 </div>
                             </div>
@@ -596,9 +691,7 @@ export default function Menu() {
                                 </h5>
                             </div>
                             <div className={`w-auto ${isTruncated ? '' : 'h-[70px]'} overflow-auto text-text-truncate text-sm`}>
-                                <label
-                                    htmlFor=""
-                                    className={`d-inline-block ${isTruncated ? 'text-truncate' : ''}`}
+                                <label htmlFor="" className={`d-inline-block ${isTruncated ? 'text-truncate' : ''}`}
                                     style={{ maxWidth: isTruncated ? '100%' : 'none', cursor: 'pointer', whiteSpace: isTruncated ? 'nowrap' : 'normal' }}
                                     onClick={toggleTruncate}
                                     title={isTruncated ? 'Click to expand' : 'Click to collapse'}
@@ -614,7 +707,7 @@ export default function Menu() {
                             <div className="flex items-center">
                                 <Dialog>
                                     <DialogTrigger asChild>
-                                        <div className="flex align-items-center bg-[#76C16F] rounded font-bold py-2 px-2 sm:bg-[#76C16F]" onClick={() => handleAddClick(product)}>
+                                        <div className="flex align-items-center bg-[#76C16F] rounded-full font-bold px-3 py-2  sm:bg-[#76C16F]" onClick={() => handleAddClick(product)}>
                                             add
                                             <div className="bg-white rounded-xl ms-2 ">
                                                 <Plus size={'20px'} />
@@ -652,11 +745,33 @@ export default function Menu() {
                     </Card>
                 ))}
             </div>
-
+            {hasMore && !searchTerm ? (
+                loading ? (
+                    <div className="loading-more">
+                        <span>Loading more...</span>
+                    </div>
+                ) : (
+                    <div className="load-more flex w-full justify-content-center p-4">
+                        <img src="/loader.png" className="me-1 animate-spin"></img>
+                        <label onClick={() => setPage((prevPage) => prevPage + 1)}>Loading more...</label>
+                    </div>
+                )
+            ) : null}
         </div>
     );
 }
-
+const fetchAllMenu = async (): Promise<Menu[]> => {
+    const response = await axios.get(API_ENDPOINTS.MENU_ITEMS);
+    return response.data;
+};
+const fetchMenuByCategory = async (categoryId: string): Promise<Menu[]> => {
+    const response = await axios.get(API_ENDPOINTS.CATEGORY_MENU_ITEMS(categoryId));
+    return response.data.menuItems;
+};
+const fetchCategories = async (): Promise<Category[]> => {
+    const response = await axios.get(API_ENDPOINTS.CATEGORIES);
+    return response.data;
+};
 
 // function setError(arg0: string) {
 //     throw new Error("Function not implemented.");

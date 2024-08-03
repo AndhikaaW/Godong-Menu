@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import usePrintInvoice from '../menu/ExportPdf';
 import QRCode from 'qrcode.react';
+import { API_ENDPOINTS } from '@/app/api/godongbackend/api';
 
 interface DetailItem {
   kode_menu: string;
@@ -48,7 +49,7 @@ interface User {
 
 const SkeletonLoader = () => (
   <Card className='w-full'>
-    <CardContent className="w-full flex p-4 bg-gray-50 rounded-lg items-center border-[1px] border-[#54844F]">
+    <CardContent className="w-full flex p-4 bg-gray-50 rounded-lg items-center border-[1px]">
       <Skeleton className="w-[75px] h-[75px] rounded-md mr-4" />
       <div className="flex-grow">
         <Skeleton className="h-6 w-3/4 mb-2" />
@@ -88,12 +89,12 @@ const HistoryPage = () => {
 
     try {
       const userResponse = await axios.get(
-        `http://192.168.200.100:8000/api/user/${email}`
+        API_ENDPOINTS.USER(email)
       );
       setUserData(userResponse.data);
 
       if (userResponse.data && userResponse.data.id) {
-        let url = `http://192.168.200.100:8000/api/transaksi/${userResponse.data.id}/with-details`;
+        let url = API_ENDPOINTS.TRANSAKSI_WITH_DETAILS(userResponse.data.id);
         if (start) url += `?start_date=${start}`;
         if (end) url += `${start ? '&' : '?'}end_date=${end}`;
 

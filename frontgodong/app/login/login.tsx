@@ -99,6 +99,7 @@ export default function Login() {
     } catch (error) {
       console.error("There was an error!", error);
       setShowAlert(true);
+      alert("masukkan data yang valid")
     } finally {
       setIsLoading(false);
     }
@@ -111,7 +112,7 @@ export default function Login() {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsNavigating(false);
-    }, 3000); // Adjust this timeout as needed
+    }, 3000);
 
     return () => clearTimeout(timeout);
   }, [isNavigating]);
@@ -210,7 +211,7 @@ export default function Login() {
           </CardContent>
         </Card>
       </div>
-      {/* ... (rest of the JSX remains the same) */}
+      
       <div className="hidden lg:flex h-full w-full lg:w-1/2 items-center justify-center ">
         <Image
           src={bg}
