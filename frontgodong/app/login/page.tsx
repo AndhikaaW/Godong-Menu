@@ -3,8 +3,8 @@ import Login from './login';
 export default function 
 () {
   return (
-    <div>
-        <Login/>
-    </div>
+  <div className='h-screen w-screen flex justify-center items-center'>
+    <Login/>
+  </div>
   )
 }

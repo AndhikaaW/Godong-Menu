@@ -16,7 +16,7 @@ const generateKeyPair = (keyword: string) => {
 
 export function decryptText(encryptedText: string): string {
   try {
-    const keyPair = generateKeyPair(keyWord!);
+    const keyPair = generateKeyPair(keyWord!.toString());
     const decoded = forge.util.decode64(encryptedText);
     return keyPair.privateKey.decrypt(decoded, 'RSA-OAEP');
   } catch (error) {

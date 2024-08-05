@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
@@ -48,7 +48,7 @@ interface User {
 
 const SkeletonLoader = () => (
   <Card className='w-full'>
-    <CardContent className="w-full flex p-4 bg-gray-50 rounded-lg items-center border-[1px] border-[#54844F]">
+    <CardContent className="w-full flex p-4 bg-gray-50 rounded-lg items-center">
       <Skeleton className="w-[75px] h-[75px] rounded-md mr-4" />
       <div className="flex-grow">
         <Skeleton className="h-6 w-3/4 mb-2" />
@@ -64,7 +64,7 @@ const SkeletonLoader = () => (
 );
 
 const HistoryPage = () => {
-  const [historyData, setHistoryData] = useState<Transaction[]>([]);
+   const [historyData, setHistoryData] = useState<Transaction[]>([]);
   const [userData, setUserData] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -72,7 +72,6 @@ const HistoryPage = () => {
   const [endDate, setEndDate] = useState<string>('');
   
   const { documentRef, handlePrint } = usePrintInvoice();
-
 
   const fetchData = async (start?: string, end?: string) => {
     setIsLoading(true);
