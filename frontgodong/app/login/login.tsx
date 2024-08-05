@@ -1,4 +1,5 @@
 "use client";
+
 import "../../styles/globals.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -11,17 +12,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "../../components/Auth/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogOverlay,
-  AlertDialogCancel,
-} from "@/components/ui/alert-dialog";
-import { Eye, EyeOff, Frown, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { API_ENDPOINTS } from "../api/godongbackend/api";
 
 export default function Login() {
@@ -36,43 +27,29 @@ export default function Login() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  const validateEmail = (email : any) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
+  const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const handleEmailChange = (e : any) => {
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
-    if (!validateEmail(newEmail)) {
-      setEmailError("Please enter a valid email address");
-    } else {
-      setEmailError("");
-    }
+    setEmailError(validateEmail(newEmail) ? "" : "Masukkan alamat email yang valid");
   };
 
-  const handlePasswordChange = (e : any) => {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
-    if (newPassword.length < 8) {
-      setPasswordError("Password must be at least 8 characters long");
-    } else {
-      setPasswordError("");
-    }
+    setPasswordError(newPassword.length >= 8 ? "" : "Kata sandi harus minimal 8 karakter");
   };
 
-  async function handleLogin(e: React.MouseEvent<HTMLButtonElement>) {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    let item = { email, password };
     setIsLoading(true);
     try {
-      let response = await axios.post(
+      const response = await axios.post(
         API_ENDPOINTS.LOGIN,
-        item,
+        { email, password },
         {
           headers: {
             "Content-Type": "application/json",
@@ -85,58 +62,35 @@ export default function Login() {
         login(response.data.user);
         document.cookie = `auth_token=${response.data.token}; path=/;`;
         setIsNavigating(true);
-        if (response.data.status === 2) {
-          router.push("/dashboard/home");
-        } else if (response.data.status === 1) {
-          router.push("/admin/dashboard");
-        } else {
-          setShowAlert(true);
-          setIsNavigating(false);
-        }
+        router.push(response.data.status === 2 ? "/dashboard/home" : "/admin/dashboard");
       } else {
         setShowAlert(true);
       }
     } catch (error) {
-      console.error("There was an error!", error);
+      console.error("Terjadi kesalahan!", error);
       setShowAlert(true);
-      alert("masukkan data yang valid")
     } finally {
       setIsLoading(false);
     }
-  }
-
-  const isFormValid = () => {
-    return validateEmail(email) && password.length >= 8;
   };
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsNavigating(false);
-    }, 3000);
+  const isFormValid = () => validateEmail(email) && password.length >= 8;
 
+  useEffect(() => {
+    const timeout = setTimeout(() => setIsNavigating(false), 3000);
     return () => clearTimeout(timeout);
   }, [isNavigating]);
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen w-full">
-      {/* ... (rest of the JSX remains the same) */}
-      <div className='flex justify-center items-center lg:hidden bg-white'>
-        <div className="h-[300px] w-[300px] flex items-end">
-          <Image
-            src={bg}
-            alt="Image"
-            priority
-          />
-        </div>
-      </div>
-      <div className="flex items-center justify-center h-full w-full lg:w-1/2 ">
+    <div className="flex flex-col lg:flex-row rounded-xl h-[400px] bg-[#f7fee7] w-[700px]">
+      <div className="flex items-center justify-center h-full w-full lg:w-1/2">
         <Card className="max-w-sm w-full bg-white text-black">
           <CardHeader>
-            <CardTitle className="text-lg">Welcome To</CardTitle>
+            <CardTitle className="text-lg">Selamat Datang di</CardTitle>
             <CardTitle className="text-2xl">Godong Menu</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4">
+            <form onSubmit={handleLogin} className="grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -151,10 +105,7 @@ export default function Login() {
                 {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
               </div>
               <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                </div>
-
+                <Label htmlFor="password">Kata Sandi</Label>
                 <div className="relative flex items-center">
                   <Input
                     id="password"
@@ -169,56 +120,44 @@ export default function Login() {
                     onClick={togglePasswordVisibility}
                     className="absolute right-2 bg-transparent border-none cursor-pointer text-gray-600 focus:outline-none"
                   >
-                    {showPassword ? (
-                      <EyeOff size={"17px"} />
-                    ) : (
-                      <Eye size={"17px"} />
-                    )}
+                    {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                   </button>
                 </div>
                 {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
-
-                <Link
-                  href="#"
-                  className="ml-auto inline-block text-sm underline"
-                >
-                  Forgot your password?
+                <Link href="#" className="ml-auto inline-block text-sm underline">
+                  Lupa kata sandi?
                 </Link>
               </div>
-
               <Button
-                variant="ghost"
                 type="submit"
-                className={`w-full ${isFormValid()
-                  ? "bg-[#61AB5B] text-white"
-                  : "bg-gray-400 text-gray-200 cursor-not-allowed"
-                  }`}
-                onClick={handleLogin}
+                className={`w-full ${
+                  isFormValid()
+                    ? "bg-[#1c9d3d] text-white"
+                    : "bg-[#e5f3e8] text-[#1c9d3d] cursor-not-allowed"
+                }`}
                 disabled={!isFormValid() || isLoading || isNavigating}
               >
                 {isLoading || isNavigating ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : null}
-                {isLoading || isNavigating ? "Loading..." : "Sign in"}
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Memuat...
+                  </>
+                ) : (
+                  "Masuk"
+                )}
               </Button>
-            </div>
+            </form>
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
+              Belum punya akun?{" "}
               <Link href="/signup" className="underline">
-                Sign up
+                Daftar
               </Link>
             </div>
           </CardContent>
         </Card>
       </div>
-      
-      <div className="hidden lg:flex h-full w-full lg:w-1/2 items-center justify-center ">
-        <Image
-          src={bg}
-          alt="Image"
-          className="h-auto w-auto"
-          priority
-        />
+      <div className="hidden lg:flex h-full w-full lg:w-1/2 items-center justify-center rounded-e-xl">
+        <Image src={bg} alt="Gambar Latar" className="h-auto w-auto" priority />
       </div>
     </div>
   );
