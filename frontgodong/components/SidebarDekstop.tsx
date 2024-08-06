@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { SidebarItems, UserData } from "@/types/sidebartypes";
 import Link from "next/link";
-import { LogOut, UserRound, ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
+import { LogOut, UserRound, ChevronLeft, ChevronRight, MoreHorizontal, Menu } from "lucide-react";
 import { Popover, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -36,18 +36,23 @@ export default function SidebarDekstop({ sidebarItems, userData, isCollapsed, se
 
   return (
     <aside className={`w-[${isCollapsed ? '80px' : '270px'}] max-w-xs h-screen fixed left-0 top-0 z-40 border-r transition-all duration-300`}>
-      <div className="h-full px-3 py-4">
-        <div className="flex justify-between items-center mb-5">
-        {isCollapsed ? (
-            <div className="w-10 h-10 rounded-full text-green-400 flex items-center justify-center text-4xl font-bold ">
-              G
-            </div>
+      <div className="h-full px-1 py-3">
+        {isCollapsed ?
+          <div className="flex mr-3 justify-center">
+            <Menu size={24} onClick={toggleCollapse} />
+          </div>
+          :
+          <div className="flex mr-3 justify-end">
+            <Menu size={24} onClick={toggleCollapse} />
+          </div>
+        }
+
+        <div className="flex justify-center mb-5 mt-3">
+          {isCollapsed ? (
+            <h5 className="text-center text-sm font-bold text-foreground font-poppins pb-[32px]">Godong <br /> Menu</h5>
           ) : (
-            <h3 className="text-center text-3xl font-bold text-foreground font-poppins">Godong Menu</h3>
+            <h2 className="text-center text-3xl font-bold text-foreground font-poppins">Godong <br /> Menu</h2>
           )}
-          <Button variant="ghost" onClick={toggleCollapse} className="p-1">
-            {isCollapsed ? <ChevronRight size={24} /> : <ChevronLeft size={24} />}
-          </Button>
         </div>
         <div className="flex flex-column gap-2 mt-5">
           {sidebarItems.links.map((link, index) => {
@@ -57,9 +62,12 @@ export default function SidebarDekstop({ sidebarItems, userData, isCollapsed, se
               <Link key={index} href={link.href}>
                 <Button
                   variant="outline"
-                  className={`border-1 w-full justify-start ${isActive ? 'border-[#61AB5B] text-[#61AB5B]' : 'border-transparent text-gray-700 hover:border-[#61AB5B] hover:text-[#61AB5B]'}`}
-                >
-                  <Icon size={24} />
+                  className={`border-1 w-full justify-start ${isActive ? 'border-[#61AB5B] text-[#61AB5B]' : 'border-transparent text-gray-700 hover:border-[#61AB5B] hover:text-[#61AB5B]'}`}>
+                  {Icon && (
+                    <span style={{ width: '2rem', display: 'inline-block' }}>
+                      <Icon size={20} />
+                    </span>
+                  )}
                   {!isCollapsed && <span className="ml-2">{link.label}</span>}
                 </Button>
               </Link>
@@ -69,10 +77,10 @@ export default function SidebarDekstop({ sidebarItems, userData, isCollapsed, se
         <div className="absolute left-0 bottom-1 w-full border-top p-1">
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="ghost" className="w-full justify-start">
+              <Button variant="ghost" className="w-full justify-start pt-3 pb-3">
                 <div className="flex justify-between items-center w-full">
                   <div className="flex gap-2">
-                    <Avatar className="h-5 w-5">
+                    <Avatar className="h-[40px] w-[40px]">
                       <AvatarImage src={userData.pictures} />
                       <AvatarFallback><UserRound /></AvatarFallback>
                     </Avatar>

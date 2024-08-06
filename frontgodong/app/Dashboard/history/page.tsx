@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
-import { Check } from 'lucide-react';
+import { Check, Key } from 'lucide-react';
 import formatCurrency from "../menu/formatCurrency";
 import axios from 'axios';
 import { AspectRatio } from '@radix-ui/react-aspect-ratio';
@@ -14,6 +14,8 @@ import { DialogTrigger } from '@radix-ui/react-dialog';
 import usePrintInvoice from '../menu/ExportPdf';
 import QRCode from 'qrcode.react';
 import { API_ENDPOINTS } from '@/app/api/godongbackend/api';
+import { motion } from 'framer-motion';
+import ZoomIn from '@/components/animation/zoomIn';
 
 interface DetailItem {
   kode_menu: string;
@@ -172,10 +174,12 @@ const HistoryPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className='flex flex-col items-center w-full mb-10'>
-        <h1>History</h1>
-        <div className="underline" style={{ width: '100px', height: '4px', background: '#61AB5B', margin: '2px' }}></div>
-      </div>
+      <ZoomIn>
+        <div className='flex flex-col items-center w-full mb-10'>
+          <h1>History</h1>
+          <div className="underline" style={{ width: '100px', height: '4px', background: '#61AB5B', margin: '2px' }}></div>
+        </div>
+      </ZoomIn>
       <div className='flex flex-col sm:flex-row gap-2'>
         <div className='mb-2 flex gap-2 sm:w-full w-1/2'>
           <Input
@@ -202,165 +206,167 @@ const HistoryPage = () => {
       </div>
       <div className="space-y-4 w-full ">
         {historyData.length > 0 ? (
-          historyData.map((item) => (
-            <Card key={item.faktur} className='w-full flex bg-slate-400' >
-              <CardContent className="w-full flex p-4 bg-gray-50 hover:bg-gray-100 rounded-lg items-center border-[1px] border-[#54844F]">
-                <div className='w-[75px] h-[75px] mr-2 mb-2'>
-                  <AspectRatio ratio={1 / 1} className='bg-muted'>
-                    <Image
-                      src={`data:image/jpeg;base64,${item.main_item.image}`}
-                      alt={item.main_item.menu_name}
-                      fill
-                      className="rounded-md mr-4"
-                    />
-                  </AspectRatio>
-                </div>
-                <div className="flex-grow">
-                  <CardTitle className="text-lg font-semibold">
-                    {item.main_item.menu_name}
-                    {item.other_items_count > 0 && ` and ${item.other_items_count} other${item.other_items_count > 1 ? 's' : ''}`}
-                  </CardTitle>
-                  <p className="text-sm text-gray-500">{item.tanggal}</p>
-                  <div className='flex flex-row '>
-                    <Check className='p-1 h-5 w-5 mr-1 flex-wrap bg-[#369A2E] text-white rounded-full ' />
-                    <p>Order Completed</p>
+          historyData.map((item, index) => (
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.5, delay: index * 0.2 }} key={index}>
+              <Card key={item.faktur} className='w-full flex bg-slate-400' >
+                <CardContent className="w-full flex p-4 bg-gray-50 hover:bg-gray-100 rounded-lg items-center border-[1px] border-[#54844F]">
+                  <div className='w-[75px] h-[75px] mr-2 mb-2'>
+                    <AspectRatio ratio={1 / 1} className='bg-muted'>
+                      <Image
+                        src={`data:image/jpeg;base64,${item.main_item.image}`}
+                        alt={item.main_item.menu_name}
+                        fill
+                        className="rounded-md mr-4"
+                      />
+                    </AspectRatio>
                   </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold">Rp {item.total.toLocaleString()}</p>
-                  <Dialog>
-                    <DialogTrigger>
-                      <Button variant="outline" className="mt-2 rounded-3xl bg-[#369A2E] border-[2px] border-[#369A2E] hover:bg-white text-gray-50 hover:text-[#369A2E]" onClick={() => handleDetailClick(item)}>
-                        Detail
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent ref={documentRef}>
-                      <DialogHeader>
-                        <DialogTitle>Invoice</DialogTitle>
-                        <DialogDescription />
-                        <div className="p-1 sm:w-full">
-                          <div className='flex'>
-                            <div className='flex flex-col w-1/2 gap-2 text-start'>
-                              <label>www.godong.id</label>
-                              <label>godong@gmail.com</label>
-                              <label>082391838391</label>
-                            </div>
-                            <div className='flex w-1/2'>
-                              <div className='flex flex-row align-items-end justify-end w-full'>
-                                <div className='flex flex-col text-end'>
-                                  <h4 className='text-[#61AB5B]'>Godong Menu</h4>
-                                  <label>Godong Resto Address</label>
-                                  <label>TAX 1982323272832280</label>
+                  <div className="flex-grow">
+                    <CardTitle className="text-lg font-semibold">
+                      {item.main_item.menu_name}
+                      {item.other_items_count > 0 && ` and ${item.other_items_count} other${item.other_items_count > 1 ? 's' : ''}`}
+                    </CardTitle>
+                    <p className="text-sm text-gray-500">{item.tanggal}</p>
+                    <div className='flex flex-row '>
+                      <Check className='p-1 h-5 w-5 mr-1 flex-wrap bg-[#369A2E] text-white rounded-full ' />
+                      <p>Order Completed</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold">Rp {item.total.toLocaleString()}</p>
+                    <Dialog>
+                      <DialogTrigger>
+                        <Button variant="outline" className="mt-2 rounded-3xl bg-[#369A2E] border-[2px] border-[#369A2E] hover:bg-white text-gray-50 hover:text-[#369A2E]" onClick={() => handleDetailClick(item)}>
+                          Detail
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent ref={documentRef}>
+                        <DialogHeader>
+                          <DialogTitle>Invoice</DialogTitle>
+                          <DialogDescription />
+                          <div className="p-1 sm:w-full">
+                            <div className='flex'>
+                              <div className='flex flex-col w-1/2 gap-2 text-start'>
+                                <label>www.godong.id</label>
+                                <label>godong@gmail.com</label>
+                                <label>082391838391</label>
+                              </div>
+                              <div className='flex w-1/2'>
+                                <div className='flex flex-row align-items-end justify-end w-full'>
+                                  <div className='flex flex-col text-end'>
+                                    <h4 className='text-[#61AB5B]'>Godong Menu</h4>
+                                    <label>Godong Resto Address</label>
+                                    <label>TAX 1982323272832280</label>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                          <div className="mt-3 p-3 outline bg-light shadow-lg rounded-lg bg-gray-100">
-                            <div className="flex flex-row align-items-start justify-content-between">
+                            <div className="mt-3 p-3 outline bg-light shadow-lg rounded-lg bg-gray-100">
+                              <div className="flex flex-row align-items-start justify-content-between">
 
-                              <div className="flex flex-col align-items-start w-auto">
-                                <h5>Bill To</h5>
-                                <label>Id User : {userData?.nama} </label>
-                                <label>Number : {selectedHistory?.no_telepon}</label>
-                                <label>Address : {selectedHistory?.alamat}</label>
-                              </div>
-                              <div className="flex flex-col align-items-end">
-                                <h6>Invoice of IDR</h6>
-                                <h6>{formatCurrency(selectedHistory?.total||0)}</h6>
-                              </div>
-                            </div>
-                            <div className="flex flex-row align-items-center justify-content-between mt-3">
-                              <div className="flex flex-col align-items-start w-auto">
-                                <h5>Invoice Date</h5>
-                                <label>{selectedHistory?.tanggal}</label>
-                              </div>
-                              <div className="flex flex-col align-items-end">
-                                <h5>Invoice Number</h5>
-                                <label>{selectedHistory?.faktur}</label>
-                              </div>
-                            </div>
-                            <hr />
-                            <div className="flex flex-row align-items-center justify-content-between mt-3">
-                              <div className="flex flex-col align-items-center w-1/4">
-                                <b>Item Detail</b>
-                              </div>
-                              <div className="flex flex-col align-items-center w-1/4">
-                                <b>Qty</b>
-                              </div>
-                              <div className="flex flex-col align-items-center w-1/4">
-                                <b>Unit Price</b>
-                              </div>
-                              <div className="flex flex-col align-items-center w-1/4">
-                                <b>Amount</b>
-                              </div>
-                            </div>
-                            <hr />
-                            <div className="h-[100px] overflow-auto invoice-data">
-                            {selectedHistory?.details.map((item, index) => (
-                                <div className="flex flex-row align-items-center mt-3" key={index}>
-                                  <div className="flex flex-col align-items-center w-1/4">
-                                    <label>{item.menu_name}</label>
-                                  </div>
-                                  <div className="flex flex-col align-items-center w-1/4">
-                                    <label>{item.jumlah}</label>
-                                  </div>
-                                  <div className="flex flex-col align-items-center w-1/4">
-                                    <label>{formatCurrency(item.subtotal / item.jumlah)}</label>
-                                    {/* <label>{item.subtotal / item.jumlah}</label> */}
-                                  </div>
-                                  <div className="flex flex-col align-items-center w-1/4">
-                                    <label>{formatCurrency(item.subtotal)}</label>
-                                    {/* <label>{item.total}</label> */}
-                                  </div>
+                                <div className="flex flex-col align-items-start w-auto">
+                                  <h5>Bill To</h5>
+                                  <label>Id User : {userData?.nama} </label>
+                                  <label>Number : {selectedHistory?.no_telepon}</label>
+                                  <label>Address : {selectedHistory?.alamat}</label>
                                 </div>
-                              ))}
-                            </div>
-                            <hr />
-                            <div className="flex">
-                              <div className="flex w-1/2">
-                                <QRCode value={qrCodeData} />
+                                <div className="flex flex-col align-items-end">
+                                  <h6>Invoice of IDR</h6>
+                                  <h6>{formatCurrency(selectedHistory?.total || 0)}</h6>
+                                </div>
                               </div>
-                              <div className="flex flex-col w-1/2">
-                                <div className="flex align-items-center justify-content-between">
-                                  <div className="flex flex-col align-items-end w-1/2">
-                                    <label>Subtotal</label>
-                                  </div>
-                                  <div className="flex flex-col align-items-end w-1/2">
-                                    <label>{formatCurrency(selectedHistory?.sub_total||0)}</label>
-                                  </div>
+                              <div className="flex flex-row align-items-center justify-content-between mt-3">
+                                <div className="flex flex-col align-items-start w-auto">
+                                  <h5>Invoice Date</h5>
+                                  <label>{selectedHistory?.tanggal}</label>
                                 </div>
-                                <div className="flex flex-row align-items-center justify-content-between">
-                                  <div className="flex flex-col align-items-end w-1/2">
-                                    <label>Discount</label>
-                                  </div>
-                                  <div className="flex flex-col align-items-end w-1/2">
-                                    <label>{formatCurrency(selectedHistory?.diskon_rupiah||0)}</label>
-                                  </div>
+                                <div className="flex flex-col align-items-end">
+                                  <h5>Invoice Number</h5>
+                                  <label>{selectedHistory?.faktur}</label>
                                 </div>
-                                <div className="flex flex-row justify-end">
-                                  <hr className="w-3/4" />
+                              </div>
+                              <hr />
+                              <div className="flex flex-row align-items-center justify-content-between mt-3">
+                                <div className="flex flex-col align-items-center w-1/4">
+                                  <b>Item Detail</b>
                                 </div>
-                                <div className="flex flex-row align-items-center justify-content-between">
-                                  <div className="flex flex-col align-items-end w-1/2">
-                                    <b>Total</b>
+                                <div className="flex flex-col align-items-center w-1/4">
+                                  <b>Qty</b>
+                                </div>
+                                <div className="flex flex-col align-items-center w-1/4">
+                                  <b>Unit Price</b>
+                                </div>
+                                <div className="flex flex-col align-items-center w-1/4">
+                                  <b>Amount</b>
+                                </div>
+                              </div>
+                              <hr />
+                              <div className="h-[100px] overflow-auto invoice-data">
+                                {selectedHistory?.details.map((item, index) => (
+                                  <div className="flex flex-row align-items-center mt-3" key={index}>
+                                    <div className="flex flex-col align-items-center w-1/4">
+                                      <label>{item.menu_name}</label>
+                                    </div>
+                                    <div className="flex flex-col align-items-center w-1/4">
+                                      <label>{item.jumlah}</label>
+                                    </div>
+                                    <div className="flex flex-col align-items-center w-1/4">
+                                      <label>{formatCurrency(item.subtotal / item.jumlah)}</label>
+                                      {/* <label>{item.subtotal / item.jumlah}</label> */}
+                                    </div>
+                                    <div className="flex flex-col align-items-center w-1/4">
+                                      <label>{formatCurrency(item.subtotal)}</label>
+                                      {/* <label>{item.total}</label> */}
+                                    </div>
                                   </div>
-                                  <div className="flex flex-col align-items-end w-1/2">
-                                    <label><b>{formatCurrency(selectedHistory?.total||0)}</b></label>
+                                ))}
+                              </div>
+                              <hr />
+                              <div className="flex">
+                                <div className="flex w-1/2">
+                                  <QRCode value={qrCodeData} />
+                                </div>
+                                <div className="flex flex-col w-1/2">
+                                  <div className="flex align-items-center justify-content-between">
+                                    <div className="flex flex-col align-items-end w-1/2">
+                                      <label>Subtotal</label>
+                                    </div>
+                                    <div className="flex flex-col align-items-end w-1/2">
+                                      <label>{formatCurrency(selectedHistory?.sub_total || 0)}</label>
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-row align-items-center justify-content-between">
+                                    <div className="flex flex-col align-items-end w-1/2">
+                                      <label>Discount</label>
+                                    </div>
+                                    <div className="flex flex-col align-items-end w-1/2">
+                                      <label>{formatCurrency(selectedHistory?.diskon_rupiah || 0)}</label>
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-row justify-end">
+                                    <hr className="w-3/4" />
+                                  </div>
+                                  <div className="flex flex-row align-items-center justify-content-between">
+                                    <div className="flex flex-col align-items-end w-1/2">
+                                      <b>Total</b>
+                                    </div>
+                                    <div className="flex flex-col align-items-end w-1/2">
+                                      <label><b>{formatCurrency(selectedHistory?.total || 0)}</b></label>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </DialogHeader>
-                      <DialogFooter className="d-print-none">
-                        <Button onClick={handlePrint} className="bg-[#61AB5B] text-white"><b>Export PDF</b></Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </CardContent>
-            </Card>
+                        </DialogHeader>
+                        <DialogFooter className="d-print-none">
+                          <Button onClick={handlePrint} className="bg-[#61AB5B] text-white"><b>Export PDF</b></Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))
         ) : (
           <p>No transaction history available.</p>

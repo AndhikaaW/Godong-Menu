@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { ProfileSkeleton } from "@/app/skeleton/skeletonProfile";
 import { API_ENDPOINTS } from "@/app/api/godongbackend/api";
+import { motion } from "framer-motion";
 
 function Profilepage() {
     const [userData, setUserData] = useState<any>(null);
@@ -98,12 +99,16 @@ function Profilepage() {
     }
 
     if (!userData) {
-        return <ProfileSkeleton/>;
+        return <ProfileSkeleton />;
     }
 
     return (
         <div className="container vh-100 flex items-center justify-center sm:w-full">
-            <div id="box" className="p-5 shadow-lg rounded-lg bg-light sm:w-1/2">
+            <motion.div
+                initial={{ scale: 0.5 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5 }}
+                id="box" className="p-5 shadow-lg rounded-lg bg-light sm:w-1/2">
                 <div className="row g-2 mb-3 ps-0 items-center justify-center">
                     <div className="col-auto position-relative d-inline-block mr-2">
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -123,12 +128,12 @@ function Profilepage() {
                                             accept="image/*"
                                             onChange={handleImageChange}
                                         />
-                                            <div className="h-full w-full flex justify-center items-center">
-                                                <Avatar className="w-[200px] h-[200px]">
-                                                    <AvatarImage src={selectedImage || userData.pictures || profileIcon.src} alt="profil" />
-                                                    <AvatarFallback>CN</AvatarFallback>
-                                                </Avatar>
-                                            </div>
+                                        <div className="h-full w-full flex justify-center items-center">
+                                            <Avatar className="w-[200px] h-[200px]">
+                                                <AvatarImage src={selectedImage || userData.pictures || profileIcon.src} alt="profil" />
+                                                <AvatarFallback>CN</AvatarFallback>
+                                            </Avatar>
+                                        </div>
                                         <div className="flex justify-end">
                                             <Button type="submit" disabled={isUploading}>
                                                 {isUploading ? 'Uploading...' : 'Save changes'}
@@ -185,8 +190,8 @@ function Profilepage() {
                         <p>copyright@byGodongMenu</p>
                     </div>
                 </div>
-            </div>
-        </div>
+            </motion.div>
+        </div >
     );
 }
 export default Profilepage;

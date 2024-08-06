@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
-import {  Plus, Search, Trash, X } from "lucide-react";
+import { Plus, Search, Trash, X } from "lucide-react";
 import { Badge } from 'primereact/badge';
 import ProductCard from "../menu/ProductCard";
 import QRCode from 'qrcode.react';
@@ -18,6 +18,9 @@ import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
 import usePrintInvoice from "./ExportPdf";
 import MenuSkeleton from "../../skeleton/MenuSkeleton";
 import { API_ENDPOINTS } from "@/app/api/godongbackend/api";
+import { motion } from 'framer-motion';
+import ZoomIn from "@/components/animation/zoomIn";
+import SlideInRight from "@/components/animation/slideInRight";
 
 interface Menu {
     kode_menu: string;
@@ -45,20 +48,6 @@ interface Cart {
     totalDiscount: number;
     totalPrice: number;
 }
-
-// const fetchCategories = async (): Promise<Category[]> => {
-//     const response = await axios.get(API_ENDPOINTS.CATEGORIES);
-//     return response.data;
-// };
-// const fetchMenu = async (): Promise<Menu[]> => {
-//     const response = await axios.get(API_ENDPOINTS.MENU_ITEMS);
-//     return response.data;
-// };
-
-// const fetchMenuByCategory = async (categoryId: string): Promise<Menu[]> => {
-//     const response = await axios.get(API_ENDPOINTS.CATEGORY_MENU_ITEMS(categoryId));
-//     return response.data.menuItems;
-// };
 
 export default function Menu() {
     const [allMenu, setAllMenu] = useState<Menu[]>([]);
@@ -341,18 +330,22 @@ export default function Menu() {
         <div className="container ">
             <div className='me-2 sticky top-0 py-2 px-3 bg-white z-10 shadow-sm rounded w-full'>
                 <div className="flex w-full justify-content-end">
-                    <div className='text-start'>
-                        <h1>Menu<div className="underline" style={{ width: '100px', height: '4px', background: '#61AB5B', margin: '2px' }}></div></h1>
-                    </div>
-                    <div className="flex align-items-center justify-content-end w-full ">
-                        <Search onClick={handleSearch} className=" align-items-center flex h-full" />
-                        <Input
-                            type="search"
-                            placeholder="Search"
-                            value={searchTerm}
-                            className="w-1/2 ms-3 me-2 mt-2 sm:w-1/3"
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+                    <ZoomIn>
+                        <div className='text-start'>
+                            <h1>Menu<div className="underline" style={{ width: '100px', height: '4px', background: '#61AB5B', margin: '2px' }}></div></h1>
+                        </div>
+                    </ZoomIn>
+                    <motion.div initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1 }} className="flex align-items-center justify-content-end w-full">
+                        <div className="flex align-items-center justify-content-end w-1/2">
+                            <Search onClick={handleSearch} className=" align-items-center flex h-full" />
+                            <Input
+                                type="search"
+                                placeholder="Search"
+                                value={searchTerm}
+                                className="w-1/2 ms-3 me-2 mt-2 sm:w-1/2"
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
                         <Sheet>
                             <SheetTrigger asChild>
                                 <div className="flex align-items-center pt-2">
@@ -423,6 +416,7 @@ export default function Menu() {
                                                                                 />
                                                                             </DialogTrigger>
                                                                             <DialogContent className="sm:max-w-md" hideClose>
+                                                                                <DialogTitle></DialogTitle>
                                                                                 <DialogHeader>
                                                                                     <label htmlFor="">Are you sure you want to delete {item.name}?</label>
                                                                                 </DialogHeader>
@@ -461,7 +455,9 @@ export default function Menu() {
                                                                 <DialogContent className="sm:max-w-md" hideClose>
                                                                     <DialogHeader><label htmlFor="">Are you sure you want to delete {item.name}?</label></DialogHeader>
                                                                     <DialogFooter className="sm:justify-end">
-                                                                        <Button variant="secondary" onClick={() => handleDelete(item.name)}>Delete</Button>
+                                                                        <DialogClose>
+                                                                            <Button variant="secondary" onClick={() => handleDelete(item.name)}>Delete</Button>
+                                                                        </DialogClose>
                                                                         <DialogClose asChild>
                                                                             <Button type="button" variant="secondary">Cancel</Button>
                                                                         </DialogClose>
@@ -639,9 +635,9 @@ export default function Menu() {
                                 </DialogContent>
                             </Dialog>
                         )}
-                    </div>
+                    </motion.div>
                 </div>
-                <div className="flex justify-start pt-3 mb-2 gap-4 w-full " style={{ overflow: 'auto', scrollbarWidth: 'none' }}>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} className="flex justify-start pt-3 mb-2 gap-4 w-full " style={{ overflow: 'auto', scrollbarWidth: 'none' }}>
                     <a href="#all">
                         <Button
                             onClick={() => handleCategoryChange(null)}
@@ -650,18 +646,24 @@ export default function Menu() {
                         </Button>
                     </a>
                     {categories.map((category) => (
-                        <a key={category.id} href={`#${category.name.replace(/\s+/g, '-').toLowerCase()}`}>
+                        <motion.a initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}
+                            key={category.id} href={`#${category.name.replace(/\s+/g, '-').toLowerCase()}`}>
                             <Button
                                 onClick={() => handleCategoryChange(category.id)}
                                 className={`text-black hover:bg-[#61AB5B] hover:font-bold ${selectedCategory === category.id ? 'bg-[#61AB5B]' : 'bg-[#D5FFD4]'}`}>
                                 {category.name}
                             </Button>
-                        </a>
+                        </motion.a>
                     ))}
-                </div>
+                </motion.div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 sm:gap-x-4 gap-x-2 gap-y-5 pt-3">
+            <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 2, delay: 1 }}
+                className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 sm:gap-x-4 gap-x-2 gap-y-5 pt-3">
                 {filteredMenu.map((product, index) => (
                     <Card className="rounded text-sm" ref={index === filteredMenu.length - 1 ? lastMenuElementRef : null} key={product.kode_menu}>
                         <CardHeader>
@@ -744,20 +746,22 @@ export default function Menu() {
                         </CardFooter>
                     </Card>
                 ))}
-            </div>
-            {hasMore && !searchTerm ? (
-                loading ? (
-                    <div className="loading-more">
-                        <span>Loading more...</span>
-                    </div>
-                ) : (
-                    <div className="load-more flex w-full justify-content-center p-4">
-                        <img src="/loader.png" className="me-1 animate-spin"></img>
-                        <label onClick={() => setPage((prevPage) => prevPage + 1)}>Loading more...</label>
-                    </div>
-                )
-            ) : null}
-        </div>
+            </motion.div>
+            {
+                hasMore && !searchTerm ? (
+                    loading ? (
+                        <div className="loading-more">
+                            <span>Loading more...</span>
+                        </div>
+                    ) : (
+                        <div className="load-more flex w-full justify-content-center p-4">
+                            <img src="/loader.png" className="me-1 animate-spin"></img>
+                            <label onClick={() => setPage((prevPage) => prevPage + 1)}>Loading more...</label>
+                        </div>
+                    )
+                ) : null
+            }
+        </div >
     );
 }
 const fetchAllMenu = async (): Promise<Menu[]> => {

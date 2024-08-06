@@ -8,6 +8,7 @@ import { SidebarItems, UserData } from '@/types/sidebartypes'
 import SidebarMobile from './SidebarMobile'
 import axios from 'axios'
 import { API_ENDPOINTS } from '@/app/api/godongbackend/api'
+import SidebarDesktopSkeleton from '@/app/skeleton/skeletonSidebarDesktop'
 
 const sidebarItems: SidebarItems = {
   links: [
@@ -58,7 +59,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // You can replace this with your skeleton component
+    return <SidebarDesktopSkeleton/>;
   }
 
   if (error) {
