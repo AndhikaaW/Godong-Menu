@@ -121,7 +121,7 @@ export default function Component() {
           <div className="w-full">
             <Input
               type="text"
-              className="w-1/3 bg-[#F4F7FE] p-2 border border-gray-300 rounded-xl shadow-xl pl-10"
+              className="w-1/2 sm:w-1/3 bg-[#F4F7FE] p-2 border border-gray-300 rounded-xl shadow-xl pl-10"
               placeholder="Search by Name or Email"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}

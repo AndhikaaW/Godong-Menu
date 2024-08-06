@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const SidebarDesktopSkeleton = () => {
     return (
-        <aside className="w-[270px] max-w-xs h-screen fixed left-0 top-0 z-40 border-r">
+        <aside className="hidden md:block w-[270px] max-w-xs h-screen fixed left-0 top-0 z-40 border-r">
             <div className="h-full px-3 py-4">
                 <Skeleton className="h-20 w-70 mx-auto mb-5" />
                 <div className="flex flex-col gap-4 mt-5">

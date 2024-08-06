@@ -13,7 +13,7 @@ import { Plus, Search, Trash, X } from "lucide-react";
 import { Badge } from 'primereact/badge';
 import ProductCard from "../menu/ProductCard";
 import QRCode from 'qrcode.react';
-import formatCurrency from "./formatCurrency";
+import { formatCurrency } from "./formatCurrency";
 import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
 import usePrintInvoice from "./ExportPdf";
 import MenuSkeleton from "../../skeleton/MenuSkeleton";
@@ -80,7 +80,9 @@ export default function Menu() {
             setHasMore(false);
         }
     };
-
+    const handleInput = (e: any) => {
+        setSearchTerm(e.target.value);
+    };
     useEffect(() => {
         const fetchUserData = async () => {
             const userinfo = localStorage.getItem("user-info");
@@ -336,14 +338,17 @@ export default function Menu() {
                         </div>
                     </ZoomIn>
                     <motion.div initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1 }} className="flex align-items-center justify-content-end w-full">
-                        <div className="flex align-items-center justify-content-end w-1/2">
-                            <Search onClick={handleSearch} className=" align-items-center flex h-full" />
+                        <div className="flex align-items-center justify-content-end w-1/2 ">
+                            <Search
+                                onClick={handleSearch}
+                                className="align-items-center hidden sm:flex h-full "
+                            />
                             <Input
                                 type="search"
                                 placeholder="Search"
                                 value={searchTerm}
-                                className="w-1/2 ms-3 me-2 mt-2 sm:w-1/2"
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full ms-3 me-2 mt-2 sm:w-1/2"
+                                onChange={handleInput}
                             />
                         </div>
                         <Sheet>
@@ -379,7 +384,7 @@ export default function Menu() {
                                                     <div className="flex w-full align-items-center">
                                                         <div className="flex w-full ">
                                                             <div className="flex flex-col w-1/2 text-start gap-1 ">
-                                                                <label htmlFor={`cart-item-price-${index}`}>{formatCurrency(item.price)}</label>
+                                                                {/* <label htmlFor={`cart-item-price-${index}`}>{formatCurrency(item.price)}</label> */}
                                                                 <div className="flex items-center text-black">
                                                                     {item.count > 1 ? (
                                                                         <CiSquareMinus size={'40px'} onClick={() => handleDecrement(index)} />
@@ -388,10 +393,12 @@ export default function Menu() {
                                                                             <DialogTrigger asChild>
                                                                                 <CiSquareMinus size={'40px'} />
                                                                             </DialogTrigger>
+                                                                            <DialogTitle></DialogTitle>
                                                                             <DialogContent className="sm:max-w-md" hideClose>
                                                                                 <DialogHeader>
                                                                                     <label htmlFor="">Are you sure you want to delete {item.name}?</label>
                                                                                 </DialogHeader>
+                                                                                <DialogDescription></DialogDescription>
                                                                                 <DialogFooter className="sm:justify-end">
                                                                                     <Button variant="secondary" onClick={() => handleDelete(item.name)}>Delete</Button>
                                                                                     <DialogClose asChild>
@@ -421,7 +428,9 @@ export default function Menu() {
                                                                                     <label htmlFor="">Are you sure you want to delete {item.name}?</label>
                                                                                 </DialogHeader>
                                                                                 <DialogFooter className="sm:justify-end">
-                                                                                    <Button variant="secondary" onClick={() => handleDelete(item.name)}>Delete</Button>
+                                                                                    <DialogClose>
+                                                                                        <Button variant="secondary" onClick={() => handleDelete(item.name)}>Delete</Button>
+                                                                                    </DialogClose>
                                                                                     <DialogClose asChild>
                                                                                         <Button type="button" variant="secondary">Cancel</Button>
                                                                                     </DialogClose>

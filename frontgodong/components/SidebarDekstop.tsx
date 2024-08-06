@@ -1,4 +1,5 @@
-import React, { useCallback } from "react";
+"use client"
+import React, { useCallback, useState } from "react";
 import { SidebarItems, UserData } from "@/types/sidebartypes";
 import Link from "next/link";
 import { LogOut, UserRound, ChevronLeft, ChevronRight, MoreHorizontal, Menu } from "lucide-react";
@@ -8,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { PopoverContent } from "@radix-ui/react-popover";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "../components/Auth/useAuth";
-import { Separator } from "./ui/separator";
+import { Span } from "next/dist/trace";
 
 interface SidebarDekstopProps {
   sidebarItems: SidebarItems;
@@ -38,11 +39,11 @@ export default function SidebarDekstop({ sidebarItems, userData, isCollapsed, se
     <aside className={`w-[${isCollapsed ? '80px' : '270px'}] max-w-xs h-screen fixed left-0 top-0 z-40 border-r transition-all duration-300`}>
       <div className="h-full px-1 py-3">
         {isCollapsed ?
-          <div className="flex mr-3 justify-center">
+          <div className="flex mr-3 justify-center cursor-pointer">
             <Menu size={24} onClick={toggleCollapse} />
           </div>
           :
-          <div className="flex mr-3 justify-end">
+          <div className="flex mr-3 justify-end cursor-pointer">
             <Menu size={24} onClick={toggleCollapse} />
           </div>
         }
@@ -58,10 +59,12 @@ export default function SidebarDekstop({ sidebarItems, userData, isCollapsed, se
           {sidebarItems.links.map((link, index) => {
             const isActive = pathname === link.href;
             const Icon = link.icon;
+            const [hovered, setHovered] = useState(false);
             return (
               <Link key={index} href={link.href}>
                 <Button
                   variant="outline"
+                  onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
                   className={`border-1 w-full justify-start ${isActive ? 'border-[#61AB5B] text-[#61AB5B]' : 'border-transparent text-gray-700 hover:border-[#61AB5B] hover:text-[#61AB5B]'}`}>
                   {Icon && (
                     <span style={{ width: '2rem', display: 'inline-block' }}>
@@ -69,6 +72,20 @@ export default function SidebarDekstop({ sidebarItems, userData, isCollapsed, se
                     </span>
                   )}
                   {!isCollapsed && <span className="ml-2">{link.label}</span>}
+                  {isCollapsed && hovered && (
+                    <span style={{
+                      position: 'absolute',
+                      left: '100%',
+                      whiteSpace: 'nowrap',
+                      background: 'white',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '4px',
+                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                      zIndex: 1000,
+                    }}>
+                      {link.label}
+                    </span>
+                  )}
                 </Button>
               </Link>
             );
@@ -94,8 +111,7 @@ export default function SidebarDekstop({ sidebarItems, userData, isCollapsed, se
               <Button
                 size="sm"
                 onClick={handleLogout}
-                className="w-[200px] h-[35px] animate-none border-[1px] bg-[#61AB5B] text-white"
-              >
+                className="w-[200px] h-[35px] animate-none border-[1px] bg-[#61AB5B] text-white">
                 <LogOut className="mr-2" size={16} />
                 Log Out
               </Button>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function formatCurrency(value:number) {
+export function formatCurrency(value:number) {
     return value.toLocaleString('id-ID', {
         style: 'currency',
         currency: 'IDR',
@@ -9,4 +9,3 @@ function formatCurrency(value:number) {
     }).replace('Rp', 'Rp.').trim();
 }
 
-export default formatCurrency

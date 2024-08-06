@@ -49,13 +49,12 @@ function Categorypage() {
             <div className="container mx-auto">
                 <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:flex-row justify-content-center align-items-center'>
                     {categories.map((category, index) => (
-                        <Link href={'/dashboard/menu/'} className='no-underline p-5'>
+                        <Link href={'/dashboard/menu/'} className='no-underline p-5' key={index}>
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 whileInView={{ opacity: 1 }}
                                 viewport={{ once: true }}
-                                transition={{ duration: 1, delay: index * 1 }}
-                                key={index}
+                                transition={{ duration: 1, delay: index * 0.5 }}
                             >
                                 <Card className="rounded text-sm">
                                     <CardHeader className="justify-content-center align-items-center w-auto ">
@@ -77,14 +76,17 @@ function Categorypage() {
                                                 {category.name}
                                             </h5>
                                         </div>
-                                        <div className={`text-center w-auto h-[150px] text-sm overflow-auto`} style={{ scrollbarWidth: "none" }}>
+                                        <div className={`text-center w-auto h-[140px] text-sm overflow-auto`} style={{ scrollbarWidth: "none" }}>
                                             <label
                                                 htmlFor=""
-                                                className={'d-inline-block '}
-                                            // style={{whiteSpace:"normal"}}
-                                            // style={{ maxHeight: isTruncated ? '100%' : 'none', cursor: 'pointer', whiteSpace: isTruncated ? 'nowrap' : 'normal' }}
-                                            // onClick={toggleTruncate}
-                                            // title={isTruncated ? 'Click to expand' : 'Click to collapse'}
+                                                className={'d-inline-block'}
+                                                style={{
+                                                    display: '-webkit-box',
+                                                    WebkitLineClamp: 2,
+                                                    WebkitBoxOrient: 'vertical',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                }}
                                             >
                                                 {category.description}
                                             </label>

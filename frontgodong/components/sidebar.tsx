@@ -12,12 +12,12 @@ import SidebarDesktopSkeleton from '@/app/skeleton/skeletonSidebarDesktop'
 
 const sidebarItems: SidebarItems = {
   links: [
-    {label: 'Home', href: '/dashboard/home', icon: Home},
-    {label: 'Category', href: '/dashboard/category', icon: LayoutGrid},
-    {label: 'Menu', href: '/dashboard/menu', icon: SquareMenu},
-    {label: 'Profile', href: '/dashboard/profile', icon: User},
-    {label: 'Contact', href: '/dashboard/contact', icon: Contact},
-    {label: 'History', href: '/dashboard/history', icon: History}
+    { label: 'Home', href: '/dashboard/home', icon: Home },
+    { label: 'Category', href: '/dashboard/category', icon: LayoutGrid },
+    { label: 'Menu', href: '/dashboard/menu', icon: SquareMenu },
+    { label: 'Profile', href: '/dashboard/profile', icon: User },
+    { label: 'Contact', href: '/dashboard/contact', icon: Contact },
+    { label: 'History', href: '/dashboard/history', icon: History }
   ]
 }
 
@@ -34,6 +34,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  
   useEffect(() => {
     const fetchUserData = async () => {
       const userinfo = localStorage.getItem('user-info');
@@ -59,9 +60,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   }, []);
 
   if (loading) {
-    return <SidebarDesktopSkeleton/>;
+    return <SidebarDesktopSkeleton />;
   }
-
+  
   if (error) {
     return <div>{error}</div>;
   }
@@ -72,14 +73,16 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
   if (isDekstop) {
     return (
-      <SidebarDekstop 
-        sidebarItems={sidebarItems} 
+      <SidebarDekstop
+        sidebarItems={sidebarItems}
         userData={userData}
         isCollapsed={isCollapsed}
         setIsCollapsed={setIsCollapsed}
       />
     )
   }
-  
+
   return <SidebarMobile sidebarItems={sidebarItems} />
+
+
 }

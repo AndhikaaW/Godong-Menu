@@ -4,7 +4,7 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
 import { Check, Key } from 'lucide-react';
-import formatCurrency from "../menu/formatCurrency";
+import {formatCurrency} from "../menu/formatCurrency";
 import axios from 'axios';
 import { AspectRatio } from '@radix-ui/react-aspect-ratio';
 import { Skeleton } from '@/components/ui/skeleton';
