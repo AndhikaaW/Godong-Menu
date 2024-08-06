@@ -86,7 +86,7 @@ export default function Login() {
       <div className="flex items-center justify-center h-full w-full lg:w-1/2">
         <Card className="max-w-sm w-full bg-white text-black">
           <CardHeader>
-            <CardTitle className="text-lg">Selamat Datang di</CardTitle>
+            <CardTitle className="text-lg">Welcome To</CardTitle>
             <CardTitle className="text-2xl">Godong Menu</CardTitle>
           </CardHeader>
           <CardContent>
@@ -105,7 +105,7 @@ export default function Login() {
                 {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="password">Kata Sandi</Label>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative flex items-center">
                   <Input
                     id="password"
@@ -125,7 +125,7 @@ export default function Login() {
                 </div>
                 {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
                 <Link href="#" className="ml-auto inline-block text-sm underline">
-                  Lupa kata sandi?
+                  Forget Password?
                 </Link>
               </div>
               <Button
@@ -140,17 +140,17 @@ export default function Login() {
                 {isLoading || isNavigating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Memuat...
+                    Loading...
                   </>
                 ) : (
-                  "Masuk"
+                  "Login"
                 )}
               </Button>
             </form>
             <div className="mt-4 text-center text-sm">
-              Belum punya akun?{" "}
+               Don't have account?{" "}
               <Link href="/signup" className="underline">
-                Daftar
+                SignUp
               </Link>
             </div>
           </CardContent>

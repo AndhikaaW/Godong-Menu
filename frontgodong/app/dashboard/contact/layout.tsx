@@ -10,7 +10,7 @@ export default function ContactLayout({
   children: React.ReactNode
 }) {
   return (
-    <div>
+    <div className='ml-0 sm:ml-[-20px]'>
       {children}
     </div>
   )

@@ -108,13 +108,18 @@ export default function SidebarDekstop({ sidebarItems, userData, isCollapsed, se
               </Button>
             </PopoverTrigger>
             <PopoverContent className="mb-2 w-auto h-auto p-3 rounded-[1rem]">
-              <Button
-                size="sm"
-                onClick={handleLogout}
-                className="w-[200px] h-[35px] animate-none border-[1px] bg-[#61AB5B] text-white">
-                <LogOut className="mr-2" size={16} />
-                Log Out
-              </Button>
+              {isCollapsed &&
+                <LogOut className=" cursor-pointer h-[30px]" onClick={handleLogout} size={20} />
+              }
+              {!isCollapsed &&
+                <Button
+                  size="sm"
+                  onClick={handleLogout}
+                  className="w-[200px] h-[35px] animate-none border-[1px] bg-[#61AB5B] text-white">
+                  <LogOut className="mr-2" size={16} />
+                  Log Out
+                </Button>
+              }
             </PopoverContent>
           </Popover>
         </div>

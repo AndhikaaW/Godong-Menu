@@ -208,7 +208,7 @@ function Homepage() {
                 </div>
             </motion.div>
 
-            <div className="text-3xl mb-5 text-center pt-20 fw-bold"><label>Customer Review</label></div>
+            <div className="text-3xl mb-5 text-center pt-20 fw-bold"><label>Review Customer</label></div>
             <div className="container mx-auto flex justify-center pb-5">
                 <Carousel
                     opts={{

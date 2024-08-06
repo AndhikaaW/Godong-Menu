@@ -361,7 +361,7 @@ export default function Menu() {
                             </SheetTrigger>
                             <SheetContent className="overflow-auto" style={{ scrollbarWidth: 'none' }}>
                                 <SheetHeader >
-                                    <SheetTitle className='text-black'>Keranjang</SheetTitle>
+                                    <SheetTitle className='text-black'>Cart</SheetTitle>
                                     <SheetDescription ></SheetDescription>
                                     {cart.map((item, index) => (
                                         <Card key={index} className='my-3 p-2'>
@@ -492,7 +492,7 @@ export default function Menu() {
                                         </div>
                                         <div className='flex justify-content-between pe-0 py-2'>
                                             <div className='flex justify-center align-items-center gap-2 me-3'>
-                                                <label htmlFor="total">Total pesanan anda</label>
+                                                <label htmlFor="total">Total Order</label>
                                             </div>
                                             <div className='flex justify-center align-items-center gap-2'>
                                                 <label htmlFor="price">{formatCurrency(cart.reduce((total, item) => total + item.discount * item.count, 0))}</label>
