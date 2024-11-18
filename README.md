@@ -76,7 +76,11 @@ Langkah-langkah untuk mengintegrasikan backend Laravel ke frontend Next.js:
 2. Sesuaikan IP backend di bagian berikut:  
    ```typescript
    const api_url = "http://[IP_ADDRESS]:8000";
-   ```  
+   ```
+3. Untuk username dari admin nya adalah
+   ```text
+   Username : superadmin@gmail.com
+   Password : admin123    
 
 Jika langkah-langkah di atas berhasil, frontend dan backend akan terintegrasi dengan baik. 🚀  
 
