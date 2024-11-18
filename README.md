@@ -1,37 +1,86 @@
-# Project Godong Menu 
 
-## Bahasa yang digunakan :
-1. Javascript
-2. Typescript
-3. PHP
+# 🌿 **Project Godong Menu**
 
+**Godong Menu** adalah aplikasi modern yang dirancang untuk memberikan pengalaman optimal dalam manajemen menu berbasis teknologi. Proyek ini menggunakan teknologi terkini untuk pengembangan frontend, backend, dan database.
 
+---
 
-## Framework Version :
-  1. Laravel  : 10.48.16
-  2. Next Js  : 14.2.4
-  3. MySQL    : 8.0.30
-  4. NPM      : 10.7.0
-  5. Composer : 2.4.1
+## **📌 Teknologi yang Digunakan**
+| **Bahasa**        | **Framework/Tools**       | **Versi**        |
+|--------------------|---------------------------|------------------|
+| **JavaScript**     | Next.js                  | **14.2.4**       |
+| **TypeScript**     | -                        | -                |
+| **PHP**            | Laravel                  | **10.48.16**     |
+| -                  | MySQL                    | **8.0.30**       |
+| -                  | NPM                      | **10.7.0**       |
+| -                  | Composer                 | **2.4.1**        |
 
-## Installation Guide : 
-  a. Front End Next Js :
-     1. Pergi ke folder frontgodong dan run commend'npm install'
-     2. Jalankan Front End dengan run command 'npm run dev'
-        
-  b. Backend Laravel
-     1. Pergi ke folder godongbackend dan run command 'composer install'
-     2. Lalu setelah selesai install ketikan command 'composer dump-autoload'.
-     3. Jika sudah selesai ketikkan command lagi 'composer key:generate'
-     4. Setelah key digenerate pergi file .env dan sesuaikan dengan yang dibawah 
-          DB_DATABASE=godong_menu
-          DB_USERNAME=root
-          DB_PASSWORD= 
-      atau sesuaikan dengan device sendiri
-    5. Setelah selesai mengubah run command 'php artisan serve --host=[ip kalian] --port=8000
-    6. Jika sudah berhasil maka backend sudah berhasil di intalasi dan dapat dijalankan
-       
-  c. Integrasi backend di front end
-    1. Pergi ke file api.tsx di  'frontgodong/app/api/godongbackend/api.tsx'
-    2. Ubah ip backend dibagian 'const api_url = "ip_kalian"';
-    3. Jika sudah berhasil terinntegrasi maka akan sejalan antara backend dan frontend nya
+---
+
+## **📖 Panduan Instalasi**
+
+### **1. Frontend (Next.js)**  
+Ikuti langkah-langkah berikut untuk menjalankan aplikasi frontend:  
+1. Navigasikan ke folder **`frontgodong`**:  
+   ```bash
+   cd frontgodong
+   ```  
+2. Instal semua dependensi yang diperlukan:  
+   ```bash
+   npm install
+   ```  
+3. Jalankan aplikasi frontend:  
+   ```bash
+   npm run dev
+   ```  
+
+### **2. Backend (Laravel)**  
+Langkah-langkah untuk mengatur backend menggunakan Laravel:  
+1. Navigasikan ke folder **`godongbackend`**:  
+   ```bash
+   cd godongbackend
+   ```  
+2. Instal semua dependensi dengan Composer:  
+   ```bash
+   composer install
+   ```  
+3. Jalankan perintah berikut untuk memuat ulang autoloader:  
+   ```bash
+   composer dump-autoload
+   ```  
+4. Buat kunci aplikasi:  
+   ```bash
+   php artisan key:generate
+   ```  
+5. Atur konfigurasi database di file **`.env`** sesuai kebutuhan Anda:  
+   ```env
+   DB_DATABASE=godong_menu
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```  
+6. Jalankan server backend dengan IP dan port khusus:  
+   ```bash
+   php artisan serve --host=[IP_ADDRESS] --port=8000
+   ```  
+
+---
+
+### **3. Integrasi Backend dengan Frontend**  
+Langkah-langkah untuk mengintegrasikan backend Laravel ke frontend Next.js:  
+1. Buka file **`api.tsx`** yang berada di:  
+   ```text
+   frontgodong/app/api/godongbackend/api.tsx
+   ```  
+2. Sesuaikan IP backend di bagian berikut:  
+   ```typescript
+   const api_url = "http://[IP_ADDRESS]:8000";
+   ```  
+
+Jika langkah-langkah di atas berhasil, frontend dan backend akan terintegrasi dengan baik. 🚀  
+
+---
+
+## **🎯 Siap Digunakan!**
+Dengan mengikuti panduan ini, aplikasi **Godong Menu** siap dijalankan dan digunakan sesuai kebutuhan Anda. Jika Anda menemukan kendala, jangan ragu untuk menghubungi tim pengembang.  
+
+Selamat mencoba dan semoga sukses! 💪
