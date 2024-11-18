@@ -47,17 +47,19 @@ Langkah-langkah untuk mengatur backend menggunakan Laravel:
    ```bash
    composer dump-autoload
    ```  
-4. Buat kunci aplikasi:  
+4. Generate kunci aplikasi:
    ```bash
    php artisan key:generate
    ```  
-5. Atur konfigurasi database di file **`.env`** sesuai kebutuhan Anda:  
+5. Ubah nama file **`.env.example`** menjadi **`.env`**
+
+6. Atur konfigurasi database di file **`.env`** sesuai kebutuhan Anda:  
    ```env
    DB_DATABASE=godong_menu
    DB_USERNAME=root
    DB_PASSWORD=
    ```  
-6. Jalankan server backend dengan IP dan port khusus:  
+7. Jalankan server backend dengan IP dan port khusus:  
    ```bash
    php artisan serve --host=[IP_ADDRESS] --port=8000
    ```  
