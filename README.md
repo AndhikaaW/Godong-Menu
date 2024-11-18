@@ -8,8 +8,7 @@
 ## **📌 Teknologi yang Digunakan**
 | **Bahasa**        | **Framework/Tools**       | **Versi**        |
 |--------------------|---------------------------|------------------|
-| **JavaScript**     | Next.js                  | **14.2.4**       |
-| **TypeScript**     | -                        | -                |
+| **TypeScript**     | Next.js                  | **14.2.4**       |
 | **PHP**            | Laravel                  | **10.48.16**     |
 | -                  | MySQL                    | **8.0.30**       |
 | -                  | NPM                      | **10.7.0**       |
