@@ -1,10 +1,11 @@
-# ! [#f03c15]  Project Godong Menu 
+# Project Godong Menu 
 
 ## Bahasa yang digunakan :
 1. Javascript
 2. Typescript
 3. PHP
 
+- ! [#f03c15] ( https : //via.placeholder.com/15/f03c15/f03c15.png) ` #f03c15` - ![ #c5f015 ] ( https : //via.placeholder.com/15/c5f015/c5f015.png) `#c5f015` - ![ #1589F0 ]( https : //via.placeholder.com/15/1589F0/1589F0.png) `#1589F0` /* Bulat (Lingkaran) Warna: */ - ![ #f03c15 ]( https : //www.iconsdb.com/icons/download/color/f03c15/circle-16.png) `#f03c15` - ![ #c5f015 ]( https://www.iconsdb.com/icons/download/color/c5f015/circle-16.png ) `#c5f015` - ![ #1589F0 ]( https://www.iconsdb.com/icons/download/color/1589F0/circle-16.png ) ` #1589F0` /* pada yang terakhir Anda dapat masuk ke situs web dan mengubah bentuknya menjadi apa pun yang Anda inginkan dan menyalin tautan ke img dan menambahkannya ke README.md*/
 
 ## Framework Version :
   1. Laravel  : 10.48.16
