@@ -1,32 +1,32 @@
 import forge from 'node-forge';
 
-const keyWord = 'marstech';
+// const keyWord = 'marstech';
 
-const generateKeyPair = (keyword: string) => {
-  const seed = forge.md.sha256.create().update(keyword).digest().getBytes();
-  const prng = forge.random.createInstance();
-  prng.seedFileSync = () => seed;
+// const generateKeyPair = (keyword: string) => {
+//   const seed = forge.md.sha256.create().update(keyword).digest().getBytes();
+//   const prng = forge.random.createInstance();
+//   prng.seedFileSync = () => seed;
 
-  return forge.pki.rsa.generateKeyPair({
-    bits: 2048,
-    e: 0x10001,
-    prng: prng,
-  });
-};
+//   return forge.pki.rsa.generateKeyPair({
+//     bits: 2048,
+//     e: 0x10001,
+//     prng: prng,
+//   });
+// };
 
-export function decryptText(encryptedText: string): string {
-  try {
-    const keyPair = generateKeyPair(keyWord!.toString());
-    const decoded = forge.util.decode64(encryptedText);
-    return keyPair.privateKey.decrypt(decoded, 'RSA-OAEP');
-  } catch (error) {
-    console.error('Dekripsi gagal:', error);
-    return 'Gagal mendekripsi. Pastikan teks terenkripsi dan kata kunci benar.';
-  }
-}
+// export function decryptText(encryptedText: string): string {
+//   try {
+//     const keyPair = generateKeyPair(keyWord!.toString());
+//     const decoded = forge.util.decode64(encryptedText);
+//     return keyPair.privateKey.decrypt(decoded, 'RSA-OAEP');
+//   } catch (error) {
+//     console.error('Dekripsi gagal:', error);
+//     return 'Gagal mendekripsi. Pastikan teks terenkripsi dan kata kunci benar.';
+//   }
+// }
 
-const api_base_url = "TuREO6K/UoJol0wYN9XfV7DcR8Cd7vOX8HGb8MX3sH62ABDCEco51Wh01BiWl5iq53AuMG1B+H6t75OHtc/s2oEZ+98mxy4PnoVDpFPCJrZpIp3/qgyEZbFRTNKcYPdlheHUdLqzphgBIj4Qodz8BX2gpHUps7kYUhVglmc8M3sqvQ1prMk9AmxIFx5Ok0NsIg0dZqvra62rlsDvjanlNWlwAwrwmcBXCeW1xjHVW87sEigGYvwDymp427qVNiSsAWlhpL2M0rMLEV5zFPuQdBbFxAZiglL85PH/tzBFr5Z5I30eKZz4yHsdz7S5KZcskeY5r8Hyfdi8+UmD4s7usg==";
-export const api_url = decryptText(api_base_url);
+const api_url = "http://10.208.226.149:8000/api";
+// export const api_url = decryptText(api_base_url);
 
 export const API_ENDPOINTS = {
   CATEGORIES: `${api_url}/categories`,
