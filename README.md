@@ -1,4 +1,4 @@
-Project Godong Menu
+#Project Godong Menu#
 
 Bahasa yang digunakan :
 1. Javascript
@@ -7,11 +7,11 @@ Bahasa yang digunakan :
 
 
 Framework Version :
-  Laravel  : 10.48.16
-  Next Js  : 14.2.4
-  MySQL    : 8.0.30
-  NPM      : 10.7.0
-  Composer : 2.4.1
+  1. Laravel  : 10.48.16
+  2. Next Js  : 14.2.4
+  3. MySQL    : 8.0.30
+  4. NPM      : 10.7.0
+  5. Composer : 2.4.1
 
 Installation Guide : 
 a. Front End Next Js :
